@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
 
 /**
  * Usuario Controller
@@ -17,11 +18,41 @@ class UsuarioController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
+
+
     public function index()
     {
         $usuario = $this->paginate($this->Usuario);
 
         $this->set(compact('usuario'));
+    }
+
+    public function beforeFilter(Event $event){
+        parent::beforeFilter($event);
+        $this->Auth->allow('register');
+    }
+
+    public function login(){
+        $this->viewBuilder('login');
+        if($this->request->is(['post'])){
+            $user = $this->Auth->identify();
+            debug($user);
+        }
+    }
+
+
+    public function register(){
+        $this->viewBuilder('register');
+        $usuario = $this->Usuario->newEntity();
+        if ($this->request->is('post')) {
+            $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
+            if ($this->Usuario->save($usuario)) {
+                $this->Flash->success(__('The usuario has been saved.'));
+
+                return $this->redirect(['action' => 'login']);
+            }
+            $this->Flash->error(__('The usuario could not be saved. Please, try again.'));
+        }
     }
 
     /**
@@ -40,27 +71,7 @@ class UsuarioController extends AppController
         $this->set('usuario', $usuario);
     }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $usuario = $this->Usuario->newEntity();
-        if ($this->request->is('post')) {
-            $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
-            if ($this->Usuario->save($usuario)) {
-                $this->Flash->success(__('The usuario has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The usuario could not be saved. Please, try again.'));
-        }
-        $partidoPromocionado = $this->Usuario->PartidoPromocionado->find('list', ['limit' => 200]);
-        $reserva = $this->Usuario->Reserva->find('list', ['limit' => 200]);
-        $this->set(compact('usuario', 'partidoPromocionado', 'reserva'));
-    }
 
     /**
      * Edit method
