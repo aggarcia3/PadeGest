@@ -3,7 +3,7 @@ Un proyecto de aplicación web de gestión integral de un club de pádel para la
 
 ## Instalación
 
-1. Descargar [Composer](https://getcomposer.org/doc/00-intro.md) o actualízalo: `composer self-update`.
+1. Descarga [Composer](https://getcomposer.org/doc/00-intro.md) o actualízalo: `composer self-update`.
 2. Ejecuta `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
 
 Si Composer está instalado globalmente, ejecuta:
