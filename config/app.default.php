@@ -50,8 +50,8 @@ return [
     'App' => [
         'namespace' => 'App',
         'encoding' => env('APP_ENCODING', 'UTF-8'),
-        'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
-        'defaultTimezone' => env('APP_DEFAULT_TIMEZONE', 'UTC'),
+        'defaultLocale' => env('APP_DEFAULT_LOCALE', 'es_ES'),
+        'defaultTimezone' => env('APP_DEFAULT_TIMEZONE', 'Europe/Madrid'),
         'base' => false,
         'dir' => 'src',
         'webroot' => 'webroot',
@@ -110,7 +110,7 @@ return [
          */
         '_cake_core_' => [
             'className' => FileEngine::class,
-            'prefix' => 'myapp_cake_core_',
+            'prefix' => 'padegest_core_',
             'path' => CACHE . 'persistent/',
             'serialize' => true,
             'duration' => '+1 years',
@@ -125,7 +125,7 @@ return [
          */
         '_cake_model_' => [
             'className' => FileEngine::class,
-            'prefix' => 'myapp_cake_model_',
+            'prefix' => 'padegest_model_',
             'path' => CACHE . 'models/',
             'serialize' => true,
             'duration' => '+1 years',
@@ -139,7 +139,7 @@ return [
          */
         '_cake_routes_' => [
             'className' => FileEngine::class,
-            'prefix' => 'myapp_cake_routes_',
+            'prefix' => 'padegest_routes_',
             'path' => CACHE,
             'serialize' => true,
             'duration' => '+1 years',
@@ -205,18 +205,7 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'className' => MailTransport::class,
-            /*
-             * The following keys are used in SMTP transports:
-             */
-            'host' => 'localhost',
-            'port' => 25,
-            'timeout' => 30,
-            'username' => null,
-            'password' => null,
-            'client' => null,
-            'tls' => null,
-            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            'className' => DebugTransport::class
         ],
     ],
 
@@ -232,7 +221,7 @@ return [
     'Email' => [
         'default' => [
             'transport' => 'default',
-            'from' => 'you@localhost',
+            'from' => 'padegest@abp.esei.es',
             //'charset' => 'utf-8',
             //'headerCharset' => 'utf-8',
         ],
@@ -263,9 +252,9 @@ return [
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'my_app',
+            'username' => 'PadeGestApp',
+            'password' => 'PadeGestApp',
+            'database' => 'PADEGEST',
             /*
              * You do not need to set this flag to use full utf-8 encoding (internal default since CakePHP 3.6).
              */
@@ -306,9 +295,9 @@ return [
             'persistent' => false,
             'host' => 'localhost',
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'test_myapp',
+            'username' => 'PadeGestApp',
+            'password' => 'PadeGestApp',
+            'database' => 'PADEGEST',
             //'encoding' => 'utf8mb4',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
