@@ -1,5 +1,8 @@
 language: php
 
+services:
+  - mysql
+
 dist: xenial
 
 php:
@@ -19,6 +22,7 @@ matrix:
       env: PHPSTAN=1 DEFAULT=0
 
 before_script:
+  - mysql -u travis < "tests/BD PadeGest.sql"
   - if [[ $DEFAULT = 1 || $PHPCS = 1 ]]; then composer install; fi
   - if [[ $DEFAULT = 1 ]]; then composer run-script post-install-cmd --no-interaction; fi
   - if [[ $PHPSTAN = 1 ]]; then composer require --dev "phpstan/phpstan-shim"; fi
