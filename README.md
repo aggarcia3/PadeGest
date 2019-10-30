@@ -3,20 +3,21 @@ Un proyecto de aplicación web de gestión integral de un club de pádel para la
 
 ## Instalación
 
-1. Descarga [Composer](https://getcomposer.org/doc/00-intro.md) o actualízalo: `composer self-update`.
-2. Ejecuta `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+Primero descarga [Composer](https://getcomposer.org/doc/00-intro.md), o actualízalo: `composer self-update`.
 
-Si Composer está instalado globalmente, ejecuta:
+Si Composer está instalado globalmente, ejecuta el siguiente comando para crear ficheros esqueleto de CakePHP en el subdirectorio `app`, colgando del directorio de trabajo actual:
 
 ```bash
 composer create-project --prefer-dist cakephp/app
 ```
 
-Si quieres usar un nombre de directorio personalizado (e.g. `/myapp/`):
+Si quieres usar otro subdirectorio (p. ej. `padegest`):
 
 ```bash
-composer create-project --prefer-dist cakephp/app myapp
+composer create-project --prefer-dist cakephp/app padegest
 ```
+
+Ya tienes el esqueleto de aplicación de CakePHP básico, pero no contiene todavía el código propio de PadeGest. Añádeselo copiando los ficheros de este repositorio sobre el subdirectorio que se acaba de generar.
 
 Ahora puedes usar tu servidor web local para interactuar con la aplicación, o iniciar
 el servidor web embebido con:
@@ -26,11 +27,6 @@ bin/cake server -p 8765
 ```
 
 Luego visita `http://localhost:8765` para ver la página de bienvenida.
-
-## Configuración inicial
-
-Lee y edita `config/app.php`, y establece las `'Datasources'` y cualquier
-otra configuración relevante.
 
 ## Diseño
 
