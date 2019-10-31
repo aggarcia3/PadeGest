@@ -9,6 +9,7 @@
         "valeryanm.vscode-phpsab",
         "breezelin.phpstan",
         "emallin.phpunit",
-        "bajdzis.vscode-database"
+        "bajdzis.vscode-database",
+        "kasik96.latte"
     ]
 }
