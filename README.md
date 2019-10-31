@@ -5,20 +5,49 @@ Un proyecto de aplicación web de gestión integral de un club de pádel para la
 
 Primero descarga [Composer](https://getcomposer.org/doc/00-intro.md), o actualízalo: `composer self-update`.
 
+### Instalación tras clonado manual
+
 Asumiendo que ya has clonado este repositorio, y que tu directorio de trabajo actual es el directorio raíz del repositorio, instala PadeGest usando Composer:
 
 ```bash
 composer install
 ```
 
-Ahora puedes usar tu servidor web local para interactuar con la aplicación, o iniciar
-el servidor web embebido con:
+### Instalación automática
+
+Alternativamente, puedes dejar que Composer clone el repositorio por ti. Para ello, crea o edita el fichero `config.json` en el directorio [COMPOSER_HOME](https://getcomposer.org/doc/03-cli.md#composer-home), de forma que tenga el siguiente contenido:
+
+```json
+{
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:aggarcia3/PadeGest.git"
+		}
+	]
+}
+```
+
+Ahora puedes crear el proyecto de Composer, de manera similar a cómo se haría con la aplicación esqueleto de CakePHP. Con `--keep-vcs` el repositorio se inicializa automáticamente: sin ese parámetro, simplemente se descargan sus archivos.
+
+```bash
+composer create-project --prefer-dist --stability=dev --keep-vcs aggarcia3/padegest PadeGest
+```
+
+### Avanzado: integración de Composer y PHP para Windows con Cygwin
+
+[Esta respuesta de StackOverflow](https://stackoverflow.com/a/14904607/9366153) da buenas instrucciones acerca de cómo combinar esas herramientas.
+
+## Ejecutando la aplicación
+
+Una vez instalado PadeGest, puedes usar tu servidor web local para interactuar con la aplicación, o iniciar
+el servidor web embebido de desarrollo con:
 
 ```bash
 bin/cake server -p 8765
 ```
 
-Luego visita `http://localhost:8765` para ver la página de bienvenida.
+Si todo va bien, al visitar `http://localhost:8765` te encontrarás con PadeGest. El comando anterior asume que tu directorio de trabajo actual es el directorio raíz de este repositorio.
 
 ## Integración continua
 
