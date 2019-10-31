@@ -16,7 +16,7 @@ class UsuarioController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null
+     * @return void
      */
     public function index()
     {
@@ -32,8 +32,9 @@ class UsuarioController extends AppController
      */
     public function beforeFilter(Event $event)
     {
-        parent::beforeFilter($event);
         $this->Auth->allow('register');
+
+        return parent::beforeFilter($event);
     }
 
     /**
@@ -71,7 +72,7 @@ class UsuarioController extends AppController
      * View method
      *
      * @param string|null $id Usuario id.
-     * @return \Cake\Http\Response|null
+     * @return void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)

@@ -18,9 +18,9 @@
             "problemMatcher": []
         },
         {
-            "label": "Complete check",
+            "label": "Run PHPUnit tests",
             "type": "shell",
-            "command": "composer check",
+            "command": "composer test",
             "presentation": {
                 "echo": true,
                 "reveal": "always",
@@ -32,6 +32,20 @@
             "problemMatcher": [
                 "$phpunit"
             ]
+        },
+        {
+            "label": "Check source formatting",
+            "type": "shell",
+            "command": "composer cs-check",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": []
         },
         {
             "label": "Fix source formatting",
