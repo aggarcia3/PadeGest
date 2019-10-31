@@ -293,7 +293,7 @@ return [
             'className' => Connection::class,
             'driver' => Mysql::class,
             'persistent' => false,
-            'host' => 'localhost',
+            'host' => 'mysql',
             //'port' => 'non_standard_port_number',
             'username' => 'PadeGestApp',
             'password' => 'PadeGestApp',
