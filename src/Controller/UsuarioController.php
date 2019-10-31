@@ -18,8 +18,6 @@ class UsuarioController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-
-
     public function index()
     {
         $usuario = $this->paginate($this->Usuario);
@@ -27,21 +25,23 @@ class UsuarioController extends AppController
         $this->set(compact('usuario'));
     }
 
-    public function beforeFilter(Event $event){
+    public function beforeFilter(Event $event)
+    {
         parent::beforeFilter($event);
         $this->Auth->allow('register');
     }
 
-    public function login(){
+    public function login()
+    {
         $this->viewBuilder();
-        if($this->request->is(['post'])){
+        if ($this->request->is(['post'])) {
             $user = $this->Auth->identify();
             var_dump($user);
         }
     }
 
-
-    public function register(){
+    public function register()
+    {
         $this->viewBuilder();
         $usuario = $this->Usuario->newEntity();
         if ($this->request->is('post')) {
@@ -70,8 +70,6 @@ class UsuarioController extends AppController
 
         $this->set('usuario', $usuario);
     }
-
-
 
     /**
      * Edit method
