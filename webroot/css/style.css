@@ -154,7 +154,6 @@ input[type=radio] {
 .time select,
 .datetime select {
     display: inline;
-    width: auto;
     margin-right: 10px;
 }
 
