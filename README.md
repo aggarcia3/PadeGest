@@ -1,4 +1,5 @@
 # PadeGest [![Estado CI](https://status.continuousphp.com/git-hub/aggarcia3/PadeGest?token=362304b9-842b-414b-bd76-e83b3bdca02d&branch=master)](https://continuousphp.com/git-hub/aggarcia3/PadeGest)
+
 Un proyecto de aplicación web de gestión integral de un club de pádel para la asignatura de Aprendizaje Basado en Proyectos, basado en el esqueleto de aplicación de CakePHP 3.x.
 
 ## Instalación
@@ -48,6 +49,14 @@ bin/cake server -p 8765
 ```
 
 Si todo va bien, al visitar `http://localhost:8765` te encontrarás con PadeGest. El comando anterior asume que tu directorio de trabajo actual es el directorio raíz de este repositorio.
+
+## Editor recomendado
+
+Se recomienda Visual Studio Code, con las extensiones recomendadas indicadas por este repositorio. Entre otras funcionalidades, proporciona:
+
+- Comprobación de errores de sintaxis PHP.
+- Documentación acerca de clases y métodos de CakePHP.
+- Comprobación de estilo del código fuente, y formateo automático.
 
 ## Integración continua
 

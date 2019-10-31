@@ -1,0 +1,13 @@
+{
+    // https://go.microsoft.com/fwlink/?LinkId=827846
+
+	"recommendations": [
+        "editorconfig.editorconfig",
+        "davidanson.vscode-markdownlint",
+        "neilbrayfield.php-docblocker",
+        "bmewburn.vscode-intelephense-client",
+        "breezelin.phpstan",
+        "emallin.phpunit",
+        "bajdzis.vscode-database"
+	]
+}
