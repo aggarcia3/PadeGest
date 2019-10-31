@@ -9,7 +9,7 @@
         "valeryanm.vscode-phpsab",
         "breezelin.phpstan",
         "emallin.phpunit",
-        "bajdzis.vscode-database",
+        "mtxr.sqltools",
         "kasik96.latte"
     ]
 }
