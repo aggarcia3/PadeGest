@@ -1,4 +1,4 @@
-# PadeGest [![Estado CI](https://travis-ci.com/aggarcia3/PadeGest.svg?token=p5xghKeipus22ACaZoE8&branch=master)](https://travis-ci.com/aggarcia3/PadeGest)
+# PadeGest [![Estado CI](https://status.continuousphp.com/git-hub/aggarcia3/PadeGest?token=362304b9-842b-414b-bd76-e83b3bdca02d&branch=master)](https://continuousphp.com/git-hub/aggarcia3/PadeGest)
 Un proyecto de aplicación web de gestión integral de un club de pádel para la asignatura de Aprendizaje Basado en Proyectos, basado en el esqueleto de aplicación de CakePHP 3.x.
 
 ## Instalación
