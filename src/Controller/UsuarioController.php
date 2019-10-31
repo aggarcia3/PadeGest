@@ -25,24 +25,38 @@ class UsuarioController extends AppController
         $this->set(compact('usuario'));
     }
 
+    /**
+     * Define las funcionalidades permitidas a usuarios no autenticados
+     *
+     * @param Event $event El evento ocurrido
+     * @return void
+     */
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
         $this->Auth->allow('register');
     }
 
+    /**
+     * Inicia sesión
+     *
+     * @return void
+     */
     public function login()
     {
-        $this->viewBuilder();
         if ($this->request->is(['post'])) {
             $user = $this->Auth->identify();
             var_dump($user);
         }
     }
 
+    /**
+     * Registra a un usuario
+     *
+     * @return void
+     */
     public function register()
     {
-        $this->viewBuilder();
         $usuario = $this->Usuario->newEntity();
         if ($this->request->is('post')) {
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
