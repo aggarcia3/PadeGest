@@ -52,7 +52,7 @@ class AppController extends Controller
                 'controller' => 'Usuario',
                 'action' => 'login'
             ],
-            'authError' => 'Did you really think you are allowed to see that?',
+            'authError' => __('Es necesario estar conectado para acceder a esa funcionalidad.'),
             'authenticate' => [
                 'Form' => [
                     'userModel' => 'usuario',
