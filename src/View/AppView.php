@@ -36,5 +36,7 @@ class AppView extends View
      */
     public function initialize()
     {
+        // Use Font Awesome
+        $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', ['block' => true]);
     }
 }

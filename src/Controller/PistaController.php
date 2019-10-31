@@ -2,16 +2,32 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Core\Configure;
 
 /**
  * Pista Controller
  *
  * @property \App\Model\Table\PistaTable $Pista
  *
- * @method \App\Model\Entity\Pistum[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @method \App\Model\Entity\Pista[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class PistaController extends AppController
 {
+    /**
+     * Initializes the controller
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        parent::initialize();
+
+        // Allow not logged in users to use this controller in debug mode
+        if (Configure::read('debug')) {
+            $this->Auth->allow(['index', 'view', 'add', 'edit', 'delete']);
+        }
+    }
+
     /**
      * Index method
      *
@@ -25,39 +41,23 @@ class PistaController extends AppController
     }
 
     /**
-     * View method
-     *
-     * @param string|null $id Pistum id.
-     * @return void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $pistum = $this->Pista->get($id, [
-            'contain' => []
-        ]);
-
-        $this->set('pistum', $pistum);
-    }
-
-    /**
      * Add method
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
-        $pistum = $this->Pista->newEntity();
+        $pista = $this->Pista->newEntity();
         if ($this->request->is('post')) {
-            $pistum = $this->Pista->patchEntity($pistum, $this->request->getData());
-            if ($this->Pista->save($pistum)) {
-                $this->Flash->success(__('The pistum has been saved.'));
+            $pista = $this->Pista->patchEntity($pista, $this->request->getData());
+            if ($this->Pista->save($pista)) {
+                $this->Flash->success(__('{0} creada con éxito.', __('Pista')));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The pistum could not be saved. Please, try again.'));
+            $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
         }
-        $this->set(compact('pistum'));
+        $this->set(compact('pista'));
     }
 
     /**
@@ -69,19 +69,17 @@ class PistaController extends AppController
      */
     public function edit($id = null)
     {
-        $pistum = $this->Pista->get($id, [
-            'contain' => []
-        ]);
+        $pista = $this->Pista->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $pistum = $this->Pista->patchEntity($pistum, $this->request->getData());
-            if ($this->Pista->save($pistum)) {
-                $this->Flash->success(__('The pistum has been saved.'));
+            $pista = $this->Pista->patchEntity($pista, $this->request->getData());
+            if ($this->Pista->save($pista)) {
+                $this->Flash->success(__('{0} editada con éxito.', [__('Pista')]));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The pistum could not be saved. Please, try again.'));
+            $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
         }
-        $this->set(compact('pistum'));
+        $this->set(compact('pista'));
     }
 
     /**
@@ -94,11 +92,11 @@ class PistaController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $pistum = $this->Pista->get($id);
-        if ($this->Pista->delete($pistum)) {
-            $this->Flash->success(__('The pistum has been deleted.'));
+        $pista = $this->Pista->get($id);
+        if ($this->Pista->delete($pista)) {
+            $this->Flash->success(__('{0} borrada con éxito.', __('Pista')));
         } else {
-            $this->Flash->error(__('The pistum could not be deleted. Please, try again.'));
+            $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
         }
 
         return $this->redirect(['action' => 'index']);

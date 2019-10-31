@@ -4,7 +4,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Pistum Entity
+ * Pista Entity
  *
  * @property int $id
  * @property string $tipoSuelo
@@ -12,7 +12,7 @@ use Cake\ORM\Entity;
  * @property string $localizacion
  * @property int $focos
  */
-class Pistum extends Entity
+class Pista extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().

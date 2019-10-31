@@ -522,3 +522,19 @@ table td {
     vertical-align: top;
     word-break: break-all;
 }
+
+.view-action-fa-icon {
+    color: #7575ff;
+}
+
+.add-action-fa-icon {
+    color: #00af00;
+}
+
+.edit-action-fa-icon {
+    color: #acac00;
+}
+
+.delete-action-fa-icon {
+    color: #cf0000;
+}
