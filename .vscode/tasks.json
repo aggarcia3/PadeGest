@@ -4,9 +4,47 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run CakePHP development webserver",
+            "label": "CakePHP development webserver",
             "type": "shell",
             "command": "bin/cake server -p 8765",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Complete check",
+            "type": "shell",
+            "command": "composer check",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": [
+                "$phpunit"
+            ]
+        },
+        {
+            "label": "Fix source formatting",
+            "type": "shell",
+            "command": "composer cs-fix",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
             "problemMatcher": []
         }
     ]
