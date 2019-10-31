@@ -15,7 +15,7 @@ class ReservaController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null
+     * @return void
      */
     public function index()
     {
@@ -28,7 +28,7 @@ class ReservaController extends AppController
      * View method
      *
      * @param string|null $id Reserva id.
-     * @return \Cake\Http\Response|null
+     * @return void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
