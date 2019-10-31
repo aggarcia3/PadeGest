@@ -21,15 +21,14 @@ class UsuarioController extends AppController
     public function index()
     {
         $usuario = $this->paginate($this->Usuario);
-
-        $this->set(compact('usuario'));
+        $this->set([ $usuario ]);
     }
 
     /**
      * Define las funcionalidades permitidas a usuarios no autenticados
      *
      * @param Event $event El evento ocurrido
-     * @return void
+     * @return \Cake\Http\Response|null
      */
     public function beforeFilter(Event $event)
     {
@@ -62,8 +61,7 @@ class UsuarioController extends AppController
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
             if ($this->Usuario->save($usuario)) {
                 $this->Flash->success(__('The usuario has been saved.'));
-
-                return $this->redirect(['action' => 'login']);
+                $this->redirect(['action' => 'login']);
             }
             $this->Flash->error(__('The usuario could not be saved. Please, try again.'));
         }

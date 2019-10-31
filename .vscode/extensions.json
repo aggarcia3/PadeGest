@@ -6,6 +6,7 @@
         "davidanson.vscode-markdownlint",
         "neilbrayfield.php-docblocker",
         "bmewburn.vscode-intelephense-client",
+        "valeryanm.vscode-phpsab",
         "breezelin.phpstan",
         "emallin.phpunit",
         "bajdzis.vscode-database"

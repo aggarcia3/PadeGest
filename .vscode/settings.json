@@ -1,15 +1,5 @@
 {
     "phpsab.snifferMode": "onType",
     "phpsab.standard": "vendor/cakephp/cakephp-codesniffer/CakePHP",
-    "sqltools.connections": [
-        {
-            "database": "PADEGEST",
-            "dialect": "MySQL",
-            "name": "PadeGest",
-            "password": "PadeGestApp",
-            "port": 3306,
-            "server": "localhost",
-            "username": "PadeGestApp"
-        }
-    ]
+    "phpstan.level": "5"
 }
