@@ -33,16 +33,16 @@ class UsuarioController extends AppController
     }
 
     public function login(){
-        $this->viewBuilder('login');
+        $this->viewBuilder();
         if($this->request->is(['post'])){
             $user = $this->Auth->identify();
-            debug($user);
+            var_dump($user);
         }
     }
 
 
     public function register(){
-        $this->viewBuilder('register');
+        $this->viewBuilder();
         $usuario = $this->Usuario->newEntity();
         if ($this->request->is('post')) {
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
