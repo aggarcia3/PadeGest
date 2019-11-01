@@ -17,7 +17,7 @@ $this->assign('title', __('Gestión de {0}', __('{{ pluralVar }}')));
         <li class="heading"><?= __('Acciones') ?></li>
         <li><?= $this->Html->link(
                 '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('{{ singularHumanName }}')),
-                ['action' => 'edit', $pista->id],
+                ['action' => 'edit', {{ pK|raw }}],
                 ['escapeTitle' => false]
             )
         ?></li>
