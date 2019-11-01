@@ -10,6 +10,7 @@
         "breezelin.phpstan",
         "emallin.phpunit",
         "mtxr.sqltools",
-        "kasik96.latte"
+        "kasik96.latte",
+        "felixfbecker.php-debug"
     ]
 }
