@@ -45,7 +45,7 @@ class PistaTable extends Table
     {
         $validator
             ->nonNegativeInteger('id')
-            ->allowEmptyString('id', null, ['create', 'update']);
+            ->allowEmptyString('id', null, true);
 
         $validator
             ->inList('tipoSuelo', ['césped', 'moqueta', 'hormigón', 'cemento'], __('Una pista solo puede tener un suelo de césped, de moqueta, de hormigón o de cemento.'))

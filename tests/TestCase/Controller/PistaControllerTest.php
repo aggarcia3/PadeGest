@@ -1,7 +1,7 @@
 <?php
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\PistaController;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -24,23 +24,37 @@ class PistaControllerTest extends TestCase
     ];
 
     /**
+     * Does initial setup for every test of this class
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->enableCsrfToken();
+
+        // Admin user stub
+        $this->session([
+            'Auth' => [
+                'User' => [
+                    'id' => 1,
+                    'username' => 'administrador',
+                    'rol' => 'administrador'
+                ]
+            ]
+        ]);
+    }
+
+    /**
      * Test index method
      *
      * @return void
      */
     public function testIndex()
     {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test view method
-     *
-     * @return void
-     */
-    public function testView()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->get(['controller' => 'pista']);
+        $this->assertResponseOk();
     }
 
     /**
@@ -50,7 +64,47 @@ class PistaControllerTest extends TestCase
      */
     public function testAdd()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->post('/pista/add', [
+            'tipoSuelo' => 'moqueta',
+            'tipoCerramiento' => 'cristal',
+            'localizacion' => 'exterior',
+            'focos' => '5'
+        ]);
+
+        // Test appropriate response
+        $this->assertFlashElement('Flash/success');
+        $this->assertRedirect(['controller' => 'pista']);
+
+        // Test that the entity persisted in the database
+        $entityRows = TableRegistry::getTableLocator()->get('pista')->find()->where([
+            'id' => '3'
+        ])->count();
+        $this->assertEquals(1, $entityRows);
+    }
+
+    /**
+     * Test add method with invalid data
+     *
+     * @return void
+     */
+    public function testAddInvalid()
+    {
+        $this->post('/pista/add', [
+            'id' => '10',
+            'tipoSuelo' => 'cielo',
+            'tipoCerramiento' => 'abierto',
+            'localizacion' => 'espacio',
+            'focos' => '-5'
+        ]);
+
+        // Test appropriate response
+        $this->assertResponseOk();
+
+        // Test that the entity did not persist in the database
+        $entityRows = TableRegistry::getTableLocator()->get('pista')->find()->where([
+            'id' => '10'
+        ])->count();
+        $this->assertEquals(0, $entityRows);
     }
 
     /**
@@ -60,7 +114,66 @@ class PistaControllerTest extends TestCase
      */
     public function testEdit()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->post('/pista/edit/1', [
+            'tipoSuelo' => 'moqueta',
+            'tipoCerramiento' => 'pared',
+            'localizacion' => 'interior',
+            'focos' => '0'
+        ]);
+
+        // Test appropriate response
+        $this->assertRedirect(['controller' => 'pista']);
+        $this->assertFlashElement('Flash/success');
+
+        // Test that the entity persisted in the database
+        $entityRows = TableRegistry::getTableLocator()->get('pista')->find()->where([
+            'id' => '1',
+            'tipoSuelo' => 'moqueta',
+            'tipoCerramiento' => 'pared',
+            'localizacion' => 'interior',
+            'focos' => '0'
+        ])->count();
+        $this->assertEquals(1, $entityRows);
+    }
+
+    /**
+     * Test edit method with invalid track data
+     *
+     * @return void
+     */
+    public function testEditInvalid()
+    {
+        $this->post('/pista/edit/1', [
+            'tipoSuelo' => 'cielo',
+            'tipoCerramiento' => 'abierto',
+            'localizacion' => 'espacio',
+            'focos' => '-5'
+        ]);
+
+        // Test appropriate response
+        $this->assertResponseOk();
+
+        // Test that the entity did not persist in the database
+        $entityRows = TableRegistry::getTableLocator()->get('pista')->find()->where([
+            'id' => '1',
+            'tipoSuelo' => 'cielo',
+            'tipoCerramiento' => 'abierto',
+            'localizacion' => 'espacio',
+            'focos' => '-5'
+        ])->count();
+        $this->assertEquals(0, $entityRows);
+    }
+
+    /**
+     * Test edit method of not existing track
+     *
+     * @return void
+     */
+    public function testEditInexistent()
+    {
+        $this->post('/pista/edit/27');
+
+        $this->assertResponseError();
     }
 
     /**
@@ -70,6 +183,21 @@ class PistaControllerTest extends TestCase
      */
     public function testDelete()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->post('/pista/delete/1');
+
+        $this->assertRedirect(['controller' => 'pista']);
+        $this->assertFlashElement('Flash/success');
+    }
+
+    /**
+     * Test delete method of not existing track
+     *
+     * @return void
+     */
+    public function testDeleteInvalid()
+    {
+        $this->post('/pista/delete/27');
+
+        $this->assertResponseError();
     }
 }

@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use Cake\Core\Configure;
 
 /**
  * Pista Controller
@@ -14,18 +13,14 @@ use Cake\Core\Configure;
 class PistaController extends AppController
 {
     /**
-     * Initializes the controller
+     * Checks whether the user is authorized to perform a request
      *
-     * @return void
+     * @param mixed $user The user to authenticate
+     * @return bool
      */
-    public function initialize()
+    public function isAuthorized($user = [])
     {
-        parent::initialize();
-
-        // Allow not logged in users to use this controller in debug mode
-        if (Configure::read('debug')) {
-            $this->Auth->allow(['index', 'view', 'add', 'edit', 'delete']);
-        }
+        return $user['rol'] === 'administrador';
     }
 
     /**
