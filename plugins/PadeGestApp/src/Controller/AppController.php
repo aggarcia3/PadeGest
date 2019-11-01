@@ -1,0 +1,9 @@
+<?php
+
+namespace PadeGestApp\Controller;
+
+use App\Controller\AppController as BaseController;
+
+class AppController extends BaseController
+{
+}

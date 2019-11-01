@@ -1,0 +1,110 @@
+<?php
+/**
+ * @var \{{ namespace }}\View\AppView $this
+ * @var \{{ entityClass }}[]|\Cake\Collection\CollectionInterface ${{ pluralVar }}
+ */
+
+// Page title
+$this->assign('title', __('Gestión de {0}', __('{{ pluralVar }}')));
+?>
+{% set fields = Bake.filterFields(fields, schema, modelObject, indexColumns, ['binary', 'text']) %}
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading"><?= __('Acciones') ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('{{ singularHumanName }}')),
+                ['action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+{% set done = [] %}
+{% for type, data in associations %}
+{% for alias, details in data %}
+{% if details.navLink and details.controller is not same as(_view.name) and details.controller not in done %}
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('{{ alias|underscore|humanize }}')),
+                ['controller' => '{{ details.controller }}', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('{{ alias|underscore|singularize|humanize }}')),
+                ['controller' => '{{ details.controller }}', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+{% set done = done|merge([details.controller]) %}
+{% endif %}
+{% endfor %}
+{% endfor %}
+    </ul>
+</nav>
+<div class="{{ pluralVar }} index large-9 medium-8 columns content">
+    <h3><?= __('{{ pluralHumanName }}') ?></h3>
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+{% for field in fields %}
+                <th scope="col"><?= $this->Paginator->sort('{{ field }}') ?></th>
+{% endfor %}
+                <th scope="col" class="actions"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach (${{ pluralVar }} as ${{ singularVar }}): ?>
+            <tr>
+{% for field in fields %}
+{% set isKey = false %}
+{% if associations.BelongsTo %}
+{% for alias, details in associations.BelongsTo if field == details.foreignKey %}
+{% set isKey = true %}
+                <td><?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?></td>
+{% endfor %}
+{% endif %}
+{% if isKey is not same as(true) %}
+{% set columnData = Bake.columnData(field, schema) %}
+{% if columnData.type not in ['integer', 'float', 'decimal', 'biginteger', 'smallinteger', 'tinyinteger'] %}
+                <td><?= h(${{ singularVar }}->{{ field }}) ?></td>
+{% else %}
+                <td><?= $this->Number->format(${{ singularVar }}->{{ field }}) ?></td>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% set pk = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}
+                <td class="actions">
+                    <?= $this->Html->link(
+                            '<i class="fas fa-eye view-action-fa-icon"></i>',
+                            ['action' => 'view', {{ pk|raw }}],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Html->link(
+                            '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
+                            ['action' => 'edit', {{ pk|raw }}],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Form->postLink(
+                            '<i class="fas fa-minus-square delete-action-fa-icon"></i>',
+                            ['action' => 'delete', {{ pk|raw }}],
+                            ['escapeTitle' => false, 'confirm' =>
+                                __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la {{ singularVar }} número {0}', {{ pk|raw }})])
+                            ]
+                        )
+                    ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <div class="paginator">
+        <ul class="pagination">
+            <?= $this->Paginator->first('<i class="fas fa-angle-double-left"></i>', ['escape' => false]) ?>
+            <?= $this->Paginator->prev('<i class="fas fa-angle-left"></i>', ['escape' => false]) ?>
+            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->next('<i class="fas fa-angle-right"></i>', ['escape' => false]) ?>
+            <?= $this->Paginator->last('<i class="fas fa-angle-double-right"></i>', ['escape' => false]) ?>
+        </ul>
+        <p><?= $this->Paginator->counter(['format' => __('Viendo {{ '{{' }}current{{ '}}' }} de {{ '{{' }}count{{ '}}' }} ') . __('{0,plural,=0{${{ pluralVar }}}=1{${{ singularVar }}} other{${{ pluralVar }}}}', [count(${{ pluralVar }})])]) ?></p>
+    </div>
+</div>

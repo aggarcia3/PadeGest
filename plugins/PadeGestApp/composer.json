@@ -1,0 +1,23 @@
+{
+    "name": "aggarcia3/PadeGestApp",
+    "description": "PadeGestApp plugin",
+    "type": "cakephp-plugin",
+    "license": "GPL3",
+    "require": {
+        "cakephp/cakephp": "^3.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7.14|^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PadeGestApp\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PadeGestApp\\Test\\": "tests/",
+            "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
+        }
+    }
+}
