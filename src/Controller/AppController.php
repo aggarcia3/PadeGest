@@ -15,6 +15,7 @@
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 
 /**
@@ -44,9 +45,9 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
+
         $this->loadComponent('Flash');
 
-        //Componente que carga un formulario de login
         $this->loadComponent('Auth', [
             'loginAction' => [
                 'controller' => 'Usuario',
@@ -61,6 +62,10 @@ class AppController extends Controller
             ],
             'storage' => 'Session'
         ]);
+
+        if (Configure::read('skipAuth')) {
+            $this->Auth->allow();
+        }
 
         /*
          * Enable the following component for recommended CakePHP security settings.
