@@ -9,8 +9,8 @@
         "valeryanm.vscode-phpsab",
         "breezelin.phpstan",
         "emallin.phpunit",
-        "mtxr.sqltools",
         "kasik96.latte",
-        "felixfbecker.php-debug"
+        "felixfbecker.php-debug",
+        "timonwong.shellcheck"
     ]
 }
