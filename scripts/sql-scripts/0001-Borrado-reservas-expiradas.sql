@@ -1,9 +1,6 @@
--- -----------------------------------------------------
--- Event `limpieza_reservas_expiradas`
--- -----------------------------------------------------
 DROP EVENT IF EXISTS `PADEGEST`.`limpieza_reservas_expiradas`;
 
-DELIMITER }
+DELIMITER $$
 CREATE EVENT `PADEGEST`.`limpieza_reservas_expiradas`
 	ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP
     ON COMPLETION NOT PRESERVE
@@ -13,5 +10,5 @@ CREATE EVENT `PADEGEST`.`limpieza_reservas_expiradas`
 		DELETE LOW_PRIORITY
 			FROM `PADEGEST`.`reserva`
 			WHERE ADDTIME(`fecha`, duracion) <= NOW();
-	END}
+	END$$
 DELIMITER ;
