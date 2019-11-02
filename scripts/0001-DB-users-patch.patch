@@ -1,0 +1,17 @@
+--- "BD PadeGest.sql"	2019-11-02 15:53:00.701879600 +0100
++++ "BD PadeGest.sql.new"	2019-11-02 15:54:10.186539500 +0100
+@@ -331,8 +331,9 @@ ENGINE = InnoDB;
+ 
+-SET SQL_MODE = '';
+-DROP USER IF EXISTS PadeGestApp;
+-SET SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+-CREATE USER 'PadeGestApp' IDENTIFIED BY 'PadeGestApp';
++-- -----------------------------------------------------
++-- Users
++-- -----------------------------------------------------
++DROP USER IF EXISTS 'PadeGestApp'@'localhost';
++CREATE USER IF NOT EXISTS 'PadeGestApp'@'localhost' IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
+ 
+-GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp';
++GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp'@'localhost';
+ 
