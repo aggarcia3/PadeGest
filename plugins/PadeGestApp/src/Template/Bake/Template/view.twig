@@ -64,7 +64,7 @@ $this->assign('title', __('Gestión de {0}', __('{{ pluralVar }}')));
     </ul>
 </nav>
 <div class="{{ pluralVar }} view large-9 medium-8 columns content">
-    <h3><?= h(${{ singularVar }}->{{ displayField }}) ?></h3>
+    <h3><?= __('Detalles de la {0}', __('{{ singularVar }}')) . ' ' . h(${{ singularVar }}->{{ displayField }}) ?></h3>
     <table class="vertical-table">
 {% if groupedFields['string'] %}
 {% for field in groupedFields['string'] %}
