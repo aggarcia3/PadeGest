@@ -9,14 +9,20 @@
     <fieldset>
         <legend><?= __('Add Usuario') ?></legend>
         <?php
-            echo $this->Form->control('id');
-            echo $this->Form->control('login');
+            echo $this->Form->control('username');
             echo $this->Form->control('password');
             echo $this->Form->control('nombre');
             echo $this->Form->control('apellidos');
-            echo $this->Form->control('genero');
-            echo $this->Form->control('esSocio');
-            echo $this->Form->control('rol');
+            echo $this->Form->label('Genero');
+            echo $this->Form->select('genero', [
+                'masculino' => 'Masculino',
+                'femenino' => 'Femenino'
+            ]);
+            echo $this->Form->label('Socio');
+            echo $this->Form->select('esSocio', [
+                0 => 'Si',
+                1 => 'No'
+            ]);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
