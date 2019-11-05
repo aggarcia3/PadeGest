@@ -1,5 +1,5 @@
---- "BD PadeGest.sql"	2019-11-05 16:11:07.454468100 +0100
-+++ "BD PadeGest.sql.new"	2019-11-05 16:13:24.505179300 +0100
+--- "BD PadeGest.sql"	2019-11-05 16:39:39.508895000 +0100
++++ "BD PadeGest.sql.new"	2019-11-05 16:40:47.979497200 +0100
 @@ -549,13 +549,10 @@ END$$
  DELIMITER ;
 -SET SQL_MODE = '';
@@ -11,7 +11,7 @@
 +-- User PadeGestApp
 +-- -----------------------------------------------------
 +DROP USER IF EXISTS 'PadeGestApp';
-+CREATE USER 'PadeGestApp' IDENTIFIED IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
++CREATE USER 'PadeGestApp' IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
  GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp';
  
 -SET SQL_MODE=@OLD_SQL_MODE;

@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 11 Nov 2019 16:14:26 CET
+-- Generated on 11 Nov 2019 16:42:20 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -552,7 +552,7 @@ DELIMITER ;
 -- User PadeGestApp
 -- -----------------------------------------------------
 DROP USER IF EXISTS 'PadeGestApp';
-CREATE USER 'PadeGestApp' IDENTIFIED IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
+CREATE USER 'PadeGestApp' IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
 GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp';
 
 -- -----------------------------------------------------
