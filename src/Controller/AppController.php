@@ -56,9 +56,17 @@ class AppController extends Controller
             'authError' => __('Es necesario estar conectado para acceder a esa funcionalidad.'),
             'authenticate' => [
                 'Form' => [
-                    'userModel' => 'usuario',
-                    'fields' => ['username' => 'login', 'password' => 'password']
+                    'fields' => ['username' => 'username', 'password' => 'password'],
+                    'userModel' => 'Usuario'
                 ]
+            ],
+            'loginRedirect' => [
+                'controller' => 'Usuario',
+                'action' => 'index'
+            ],
+            'logoutRedirect' => [
+                'controller' => 'Usuario',
+                'action' => 'login',
             ],
             'storage' => 'Session'
         ]);

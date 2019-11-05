@@ -5,18 +5,48 @@
  */
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
+
+<?php if($this->request->session()->read('Auth.User.rol') == "deportista"){ ?>
+
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Partido Promocionado'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Usuario'), ['controller' => 'Usuario', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Usuario'), ['controller' => 'Usuario', 'action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('Partido Promocionados'), ['controller' => 'PartidoPromocionado', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Enfrentamientos Restantes'), ['controller' => 'Enfrentamiento', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Campeonatos'), ['controller' => 'Campeonato', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Reservas de Pistas'), ['controller' => 'Reserva', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Playoffs'), ['controller' => 'Playoffs', 'action' => 'index']) ?></li>
     </ul>
+
+
+<?php }else{ ?>  
+
+    <ul class="side-nav">
+        <li class="heading"><?= __('Actions') ?></li>
+        <li><?= $this->Html->link(__('Partido Promocionados'), ['controller' => 'PartidoPromocionado', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Enfrentamientos Restantes'), ['controller' => 'Enfrentamiento', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Campeonatos'), ['controller' => 'Campeonato', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Reservas de Pistas'), ['controller' => 'Reserva', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Playoffs'), ['controller' => 'Playoffs', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Usuarios'), ['controller' => 'Usuario', 'action' => 'listar']) ?></li>
+    </ul>
+
+<?php } ?> 
+    
 </nav>
+<div class="usuario index large-9 medium-8 columns content">
+</div>
 <div class="partidoPromocionado index large-9 medium-8 columns content">
     <h3><?= __('Partido Promocionado') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
+
+
+<?php if($this->request->session()->read('Auth.User.rol') == "administrador"){ ?>
+
+                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+
+<?php } ?>
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('fecha') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('idReserva') ?></th>
@@ -33,6 +63,13 @@
                     <?= $this->Html->link(__('View'), ['action' => 'view', $partidoPromocionado->id]) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $partidoPromocionado->id]) ?>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $partidoPromocionado->id], ['confirm' => __('Are you sure you want to delete # {0}?', $partidoPromocionado->id)]) ?>
+
+<?php if($this->request->session()->read('Auth.User.rol') == "deportista"){ ?>
+
+                    <?= $this->Form->postLink(__('Inscribirse'), ['action' => 'inscribirse', $partidoPromocionado->id]) ?>
+
+<?php } ?>
+
                 </td>
             </tr>
             <?php endforeach; ?>

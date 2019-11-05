@@ -5,17 +5,15 @@
  */
 ?>
 
-<div class="usuario form large-9 medium-8 columns content">
-    <?= $this->Form->create() ?>
+<div class="users form">
+<?= $this->Flash->render('auth') ?>
+<?= $this->Form->create() ?>
     <fieldset>
-        <legend><?= __('Login') ?></legend>
-        <?php
-            echo $this->Form->control('login');
-            echo $this->Form->control('password');
-        ?>
+        <legend><?= __('Please enter your username and password') ?></legend>
+        <?= $this->Form->input('username') ?>
+        <?= $this->Form->input('password') ?>
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
-
-    <a href="/usuario/register">aun no estas registrado?</a>
+<?= $this->Form->button(__('Login')); ?>
+<?= $this->Form->end() ?>
+<a href="/usuario/register">aun no te has registrado?</a>
 </div>

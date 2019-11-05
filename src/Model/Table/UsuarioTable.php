@@ -36,17 +36,6 @@ class UsuarioTable extends Table
         $this->setTable('usuario');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
-
-        $this->belongsToMany('PartidoPromocionado', [
-            'foreignKey' => 'usuario_id',
-            'targetForeignKey' => 'partido_promocionado_id',
-            'joinTable' => 'usuario_partido_promocionado'
-        ]);
-        $this->belongsToMany('Reserva', [
-            'foreignKey' => 'usuario_id',
-            'targetForeignKey' => 'reserva_id',
-            'joinTable' => 'usuario_reserva'
-        ]);
     }
 
     /**
@@ -62,11 +51,11 @@ class UsuarioTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->scalar('login')
-            ->maxLength('login', 32)
-            ->requirePresence('login', 'create')
-            ->notEmptyString('login')
-            ->add('login', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->scalar('username')
+            ->maxLength('username', 32)
+            ->requirePresence('username', 'create')
+            ->notEmptyString('username')
+            ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->scalar('password')
@@ -111,7 +100,7 @@ class UsuarioTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['login']));
+        $rules->add($rules->isUnique(['username']));
 
         return $rules;
     }

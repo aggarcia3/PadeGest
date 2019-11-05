@@ -18,7 +18,12 @@ class UsuarioController extends AppController
      *
      * @return void
      */
-    public function index()
+
+    public function index(){
+
+    }
+
+    public function listar()
     {
         $usuario = $this->paginate($this->Usuario);
         $this->set([ $usuario ]);
@@ -32,9 +37,8 @@ class UsuarioController extends AppController
      */
     public function beforeFilter(Event $event)
     {
-        $this->Auth->allow('register');
-
-        return parent::beforeFilter($event);
+        parent::beforeFilter($event);
+        $this->Auth->allow('register', 'logout', 'login');
     }
 
     /**
@@ -44,10 +48,24 @@ class UsuarioController extends AppController
      */
     public function login()
     {
-        if ($this->request->is(['post'])) {
-            $user = $this->Auth->identify();
-            var_dump($user);
-        }
+        if($this->Auth->user('id')){
+            $this->Flash->error(__('Ya estas registrado'));
+            return $this->redirect($this->Auth->redirectUrl());
+        }else{
+            if ($this->request->is('post')) {
+                $usuario = $this->Auth->identify();
+                if ($usuario) {
+                    $this->Auth->setUser($usuario);
+                    return $this->redirect($this->Auth->redirectUrl());
+                }
+                $this->Flash->error(__('Usuario o Contraseña invalidos, inténtalo de nuevo'));
+            }
+        }    
+    }
+
+    public function logout()
+    {
+        return $this->redirect($this->Auth->logout());
     }
 
     /**
@@ -58,13 +76,33 @@ class UsuarioController extends AppController
     public function register()
     {
         $usuario = $this->Usuario->newEntity();
+        $this->viewBuilder();
+        
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+            $data['rol'] = 'deportista';
+            $usuario = $this->Usuario->patchEntity($usuario, $data);
+            if ($this->Usuario->save($usuario)) {
+                $this->Flash->success(__('El usuario ha sigo registrado'));
+
+                return $this->redirect(['action' => 'login']);
+            }
+            $this->Flash->error(__('El usuario no se ha podido registrar, inténtalo de nuevo'));
+        }
+    }
+
+    public function add()
+    {
+        $usuario = $this->Usuario->newEntity();
+        $this->viewBuilder();
+        
         if ($this->request->is('post')) {
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
             if ($this->Usuario->save($usuario)) {
-                $this->Flash->success(__('The usuario has been saved.'));
-                $this->redirect(['action' => 'login']);
+                $this->Flash->success(__('El usuario ha sigo registrado'));
+                return $this->redirect(['action' => 'listar']);
             }
-            $this->Flash->error(__('The usuario could not be saved. Please, try again.'));
+            $this->Flash->error(__('El usuario no se ha podido registrar, inténtalo de nuevo'));
         }
     }
 
@@ -77,9 +115,7 @@ class UsuarioController extends AppController
      */
     public function view($id = null)
     {
-        $usuario = $this->Usuario->get($id, [
-            'contain' => ['PartidoPromocionado', 'Reserva']
-        ]);
+        $usuario = $this->Usuario->get($id);
 
         $this->set('usuario', $usuario);
     }
@@ -93,21 +129,17 @@ class UsuarioController extends AppController
      */
     public function edit($id = null)
     {
-        $usuario = $this->Usuario->get($id, [
-            'contain' => ['PartidoPromocionado', 'Reserva']
-        ]);
+        $usuario = $this->Usuario->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
             if ($this->Usuario->save($usuario)) {
                 $this->Flash->success(__('The usuario has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'listar']);
             }
             $this->Flash->error(__('The usuario could not be saved. Please, try again.'));
         }
-        $partidoPromocionado = $this->Usuario->PartidoPromocionado->find('list', ['limit' => 200]);
-        $reserva = $this->Usuario->Reserva->find('list', ['limit' => 200]);
-        $this->set(compact('usuario', 'partidoPromocionado', 'reserva'));
+        $this->set(compact('usuario'));
     }
 
     /**
@@ -127,6 +159,6 @@ class UsuarioController extends AppController
             $this->Flash->error(__('The usuario could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'listar']);
     }
 }
