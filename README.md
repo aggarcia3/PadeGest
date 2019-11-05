@@ -67,7 +67,7 @@ Para ver los resultados de CI de una confirmación, observa la lista de "Commits
 ## Corregir que el DebugKit de CakePHP no se visualice
 El DebugKit de CakePHP es un menú desplegable con opciones de depuración bastante útiles, que aparece en la esquina inferior derecha de todas las páginas web de la aplicación, y debería de ser visible mientras esté activado el modo de depuración:
 
-![Icono de DebugKit](https://imgur.com/MOEloC5)
+![Icono de DebugKit](https://i.imgur.com/MOEloC5.png)
 
 Sin embargo, dependiendo de cómo esté configurado PHP en el sistema, este menú puede no aparecer, pues el componente necesita la extensión `pdo_sqlite` para funcionar en su configuración por defecto. La solución más sencilla a este problema relativamente común es añadir una entrada como la siguiente al archivo de configuración `php.ini`:
 
