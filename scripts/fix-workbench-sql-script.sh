@@ -27,7 +27,7 @@ if [ ! -f "../tests/$DB_SCRIPT_FILENAME" ] || [ ! -r "../tests/$DB_SCRIPT_FILENA
 fi
 
 # Check if the modifications look applied
-if { ! head -n 1 "../tests/$DB_SCRIPT_FILENAME" | grep -E -q -e '^--'; } && [ -z "$quiet" ]; then
+if [ "$(head -n 1 "../tests/$DB_SCRIPT_FILENAME")" = '-- -----------------------------------------------------' ] && [ -z "$quiet" ]; then
     printf "It seems that this script was already applied to %s. Continue anyway? (Y/N) " "$DB_SCRIPT_FILENAME"
 
     ttyConfig=$(stty -g)
@@ -75,5 +75,11 @@ printf '\n> Removing initial comments...\n'
     tail -n +6 "../tests/$DB_SCRIPT_FILENAME" > "$tmpFile"
     mv "$tmpFile" "../tests/$DB_SCRIPT_FILENAME"
 } || { echo '! Header removal unsuccessful, aborting script execution.' >&2; exit 2; }
+
+printf '\n> Adding custom initial comments...\n'
+{
+    printf -- '-- -----------------------------------------------------\n-- PadeGest application database\n-- For use by PadeGest\n-- Generated on %s\n-- -----------------------------------------------------\n' "$(LANG=en_US date '+%m %b %Y %T %Z')" | cat - "../tests/$DB_SCRIPT_FILENAME" > "$tmpFile"
+    mv "$tmpFile" "../tests/$DB_SCRIPT_FILENAME"
+} || { echo '! Header insertion unsuccessful, aborting script execution.' >&2; exit 3; }
 
 printf '\nDone.\n'

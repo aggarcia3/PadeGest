@@ -1,3 +1,6 @@
+-- -----------------------------------------------------
+-- Event `PADEGEST`.`limpieza_reservas_expiradas`
+-- -----------------------------------------------------
 DROP EVENT IF EXISTS `PADEGEST`.`limpieza_reservas_expiradas`;
 
 DELIMITER $$
