@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 11 Nov 2019 14:39:11 CET
+-- Generated on 11 Nov 2019 14:57:53 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -550,10 +550,10 @@ DELIMITER ;
 -- -----------------------------------------------------
 -- Users
 -- -----------------------------------------------------
-DROP USER IF EXISTS 'PadeGestApp'@'localhost';
-CREATE USER IF NOT EXISTS 'PadeGestApp'@'localhost' IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
+DROP USER IF EXISTS 'PadeGestApp';
+CREATE USER IF NOT EXISTS 'PadeGestApp' IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
 
-GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp'@'localhost';
+GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp';
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -871,13 +871,13 @@ DROP EVENT IF EXISTS `PADEGEST`.`limpieza_reservas_expiradas`;
 
 DELIMITER $$
 CREATE EVENT `PADEGEST`.`limpieza_reservas_expiradas`
-	ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP
+    ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP
     ON COMPLETION NOT PRESERVE
     DO BEGIN
-		DECLARE duracion TIME;
-		SELECT `duracionReservas` FROM `PADEGEST`.`configuracion` LIMIT 1 INTO duracion;
-		DELETE LOW_PRIORITY
-			FROM `PADEGEST`.`reserva`
-			WHERE ADDTIME(`fecha`, duracion) <= NOW();
-	END$$
+        DECLARE duracion TIME;
+        SELECT `duracionReservas` FROM `PADEGEST`.`configuracion` LIMIT 1 INTO duracion;
+        DELETE LOW_PRIORITY
+            FROM `PADEGEST`.`reserva`
+            WHERE ADDTIME(`fecha`, duracion) <= NOW();
+    END$$
 DELIMITER ;
