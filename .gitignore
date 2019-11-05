@@ -7,11 +7,8 @@
 /tmp/*
 /vendor/*
 
-# Patch files
-*.orig
-
-# Created by https://www.gitignore.io/api/linux,macos,windows,eclipse,netbeans,sublimetext,visualstudio,visualstudiocode,vim
-# Edit at https://www.gitignore.io/?templates=linux,macos,windows,eclipse,netbeans,sublimetext,visualstudio,visualstudiocode,vim
+# Created by https://www.gitignore.io/api/vim,linux,macos,patch,windows,eclipse,netbeans,sublimetext,visualstudio,visualstudiocode
+# Edit at https://www.gitignore.io/?templates=vim,linux,macos,patch,windows,eclipse,netbeans,sublimetext,visualstudio,visualstudiocode
 
 ### Eclipse ###
 .metadata
@@ -134,6 +131,10 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Patch ###
+*.orig
+*.rej
 
 ### SublimeText ###
 # Cache files for Sublime Text
@@ -572,4 +573,4 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
-# End of https://www.gitignore.io/api/linux,macos,windows,eclipse,netbeans,sublimetext,visualstudio,visualstudiocode,vim
+# End of https://www.gitignore.io/api/vim,linux,macos,patch,windows,eclipse,netbeans,sublimetext,visualstudio,visualstudiocode
