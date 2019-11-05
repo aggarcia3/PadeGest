@@ -1,11 +1,11 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 11 Nov 2019 16:42:20 CET
+-- Generated on 11 Nov 2019 18:58:55 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='';
 
 -- -----------------------------------------------------
 -- Schema PADEGEST
@@ -15,7 +15,7 @@ DROP SCHEMA IF EXISTS `PADEGEST` ;
 -- -----------------------------------------------------
 -- Schema PADEGEST
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `PADEGEST` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+CREATE SCHEMA IF NOT EXISTS `PADEGEST` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ;
 USE `PADEGEST` ;
 
 -- -----------------------------------------------------
@@ -25,16 +25,15 @@ DROP TABLE IF EXISTS `PADEGEST`.`usuario` ;
 
 CREATE TABLE IF NOT EXISTS `PADEGEST`.`usuario` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `login` VARCHAR(32) NOT NULL,
-  `password` CHAR(32) NOT NULL,
+  `username` VARCHAR(32) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
   `nombre` VARCHAR(50) NOT NULL,
   `apellidos` VARCHAR(50) NOT NULL,
   `genero` ENUM('masculino', 'femenino') NOT NULL,
-  `fechaNacimiento` DATE NOT NULL,
   `esSocio` TINYINT UNSIGNED NOT NULL DEFAULT 0,
   `rol` ENUM('deportista', 'administrador') NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `login_UNIQUE` (`login` ASC))
+  UNIQUE INDEX `login_UNIQUE` (`username` ASC))
 ENGINE = InnoDB;
 
 
@@ -560,36 +559,36 @@ GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, C
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (1, 'silvergorilla946', '640692641dc3dbd6362c7a66344de8b9', 'Nuria', 'García', 'femenino', '1972-07-27', 0, 'administrador');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (2, 'greencat609', 'f7802c6426e92dc6703e79b928905504', 'Luisa', 'Vega', 'femenino', '1997-05-01', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (3, 'organicfish174', '7ffaae67fd14ed82799775f8ed0786db', 'Susana', 'Soto', 'femenino', '1975-02-11', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (4, 'beautifultiger401', '40a658eb4a093d38b9b5e4169729a13b', 'Celia', 'Domínguez', 'femenino', '1988-01-12', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (5, 'greenladybug269', 'a06c8412cdbf80beacff001f3276cec0', 'Nicolás', 'Marín', 'masculino', '1982-07-27', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (6, 'organicdog654', '8a76977f63691b218a40f4cbf1987815', 'Daniel', 'Morales', 'masculino', '1989-03-12', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (7, 'bluepeacock966', '4dac8c9b3a3c4fd41d3c5c21c5f0e236', 'María', 'Antonia Iglesias', 'femenino', '1970-05-01', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (8, 'heavybutterfly345', '7f80110eb10e4b1ccc27d9a062a2302c', 'Manuel', 'Giménez', 'masculino', '1998-10-15', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (9, 'heavybutterfly377', '7530dffb2bbba483691329908b94df6c', 'Ignacio', 'Moya', 'masculino', '2000-11-16', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (10, 'happybutterfly909', '426700733faaed4ef78e1f0ea2849d5a', 'Ángeles', 'Núñez', 'femenino', '1970-01-01', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (11, 'yellowzebra924', 'dd410087bfda6e014e0dcf8a92532644', 'Natalia', 'Alonso', 'femenino', '1970-12-17', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (12, 'purplemouse320', '2fdb189f2ddc0870f8922e5e3c78bf28', 'María Teresa', 'Hidalgo', 'femenino', '1979-10-18', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (13, 'orangedog307', 'c48cb78bd24f39c625aa591c14f62eeb', 'Mario', 'Benítez', 'masculino', '1991-11-21', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (14, 'whitefish726', '70642510997ddb8b7aff459812ac9960', 'Rubén', 'Blanco', 'masculino', '1994-10-05', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (15, 'silvercat186', 'a65fbffde76764e3f2207649e03707e9', 'Concepción', 'Mora', 'femenino', '1971-08-09', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (16, 'beautifulgoose185', 'b39f9aedd0d29d535dcfb0c498db6f93', 'Marta', 'Alonso', 'femenino', '1982-02-16', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (17, 'tinygorilla203', 'a72443d8e2e3f6949e699d6dd0a9617d', 'María Angeles', 'Vázquez', 'femenino', '1974-08-11', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (18, 'tinytiger912', '9b12d358a0c3059cf7da15eb2c051655', 'Alicia', 'Peña', 'femenino', '1997-07-09', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (19, 'tinymeercat208', '34b0b61675eeabd40150fad0717cd8c5', 'Carolina', 'Martínez', 'femenino', '1990-10-27', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (20, 'silverbird807', '78bf8da1ff18b22408bb5ac3f70d9c33', 'Celia', 'Lorenzo', 'femenino', '1999-05-19', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (21, 'sadladybug879', '1603272b464d97b6af0c8d717b698211', 'Paula', 'Giménez', 'femenino', '1977-02-21', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (22, 'blueostrich272', 'c46a1f254b6fb6b07e4144e79df7a085', 'Marina', 'Ramírez', 'femenino', '1997-07-31', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (23, 'smallgorilla279', 'a0301897d78518ec185a2dcebeb82c59', 'Tomás', 'Gil', 'masculino', '1998-05-19', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (24, 'blueostrich184', 'd39c45ce3748e1fb0f9569be26d7735d', 'Antonia', 'Castillo', 'femenino', '2001-11-02', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (25, 'heavycat480', 'f7b02a4ae4736a6b2348f8312c5d46ce', 'Rubén', 'Bravo', 'masculino', '1979-09-05', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (26, 'greenfrog567', '49af884e1f5239a735620e611233e0ee', 'Rubén', 'Méndez', 'masculino', '1987-11-21', 0, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (27, 'whitebutterfly953', '3744a0e5839ecc55ea69ffdee3f39fa5', 'Ángela', 'Sáez', 'femenino', '1981-03-07', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (28, 'redcat927', '32fdc39a8da2bdb7a98dadcefc6c1e38', 'Felipe', 'Torres', 'masculino', '1974-06-13', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (29, 'sadgoose648', 'e2c20148ce95dd1163f6f3bd646e4baa', 'María Angeles', 'Giménez', 'femenino', '2001-02-25', 1, 'deportista');
-INSERT INTO `PADEGEST`.`usuario` (`id`, `login`, `password`, `nombre`, `apellidos`, `genero`, `fechaNacimiento`, `esSocio`, `rol`) VALUES (30, 'goldenpanda782', '969512f72ca38494a7d93d4e8a1ba4bb', 'Francisca', 'Carmona', 'femenino', '1994-01-12', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (1, 'silvergorilla946', '640692641dc3dbd6362c7a66344de8b9', 'Nuria', 'García', 'femenino', 0, 'administrador');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (2, 'greencat609', 'f7802c6426e92dc6703e79b928905504', 'Luisa', 'Vega', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (3, 'organicfish174', '7ffaae67fd14ed82799775f8ed0786db', 'Susana', 'Soto', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (4, 'beautifultiger401', '40a658eb4a093d38b9b5e4169729a13b', 'Celia', 'Domínguez', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (5, 'greenladybug269', 'a06c8412cdbf80beacff001f3276cec0', 'Nicolás', 'Marín', 'masculino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (6, 'organicdog654', '8a76977f63691b218a40f4cbf1987815', 'Daniel', 'Morales', 'masculino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (7, 'bluepeacock966', '4dac8c9b3a3c4fd41d3c5c21c5f0e236', 'María', 'Antonia Iglesias', 'femenino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (8, 'heavybutterfly345', '7f80110eb10e4b1ccc27d9a062a2302c', 'Manuel', 'Giménez', 'masculino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (9, 'heavybutterfly377', '7530dffb2bbba483691329908b94df6c', 'Ignacio', 'Moya', 'masculino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (10, 'happybutterfly909', '426700733faaed4ef78e1f0ea2849d5a', 'Ángeles', 'Núñez', 'femenino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (11, 'yellowzebra924', 'dd410087bfda6e014e0dcf8a92532644', 'Natalia', 'Alonso', 'femenino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (12, 'purplemouse320', '2fdb189f2ddc0870f8922e5e3c78bf28', 'María Teresa', 'Hidalgo', 'femenino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (13, 'orangedog307', 'c48cb78bd24f39c625aa591c14f62eeb', 'Mario', 'Benítez', 'masculino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (14, 'whitefish726', '70642510997ddb8b7aff459812ac9960', 'Rubén', 'Blanco', 'masculino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (15, 'silvercat186', 'a65fbffde76764e3f2207649e03707e9', 'Concepción', 'Mora', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (16, 'beautifulgoose185', 'b39f9aedd0d29d535dcfb0c498db6f93', 'Marta', 'Alonso', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (17, 'tinygorilla203', 'a72443d8e2e3f6949e699d6dd0a9617d', 'María Angeles', 'Vázquez', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (18, 'tinytiger912', '9b12d358a0c3059cf7da15eb2c051655', 'Alicia', 'Peña', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (19, 'tinymeercat208', '34b0b61675eeabd40150fad0717cd8c5', 'Carolina', 'Martínez', 'femenino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (20, 'silverbird807', '78bf8da1ff18b22408bb5ac3f70d9c33', 'Celia', 'Lorenzo', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (21, 'sadladybug879', '1603272b464d97b6af0c8d717b698211', 'Paula', 'Giménez', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (22, 'blueostrich272', 'c46a1f254b6fb6b07e4144e79df7a085', 'Marina', 'Ramírez', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (23, 'smallgorilla279', 'a0301897d78518ec185a2dcebeb82c59', 'Tomás', 'Gil', 'masculino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (24, 'blueostrich184', 'd39c45ce3748e1fb0f9569be26d7735d', 'Antonia', 'Castillo', 'femenino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (25, 'heavycat480', 'f7b02a4ae4736a6b2348f8312c5d46ce', 'Rubén', 'Bravo', 'masculino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (26, 'greenfrog567', '49af884e1f5239a735620e611233e0ee', 'Rubén', 'Méndez', 'masculino', 0, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (27, 'whitebutterfly953', '3744a0e5839ecc55ea69ffdee3f39fa5', 'Ángela', 'Sáez', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (28, 'redcat927', '32fdc39a8da2bdb7a98dadcefc6c1e38', 'Felipe', 'Torres', 'masculino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (29, 'sadgoose648', 'e2c20148ce95dd1163f6f3bd646e4baa', 'María Angeles', 'Giménez', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (30, 'goldenpanda782', '969512f72ca38494a7d93d4e8a1ba4bb', 'Francisca', 'Carmona', 'femenino', 1, 'deportista');
 
 COMMIT;
 
