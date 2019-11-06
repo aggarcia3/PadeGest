@@ -559,8 +559,6 @@ INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apell
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (29, 'sadgoose648', 'e2c20148ce95dd1163f6f3bd646e4baa', 'María Angeles', 'Giménez', 'femenino', 1, 'deportista');
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (30, 'goldenpanda782', '969512f72ca38494a7d93d4e8a1ba4bb', 'Francisca', 'Carmona', 'femenino', 1, 'deportista');
 
-COMMIT;
-
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`pista`
