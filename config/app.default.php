@@ -75,7 +75,10 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '__SALT__'),
+        // TODO: antes de que la aplicación se use en producción,
+        // descomentar la generación de un salt aleatorio y no vacío.
+        // Véase el TODO relacionado en AppController.php
+        'salt' => ''/*env('SECURITY_SALT', '__SALT__')*/,
     ],
 
     /**
@@ -378,5 +381,7 @@ return [
      */
     'Session' => [
         'defaults' => 'php',
+        'cookie' => 'PADEGEST',
+        'timeout' => '60'
     ],
 ];

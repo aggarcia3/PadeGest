@@ -16,7 +16,6 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Event\Event;
 
 /**
  * Application Controller
@@ -28,7 +27,6 @@ use Cake\Event\Event;
  */
 class AppController extends Controller
 {
-
     /**
      * Initialization hook method.
      *
@@ -53,13 +51,19 @@ class AppController extends Controller
                 'controller' => 'Usuario',
                 'action' => 'login'
             ],
-            'authError' => __('Es necesario estar conectado para acceder a esa funcionalidad.'),
+            'authError' => __('No tienes los permisos necesarios para acceder a ese recurso.'),
             'authenticate' => [
                 'Form' => [
                     'fields' => ['username' => 'username', 'password' => 'password'],
-                    'userModel' => 'Usuario'
+                    'userModel' => 'Usuario',
+                    // TODO: antes de que la aplicación se use en producción, hay que reemplazar esto por
+                    // un algoritmo de resumen más seguro, como Cake\Auth\DefaultPasswordHasher.
+                    // Por ahora, se usa un algoritmo intencionadamente débil para acelerar la generación
+                    // de datos de prueba y demostraciones
+                    'passwordHasher' => ['className' => 'Weak', 'hashType' => 'md5']
                 ]
             ],
+            'authorize' => ['Controller'],
             'loginRedirect' => [
                 'controller' => 'Usuario',
                 'action' => 'index'
