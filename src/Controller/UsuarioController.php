@@ -75,7 +75,7 @@ class UsuarioController extends AppController
         if ($this->Auth->user() !== null) {
             $this->Flash->success(__('Ya estás conectado como {0}.', $this->Auth->user('username')));
 
-            $this->redirect($this->referer(['controller' => $this->getName(), 'action' => 'index' ], true));
+            $this->redirect($this->referer(['controller' => $this->getName(), 'action' => 'index'], true));
         } elseif ($this->request->is('post')) {
             $usuario = $this->Auth->identify();
             if ($usuario) {
