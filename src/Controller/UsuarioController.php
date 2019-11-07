@@ -19,14 +19,19 @@ class UsuarioController extends AppController
      * @return void
      */
 
+
     public function index(){
 
     }
 
     public function listar()
     {
-        $usuario = $this->paginate($this->Usuario);
-        $this->set([ $usuario ]);
+        if($this->request->session()->read('Auth.User.rol') == "administrador"){
+            $usuario = $this->paginate($this->Usuario);
+            $this->set('usuario', $usuario);
+        }else{
+            $this->logout();
+        }
     }
 
     /**

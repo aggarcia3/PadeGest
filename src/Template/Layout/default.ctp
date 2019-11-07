@@ -25,8 +25,10 @@
     </title>
     <?= $this->Html->meta('icon') ?>
 
-    <?= $this->Html->css('base.css') ?>
-    <?= $this->Html->css('style.css') ?>
+    <?= $this->Html->css('base') ?>
+    <?= $this->Html->css('style') ?>
+    <?= $this->Html->css('bootstrap.min') ?>
+    <?= $this->Html->script(['bootstrap.min', 'jquery-2.2.4.min']) ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -36,7 +38,7 @@
     <nav class="top-bar expanded" data-topbar role="navigation">
         <ul class="title-area large-3 medium-4 columns">
             <li class="name">
-                <h1><a href="#">Padegest</a></h1>
+                <h1><a href="/usuario/index">Padegest</a></h1>
             </li>
         </ul>
         <div class="top-bar-section">

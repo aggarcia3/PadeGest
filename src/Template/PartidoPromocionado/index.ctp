@@ -36,7 +36,7 @@
 <div class="usuario index large-9 medium-8 columns content">
 </div>
 <div class="partidoPromocionado index large-9 medium-8 columns content">
-    <h3><?= __('Partido Promocionado') ?></h3>
+    <h3><?= __('Partido Promocionado') ?><em> </em><a href="/partido-promocionado/add">Añadir</a></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
@@ -45,30 +45,40 @@
 <?php if($this->request->session()->read('Auth.User.rol') == "administrador"){ ?>
 
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('idReserva') ?></th>
 
 <?php } ?>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('fecha') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('idReserva') ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($partidoPromocionado as $partidoPromocionado): ?>
             <tr>
-                <td><?= $this->Number->format($partidoPromocionado->id) ?></td>
+
+<?php if($this->request->session()->read('Auth.User.rol') == "administrador"){ ?>
+
+                    <td><?= $this->Number->format($partidoPromocionado->id) ?></td>
+                    <td><?= $this->Number->format($partidoPromocionado->idReserva) ?></td>
+
+<?php } ?>
+                
+                <td><?= h($partidoPromocionado->nombre) ?></td>
                 <td><?= h($partidoPromocionado->fecha) ?></td>
-                <td><?= $this->Number->format($partidoPromocionado->idReserva) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $partidoPromocionado->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $partidoPromocionado->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $partidoPromocionado->id], ['confirm' => __('Are you sure you want to delete # {0}?', $partidoPromocionado->id)]) ?>
 
 <?php if($this->request->session()->read('Auth.User.rol') == "deportista"){ ?>
 
                     <?= $this->Form->postLink(__('Inscribirse'), ['action' => 'inscribirse', $partidoPromocionado->id]) ?>
 
-<?php } ?>
+<?php } else { ?>
+
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>', ['action' => 'view', $partidoPromocionado->id], ['escapeTitle' => false]) ?>
+                    <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $partidoPromocionado->id], ['escapeTitle' => false]) ?>
+                    <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $partidoPromocionado->id], ['escapeTitle' => false, 'confirm' => __('¿Quieres eliminar el Partido Promocionado "{0}"?', $partidoPromocionado->nombre)]) ?>
+
+<?php }  ?>
 
                 </td>
             </tr>

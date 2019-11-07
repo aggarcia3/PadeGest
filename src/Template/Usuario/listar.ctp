@@ -37,12 +37,12 @@
                 <td><?= h($usuario->nombre) ?></td>
                 <td><?= h($usuario->apellidos) ?></td>
                 <td><?= h($usuario->genero) ?></td>
-                <td><?= $this->Number->format($usuario->esSocio) ?></td>
+                <td><?php echo ((h($usuario->esSocio) == 1 ) ? "Si" :  "No"); ?></td>
                 <td><?= h($usuario->rol) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $usuario->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $usuario->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $usuario->id], ['confirm' => __('Are you sure you want to delete # {0}?', $usuario->id)]) ?>
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['action' => 'view', $usuario->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $usuario->id], ['escapeTitle' => false]) ?>
+                    <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $usuario->id], ['escapeTitle' => false, 'confirm' => __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('el usuario {0}', $usuario->username)])]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

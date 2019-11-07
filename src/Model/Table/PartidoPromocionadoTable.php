@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 /**
  * PartidoPromocionado Model
  *
+ * @property &\Cake\ORM\Association\BelongsTo $Reserva
  * @property \App\Model\Table\UsuarioTable&\Cake\ORM\Association\BelongsToMany $Usuario
  *
  * @method \App\Model\Entity\PartidoPromocionado get($primaryKey, $options = [])
@@ -36,6 +37,9 @@ class PartidoPromocionadoTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->belongsTo('Reserva', [
+            'foreignKey' => 'reserva_id'
+        ]);
         $this->belongsToMany('Usuario', [
             'foreignKey' => 'partido_promocionado_id',
             'targetForeignKey' => 'usuario_id',
@@ -56,14 +60,32 @@ class PartidoPromocionadoTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
+            ->scalar('nombre')
+            ->maxLength('nombre', 45)
+            ->requirePresence('nombre', 'create')
+            ->notEmptyString('nombre')
+            ->add('nombre', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+
+        $validator
             ->dateTime('fecha')
             ->requirePresence('fecha', 'create')
             ->notEmptyDateTime('fecha');
 
-        $validator
-            ->nonNegativeInteger('idReserva')
-            ->allowEmptyString('idReserva');
-
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->isUnique(['nombre']));
+        $rules->add($rules->existsIn(['reserva_id'], 'Reserva'));
+
+        return $rules;
     }
 }

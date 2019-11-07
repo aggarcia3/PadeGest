@@ -15,10 +15,13 @@ class UsuarioPartidoPromocionadoController extends AppController
     /**
      * Index method
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
+        $this->paginate = [
+            'contain' => ['Usuario', 'PartidoPromocionado']
+        ];
         $usuarioPartidoPromocionado = $this->paginate($this->UsuarioPartidoPromocionado);
 
         $this->set(compact('usuarioPartidoPromocionado'));
@@ -28,15 +31,14 @@ class UsuarioPartidoPromocionadoController extends AppController
      * View method
      *
      * @param string|null $id Usuario Partido Promocionado id.
-     * @return void
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->get($id, [
-            'contain' => []
+            'contain' => ['Usuario', 'PartidoPromocionado']
         ]);
-
         $this->set('usuarioPartidoPromocionado', $usuarioPartidoPromocionado);
     }
 
@@ -49,15 +51,55 @@ class UsuarioPartidoPromocionadoController extends AppController
     {
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->newEntity();
         if ($this->request->is('post')) {
-            $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->patchEntity($usuarioPartidoPromocionado, $this->request->getData());
-            if ($this->UsuarioPartidoPromocionado->save($usuarioPartidoPromocionado)) {
-                $this->Flash->success(__('The usuario partido promocionado has been saved.'));
+            $data = $this->request->getData();
+            $data['usuario_id'] = $this->request->session()->read('Auth.User.id');
 
-                return $this->redirect(['action' => 'index']);
+            //se buscan y filtran todas las tuplas que tengan como id el enviado en el formulario
+            $sitios = $this->UsuarioPartidoPromocionado->find('all');
+            $sitiosFiltrado = $sitios->where(['partido_promocionado_id' => $data['partido_promocionado_id']]);
+            $reservas = 0;
+            foreach ($sitios as $sitios) {
+                $reservas++;
             }
-            $this->Flash->error(__('The usuario partido promocionado could not be saved. Please, try again.'));
+
+
+            $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->patchEntity($usuarioPartidoPromocionado, $data);
+            if ($this->UsuarioPartidoPromocionado->save($usuarioPartidoPromocionado) && $reservas <=4) {
+                $this->Flash->success(__('Te has inscrito correctamente'));
+
+                //Otra vez, se buscan y filtran todas las tuplas que tengan como id el enviado en el formulario para si es = 4 crear una reserva
+                $sitios = $this->UsuarioPartidoPromocionado->find('all');
+                $sitiosFiltrado = $sitios->where(['partido_promocionado_id' => $data['partido_promocionado_id']]);
+                $reservas = 0;
+                foreach ($sitios as $sitios) {
+                    $reservas++;
+                }  
+
+                if( $reservas == 4){
+                    $this->Flash->error(__('Se crea reserva'));
+
+                    /*
+                    
+                    LLAMAR A FUNCIÓN CREAR RESERVA
+                    
+                    */
+                }
+
+                return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);
+            }
+        
+            if($reservas > 4){
+                $this->Flash->error(__('Ya está lleno el partido'));
+            }else{
+                $this->Flash->error(__('No te has podido inscribir, inténtalo de nuevo'));
+            }
+            return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);   
+
+
         }
-        $this->set(compact('usuarioPartidoPromocionado'));
+        $usuario = $this->UsuarioPartidoPromocionado->Usuario->find('list', ['limit' => 200]);
+        $partidoPromocionado = $this->UsuarioPartidoPromocionado->PartidoPromocionado->find('list', ['limit' => 200]);
+        $this->set(compact('usuarioPartidoPromocionado', 'usuario', 'partidoPromocionado'));
     }
 
     /**
@@ -81,7 +123,9 @@ class UsuarioPartidoPromocionadoController extends AppController
             }
             $this->Flash->error(__('The usuario partido promocionado could not be saved. Please, try again.'));
         }
-        $this->set(compact('usuarioPartidoPromocionado'));
+        $usuario = $this->UsuarioPartidoPromocionado->Usuario->find('list', ['limit' => 200]);
+        $partidoPromocionado = $this->UsuarioPartidoPromocionado->PartidoPromocionado->find('list', ['limit' => 200]);
+        $this->set(compact('usuarioPartidoPromocionado', 'usuario', 'partidoPromocionado'));
     }
 
     /**

@@ -22,18 +22,20 @@ class PartidoPromocionadoFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
+        'nombre' => ['type' => 'string', 'length' => 45, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_bin', 'comment' => '', 'precision' => null, 'fixed' => null],
         'fecha' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'idReserva' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'reserva_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         '_indexes' => [
-            'FK_PARTIDO_PROMOCIONADO_RESERVA' => ['type' => 'index', 'columns' => ['idReserva'], 'length' => []],
+            'FK_PARTIDO_PROMOCIONADO_RESERVA' => ['type' => 'index', 'columns' => ['reserva_id'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'FK_PARTIDO_PROMOCIONADO_RESERVA' => ['type' => 'foreign', 'columns' => ['idReserva'], 'references' => ['reserva', 'id'], 'update' => 'cascade', 'delete' => 'setNull', 'length' => []],
+            'nombre_UNIQUE' => ['type' => 'unique', 'columns' => ['nombre'], 'length' => []],
+            'FK_PARTIDO_PROMOCIONADO_RESERVA' => ['type' => 'foreign', 'columns' => ['reserva_id'], 'references' => ['reserva', 'id'], 'update' => 'cascade', 'delete' => 'setNull', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_bin'
+            'collation' => 'utf8mb4_bin'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -47,8 +49,9 @@ class PartidoPromocionadoFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'fecha' => '2019-10-30 16:22:32',
-                'idReserva' => 1
+                'nombre' => 'Lorem ipsum dolor sit amet',
+                'fecha' => '2019-11-06 19:47:20',
+                'reserva_id' => 1
             ],
         ];
         parent::init();

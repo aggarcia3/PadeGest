@@ -23,8 +23,7 @@ class PartidoPromocionadoTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.PartidoPromocionado',
-        'app.Usuario'
+        'app.PartidoPromocionado'
     ];
 
     /**
@@ -67,6 +66,16 @@ class PartidoPromocionadoTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
