@@ -9,6 +9,9 @@ use Cake\Validation\Validator;
 /**
  * UsuarioPartidoPromocionado Model
  *
+ * @property \App\Model\Table\UsuarioTable&\Cake\ORM\Association\BelongsTo $Usuario
+ * @property \App\Model\Table\PartidoPromocionadoTable&\Cake\ORM\Association\BelongsTo $PartidoPromocionado
+ *
  * @method \App\Model\Entity\UsuarioPartidoPromocionado get($primaryKey, $options = [])
  * @method \App\Model\Entity\UsuarioPartidoPromocionado newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\UsuarioPartidoPromocionado[] newEntities(array $data, array $options = [])
@@ -31,26 +34,31 @@ class UsuarioPartidoPromocionadoTable extends Table
         parent::initialize($config);
 
         $this->setTable('usuario_partido_promocionado');
-        $this->setDisplayField('idUsuario');
-        $this->setPrimaryKey(['idUsuario', 'idPartidoPromocionado']);
+        $this->setDisplayField('usuario_id');
+        $this->setPrimaryKey(['usuario_id', 'partido_promocionado_id']);
+
+        $this->belongsTo('Usuario', [
+            'foreignKey' => 'usuario_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('PartidoPromocionado', [
+            'foreignKey' => 'partido_promocionado_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
-     * Default validation rules.
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
      */
-    public function validationDefault(Validator $validator)
+    public function buildRules(RulesChecker $rules)
     {
-        $validator
-            ->nonNegativeInteger('idUsuario')
-            ->allowEmptyString('idUsuario', null, 'create');
+        $rules->add($rules->existsIn(['usuario_id'], 'Usuario'));
+        $rules->add($rules->existsIn(['partido_promocionado_id'], 'PartidoPromocionado'));
 
-        $validator
-            ->nonNegativeInteger('idPartidoPromocionado')
-            ->allowEmptyString('idPartidoPromocionado', null, 'create');
-
-        return $validator;
+        return $rules;
     }
 }

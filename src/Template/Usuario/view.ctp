@@ -35,7 +35,7 @@
         </tr>
         <tr>
             <th scope="row"><?= __('EsSocio') ?></th>
-            <td><?= $this->Number->format($usuario->esSocio) ?></td>
+            <td><?php echo ((h($usuario->esSocio) == 1 ) ? "Si" :  "No"); ?></td>
         </tr>
     </table>
 </div>

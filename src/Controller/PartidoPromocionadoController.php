@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\I18n\Time;
 
 /**
  * PartidoPromocionado Controller
@@ -10,6 +11,8 @@ use App\Controller\AppController;
  *
  * @method \App\Model\Entity\PartidoPromocionado[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
+Time::setDefaultLocale('es-ES');
+Time::setToStringFormat('yyyy-MM-dd HH:mm:ss');
 class PartidoPromocionadoController extends AppController
 {
     /**
@@ -36,7 +39,14 @@ class PartidoPromocionadoController extends AppController
         $partidoPromocionado = $this->PartidoPromocionado->get($id, [
             'contain' => ['Usuario']
         ]);
+        $this->set('partidoPromocionado', $partidoPromocionado);
+    }
 
+    public function inscribirse($id = null)
+    {
+        $partidoPromocionado = $this->PartidoPromocionado->get($id, [
+            'contain' => ['Usuario']
+        ]);
         $this->set('partidoPromocionado', $partidoPromocionado);
     }
 
@@ -48,8 +58,15 @@ class PartidoPromocionadoController extends AppController
     public function add()
     {
         $partidoPromocionado = $this->PartidoPromocionado->newEntity();
+
         if ($this->request->is('post')) {
-            $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $this->request->getData());
+            $data = $this->request->getData();
+            $fecha = $data['fecha'].' '.$data['hora'].':00';
+            unset($data['hora']);
+            $data['fecha'] = new Time($fecha);
+            $data['reserva_id'] = null;
+            debug($data);
+            $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $data);
             if ($this->PartidoPromocionado->save($partidoPromocionado)) {
                 $this->Flash->success(__('The partido promocionado has been saved.'));
 
@@ -57,10 +74,8 @@ class PartidoPromocionadoController extends AppController
             }
             $this->Flash->error(__('The partido promocionado could not be saved. Please, try again.'));
         }
-        $usuario = $this->PartidoPromocionado->Usuario->find('list', ['limit' => 200]);
-        $this->set(compact('partidoPromocionado', 'usuario'));
+        $this->set(compact('partidoPromocionado'));
     }
-
     /**
      * Edit method
      *

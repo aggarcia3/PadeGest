@@ -20,7 +20,9 @@ class UsuarioPartidoPromocionadoControllerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.UsuarioPartidoPromocionado'
+        'app.UsuarioPartidoPromocionado',
+        'app.Usuario',
+        'app.PartidoPromocionado'
     ];
 
     /**

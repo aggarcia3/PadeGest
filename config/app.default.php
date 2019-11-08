@@ -75,7 +75,10 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '__SALT__'),
+        // TODO: antes de que la aplicación se use en producción,
+        // descomentar la generación de un salt aleatorio y no vacío.
+        // Véase el TODO relacionado en AppController.php
+        'salt' => ''/*env('SECURITY_SALT', '__SALT__')*/,
     ],
 
     /**
@@ -250,9 +253,9 @@ return [
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
              * the following line and set the port accordingly
              */
-            //'port' => 'non_standard_port_number',
-            'username' => 'PadeGestApp',
-            'password' => 'PadeGestApp',
+            'port' => '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock:3306',
+            'username' => 'root',
+            'password' => '',
             'database' => 'PADEGEST',
             /*
              * You do not need to set this flag to use full utf-8 encoding (internal default since CakePHP 3.6).
@@ -378,5 +381,7 @@ return [
      */
     'Session' => [
         'defaults' => 'php',
+        'cookie' => 'PADEGEST',
+        'timeout' => '60'
     ],
 ];

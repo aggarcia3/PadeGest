@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use Cake\Event\Event;
 
 /**
  * Usuario Controller
@@ -14,55 +13,86 @@ use Cake\Event\Event;
 class UsuarioController extends AppController
 {
     /**
+     * Código de inicialización del controlador
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->Auth->allow(['login', 'register']);
+    }
+
+    /**
+     * Comprueba que el usuario conectado tenga los privilegios suficientes para interactuar
+     * con este controlador. Este método no se invoca para usuarios no conectados: en ese caso,
+     * las restricciones por defecto especificadas con el método allow de AuthComponent se aplican
+     * exclusivamente.
+     *
+     * @param array|\ArrayAccess $user El usuario conectado.
+     * @return bool Verdadero si se le debe de conceder acceso a la acción al usuario, falso en
+     * caso contrario.
+     */
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), ['index', 'logout']) ||
+               $this->Auth->user('rol') === 'administrador';
+    }
+
+    /**
      * Index method
      *
      * @return void
      */
-
-    public function index(){
-
-    }
-
-    public function listar()
+    public function index()
     {
-        $usuario = $this->paginate($this->Usuario);
-        $this->set([ $usuario ]);
+        // Renderizar vista
     }
 
     /**
-     * Define las funcionalidades permitidas a usuarios no autenticados
+     * Lista todos los usuarios en el sistema
      *
-     * @param Event $event El evento ocurrido
-     * @return \Cake\Http\Response|null
+     * @return void
      */
-    public function beforeFilter(Event $event)
+    public function listar()
     {
-        parent::beforeFilter($event);
-        $this->Auth->allow('register', 'logout', 'login');
+        $usuario = $this->paginate($this->Usuario);
+
+        $this->set('usuario', $usuario);
     }
 
     /**
      * Inicia sesión
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
     public function login()
     {
-        if($this->Auth->user('id')){
-            $this->Flash->error(__('Ya estas registrado'));
-            return $this->redirect($this->Auth->redirectUrl());
-        }else{
-            if ($this->request->is('post')) {
-                $usuario = $this->Auth->identify();
-                if ($usuario) {
-                    $this->Auth->setUser($usuario);
-                    return $this->redirect($this->Auth->redirectUrl());
-                }
-                $this->Flash->error(__('Usuario o Contraseña invalidos, inténtalo de nuevo'));
+        if ($this->Auth->user() !== null) {
+            $this->Flash->success(__('Ya estás conectado como {0}.', $this->Auth->user('username')));
+
+            $this->redirect($this->referer(['controller' => $this->getName(), 'action' => 'index'], true));
+        } elseif ($this->request->is('post')) {
+            $usuario = $this->Auth->identify();
+            if ($usuario) {
+                $this->Auth->setUser($usuario);
+
+                return $this->redirect($this->Auth->redirectUrl());
+            } else {
+                $this->Flash->error(__('Alguna credencial es incorrecta. Por favor, revisa que no hayas escrito algo mal e inténtalo de nuevo.'));
             }
-        }    
+        }
     }
 
+    /**
+     * Cierra la sesión
+     *
+     * @return \Cake\Http\Response|null
+     */
     public function logout()
     {
         return $this->redirect($this->Auth->logout());
@@ -71,39 +101,54 @@ class UsuarioController extends AppController
     /**
      * Registra a un usuario
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
     public function register()
     {
-        $usuario = $this->Usuario->newEntity();
-        $this->viewBuilder();
-        
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             $data['rol'] = 'deportista';
-            $usuario = $this->Usuario->patchEntity($usuario, $data);
-            if ($this->Usuario->save($usuario)) {
-                $this->Flash->success(__('El usuario ha sigo registrado'));
+            $data['password'] = $this->hashPassword($data['password']);
 
-                return $this->redirect(['action' => 'login']);
+            $usuario = $this->Usuario->newEntity($data);
+            if ($this->Usuario->save($usuario)) {
+                $this->Flash->success(__("¡Bienvenido a PadeGest, {0}!", $usuario->nombre));
+                $this->Auth->setUser($usuario);
+
+                return $this->redirect($this->Auth->redirectUrl());
+            } else {
+                $this->Flash->error(__('Ha ocurrido un error al crear el nuevo usuario. Por favor, inténtalo de nuevo.'));
             }
-            $this->Flash->error(__('El usuario no se ha podido registrar, inténtalo de nuevo'));
+        } else {
+            $usuario = $this->Usuario->newEntity();
         }
+
+        $this->set(compact('usuario'));
     }
 
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     */
     public function add()
     {
-        $usuario = $this->Usuario->newEntity();
-        $this->viewBuilder();
-        
         if ($this->request->is('post')) {
-            $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
+            $data = $this->request->getData();
+            $data['password'] = $this->hashPassword($data['password']);
+
+            $usuario = $this->Usuario->newEntity($data);
             if ($this->Usuario->save($usuario)) {
-                $this->Flash->success(__('El usuario ha sigo registrado'));
+                $this->Flash->success(__('El usuario ha sido creado con éxito.'));
+
                 return $this->redirect(['action' => 'listar']);
             }
-            $this->Flash->error(__('El usuario no se ha podido registrar, inténtalo de nuevo'));
+            $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
+        } else {
+            $usuario = $this->Usuario->newEntity();
         }
+
+        $this->set(compact('usuario'));
     }
 
     /**
@@ -130,15 +175,21 @@ class UsuarioController extends AppController
     public function edit($id = null)
     {
         $usuario = $this->Usuario->get($id);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $data = $this->request->getData();
+            $data['password'] = is_string($data['password']) ? $this->hashPassword($data['password']) : $data['password'];
+
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
             if ($this->Usuario->save($usuario)) {
-                $this->Flash->success(__('The usuario has been saved.'));
+                $this->Flash->success(__('El usuario ha sido modificado correctamente.'));
 
                 return $this->redirect(['action' => 'listar']);
+            } else {
+                $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
             }
-            $this->Flash->error(__('The usuario could not be saved. Please, try again.'));
         }
+
         $this->set(compact('usuario'));
     }
 
@@ -152,13 +203,26 @@ class UsuarioController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
+
         $usuario = $this->Usuario->get($id);
         if ($this->Usuario->delete($usuario)) {
-            $this->Flash->success(__('The usuario has been deleted.'));
+            $this->Flash->success(__('El usuario ha sido borrado con éxito.'));
         } else {
-            $this->Flash->error(__('The usuario could not be deleted. Please, try again.'));
+            $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
         }
 
         return $this->redirect(['action' => 'listar']);
+    }
+
+    /**
+     * Calcula el resumen de una contraseña, listo para asignar al correspondiente atributo
+     * del modelo de datos del usuario.
+     *
+     * @param string $password La contraseña de la que calcular su resumen.
+     * @return string El resumen de la contraseña.
+     */
+    private function hashPassword($password)
+    {
+        return $this->Auth->getAuthenticate('Form')->passwordHasher()->hash($password);
     }
 }
