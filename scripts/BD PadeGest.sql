@@ -1,9 +1,11 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 11 Nov 2019 09:15:40 CET
+-- Generated on 08 Nov 2019 14:01:03 CET
 -- -----------------------------------------------------
-START TRANSACTION;
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='';
 
 -- -----------------------------------------------------
 -- Schema PADEGEST
@@ -14,6 +16,7 @@ DROP SCHEMA IF EXISTS `PADEGEST` ;
 -- Schema PADEGEST
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `PADEGEST` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ;
+USE `PADEGEST` ;
 
 -- -----------------------------------------------------
 -- Table `PADEGEST`.`usuario`
@@ -23,7 +26,7 @@ DROP TABLE IF EXISTS `PADEGEST`.`usuario` ;
 CREATE TABLE IF NOT EXISTS `PADEGEST`.`usuario` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(32) NOT NULL,
-  `password` VARCHAR(255) NOT NULL,
+  `password` CHAR(32) NOT NULL,
   `nombre` VARCHAR(50) NOT NULL,
   `apellidos` VARCHAR(50) NOT NULL,
   `genero` ENUM('masculino', 'femenino') NOT NULL,
@@ -316,19 +319,43 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`playoffs` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
+USE `PADEGEST` ;
 
 -- -----------------------------------------------------
--- Table `PADEGEST`.`configuracion`
+-- function reservaQueOcupaPista
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `PADEGEST`.`configuracion` ;
 
-CREATE TABLE IF NOT EXISTS `PADEGEST`.`configuracion` (
-  `duracionReservas` TIME NOT NULL DEFAULT '1:0:0')
-ENGINE = InnoDB;
+USE `PADEGEST`;
+DROP function IF EXISTS `PADEGEST`.`reservaQueOcupaPista`;
+
+DELIMITER $$
+USE `PADEGEST`$$
+CREATE FUNCTION `PADEGEST`.`reservaQueOcupaPista`(idPista INT UNSIGNED, fechaComprobacion DATETIME, idReservaIgnorada INT UNSIGNED)
+RETURNS INT UNSIGNED NOT DETERMINISTIC READS SQL DATA
+SQL SECURITY INVOKER
+BEGIN
+	DECLARE duracionReservas TIME DEFAULT '1:0:0'; -- 1 h
+
+	DECLARE EXIT HANDLER FOR NOT FOUND RETURN NULL;
+
+	RETURN (
+		SELECT `id` FROM `PADEGEST`.`reserva`
+		WHERE
+			`id` <=> idReservaIgnorada AND
+			`pista_id` = idPista AND
+			fechaComprobacion BETWEEN `fecha` AND ADDTIME(`fecha`, duracionReservas)
+		LIMIT 1
+	);
+END$$
+
+DELIMITER ;
+USE `PADEGEST`;
 
 DELIMITER $$
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_BEFORE_INSERT` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`reserva_BEFORE_INSERT`
 BEFORE INSERT ON `reserva` FOR EACH ROW
 BEGIN
@@ -345,10 +372,16 @@ BEGIN
 	THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una reserva no puede realizarse por un usuario y por un partido promocionado o enfrentamiento a la vez';
     END IF;
+
+	IF (SELECT `PADEGEST`.`reservaQueOcupaPista`(NEW.`pista_id`, NEW.`fecha`, NEW.`id`) IS NOT NULL) THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La pista asociada a la reserva está ocupada a la hora especificada';
+    END IF;
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`reserva_BEFORE_UPDATE`
 BEFORE UPDATE ON `reserva` FOR EACH ROW
 BEGIN
@@ -368,7 +401,22 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_AFTER_UPDATE` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`reserva_AFTER_UPDATE`
+AFTER UPDATE ON `reserva` FOR EACH ROW
+BEGIN
+	-- Hacemos esta comprobación después por si cambia la PK
+	IF (SELECT `PADEGEST`.`reservaQueOcupaPista`(NEW.`pista_id`, NEW.`fecha`, NEW.`id`) IS NOT NULL) THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La pista asociada a la reserva está ocupada a la hora especificada';
+    END IF;
+END$$
+
+
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`enfrentamiento_BEFORE_INSERT` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`enfrentamiento_BEFORE_INSERT`
 BEFORE INSERT ON `enfrentamiento` FOR EACH ROW
 BEGIN
@@ -385,7 +433,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`enfrentamiento_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`enfrentamiento_BEFORE_UPDATE`
 BEFORE UPDATE ON `enfrentamiento` FOR EACH ROW
 BEGIN
@@ -402,7 +452,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`partido_promocionado_BEFORE_INSERT` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`partido_promocionado_BEFORE_INSERT`
 BEFORE INSERT ON `partido_promocionado` FOR EACH ROW
 BEGIN
@@ -419,7 +471,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`partido_promocionado_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`partido_promocionado_BEFORE_UPDATE`
 BEFORE UPDATE ON `partido_promocionado` FOR EACH ROW
 BEGIN
@@ -436,7 +490,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`resultado_BEFORE_INSERT` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`resultado_BEFORE_INSERT`
 BEFORE INSERT ON `resultado` FOR EACH ROW
 BEGIN
@@ -450,7 +506,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`resultado_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`resultado_BEFORE_UPDATE`
 BEFORE UPDATE ON `resultado` FOR EACH ROW
 BEGIN
@@ -464,7 +522,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`campeonato_BEFORE_INSERT` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`campeonato_BEFORE_INSERT`
 BEFORE INSERT ON `campeonato` FOR EACH ROW
 BEGIN
@@ -474,7 +534,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`campeonato_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`campeonato_BEFORE_UPDATE`
 BEFORE UPDATE ON `campeonato` FOR EACH ROW
 BEGIN
@@ -484,7 +546,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`pareja_BEFORE_INSERT` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`pareja_BEFORE_INSERT`
 BEFORE INSERT ON `pareja` FOR EACH ROW
 BEGIN
@@ -500,7 +564,9 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`pareja_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`pareja_BEFORE_UPDATE`
 BEFORE UPDATE ON `pareja` FOR EACH ROW
 BEGIN
@@ -528,6 +594,8 @@ GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, C
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`usuario`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (1, 'silvergorilla946', '640692641dc3dbd6362c7a66344de8b9', 'Nuria', 'García', 'femenino', 0, 'administrador');
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (2, 'greencat609', 'f7802c6426e92dc6703e79b928905504', 'Luisa', 'Vega', 'femenino', 1, 'deportista');
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (3, 'organicfish174', '7ffaae67fd14ed82799775f8ed0786db', 'Susana', 'Soto', 'femenino', 1, 'deportista');
@@ -559,10 +627,14 @@ INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apell
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (29, 'sadgoose648', 'e2c20148ce95dd1163f6f3bd646e4baa', 'María Angeles', 'Giménez', 'femenino', 1, 'deportista');
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (30, 'goldenpanda782', '969512f72ca38494a7d93d4e8a1ba4bb', 'Francisca', 'Carmona', 'femenino', 1, 'deportista');
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`pista`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`pista` (`id`, `tipoSuelo`, `tipoCerramiento`, `localizacion`, `focos`) VALUES (1, 'moqueta', 'valla', 'interior', 5);
 INSERT INTO `PADEGEST`.`pista` (`id`, `tipoSuelo`, `tipoCerramiento`, `localizacion`, `focos`) VALUES (2, 'césped', 'pared', 'exterior', 6);
 INSERT INTO `PADEGEST`.`pista` (`id`, `tipoSuelo`, `tipoCerramiento`, `localizacion`, `focos`) VALUES (3, 'césped', 'cristal', 'interior', 2);
@@ -579,10 +651,14 @@ INSERT INTO `PADEGEST`.`pista` (`id`, `tipoSuelo`, `tipoCerramiento`, `localizac
 INSERT INTO `PADEGEST`.`pista` (`id`, `tipoSuelo`, `tipoCerramiento`, `localizacion`, `focos`) VALUES (14, 'césped', 'cristal', 'exterior', 2);
 INSERT INTO `PADEGEST`.`pista` (`id`, `tipoSuelo`, `tipoCerramiento`, `localizacion`, `focos`) VALUES (15, 'hormigón', 'valla', 'interior', 6);
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`reserva`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (1, '2019-10-21 22:00:00', 10, 20);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (2, '2019-10-25 20:00:00', 4, 8);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (3, '2019-10-24 08:00:00', 14, 18);
@@ -600,10 +676,14 @@ INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUE
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (15, '2019-10-15 18:00:00', 6, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (16, '2019-10-22 10:00:00', 7, NULL);
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`enfrentamiento`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (1, 'Partido 1 European Veteran Championship', '2019-10-19 17:00:00', 13);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (2, 'Partido 2 European Veteran Championship', '2019-10-06 10:00:00', 14);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (3, 'Partido 1 Máster de Menores 2019', '2019-10-15 18:00:00', 15);
@@ -614,13 +694,19 @@ INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) 
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (8, 'Partido 2 TyC PREMIUM 3', '2019-10-28 18:00:00', NULL);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (9, 'Partido 3 TyC PREMIUM 3', '2019-10-05 20:00:00', NULL);
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`partido_promocionado`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (1, 'Partido amistoso de PadeClub', '2019-10-16 22:00:00', 11);
 INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (2, 'Partido entrenamiento Copa Pádel', '2019-10-26 18:00:00', NULL);
 INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (3, 'Primer partido solidario', '2019-10-23 14:00:00', 12);
+
+COMMIT;
 
 
 -- -----------------------------------------------------
@@ -631,10 +717,14 @@ USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`resultado` (`enfrentamiento_id`, `set1pareja1`, `set1pareja2`, `set2pareja1`, `set2pareja2`, `set3pareja1`, `set3pareja2`) VALUES (1, 1, 1, 1, 1, 0, 1);
 INSERT INTO `PADEGEST`.`resultado` (`enfrentamiento_id`, `set1pareja1`, `set1pareja2`, `set2pareja1`, `set2pareja2`, `set3pareja1`, `set3pareja2`) VALUES (3, 1, 0, 2, 0, NULL, NULL);
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`usuario_partido_promocionado`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (18, 1);
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (8, 3);
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (14, 1);
@@ -643,10 +733,14 @@ INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_pr
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (14, 2);
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (25, 2);
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`campeonato`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (1, 'European Veteran Championship', 'Bases de campeonato de ejemplo', '2019-07-31 00:00:00', '2019-11-16 00:00:00');
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (2, 'Máster de Menores 2019', 'Bases de campeonato de ejemplo', '2019-06-10 00:00:00', '2019-06-29 00:00:00');
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (3, 'TyC PREMIUM 3', 'Bases de campeonato de ejemplo', '2019-09-29 00:00:00', '2019-12-05 00:00:00');
@@ -654,10 +748,14 @@ INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscri
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (5, 'Playoffs máster de Menores 2019', 'Bases de campeonato de ejemplo', '2019-06-17 00:00:00', '2019-11-30 00:00:00');
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (6, 'Playoffs TyC PREMIUM 3', 'Bases de campeonato de ejemplo', '2019-08-28 00:00:00', '2019-09-05 00:00:00');
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`categoria_nivel`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`categoria_nivel` (`id`, `categoria`, `nivel`, `campeonato_id`) VALUES (1, 'masculina', '1', 1);
 INSERT INTO `PADEGEST`.`categoria_nivel` (`id`, `categoria`, `nivel`, `campeonato_id`) VALUES (2, 'masculina', '2', 1);
 INSERT INTO `PADEGEST`.`categoria_nivel` (`id`, `categoria`, `nivel`, `campeonato_id`) VALUES (3, 'masculina', '3', 1);
@@ -686,18 +784,26 @@ INSERT INTO `PADEGEST`.`categoria_nivel` (`id`, `categoria`, `nivel`, `campeonat
 INSERT INTO `PADEGEST`.`categoria_nivel` (`id`, `categoria`, `nivel`, `campeonato_id`) VALUES (26, 'mixta', '2', 3);
 INSERT INTO `PADEGEST`.`categoria_nivel` (`id`, `categoria`, `nivel`, `campeonato_id`) VALUES (27, 'mixta', '3', 3);
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`grupo`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`grupo` (`id`, `categoria_nivel_id`) VALUES (3, 9);
 INSERT INTO `PADEGEST`.`grupo` (`id`, `categoria_nivel_id`) VALUES (1, 7);
 INSERT INTO `PADEGEST`.`grupo` (`id`, `categoria_nivel_id`) VALUES (2, 17);
+
+COMMIT;
 
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`pareja`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (1, 27, 11, 7, 1);
 INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (2, 8, 3, 7, 1);
 INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (3, 7, 4, 7, 1);
@@ -731,10 +837,14 @@ INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_ni
 INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (31, 28, 22, 12, NULL);
 INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (32, 7, 7, 1, NULL);
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`pareja_enfrentamiento`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`, `participacionConfirmada`) VALUES (21, 8, 1);
 INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`, `participacionConfirmada`) VALUES (6, 3, 1);
 INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`, `participacionConfirmada`) VALUES (8, 4, 1);
@@ -750,27 +860,31 @@ INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`
 INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`, `participacionConfirmada`) VALUES (2, 1, 1);
 INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`, `participacionConfirmada`) VALUES (28, 9, 0);
 
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`liga_regular`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`liga_regular` (`id`) VALUES (1);
 INSERT INTO `PADEGEST`.`liga_regular` (`id`) VALUES (2);
 INSERT INTO `PADEGEST`.`liga_regular` (`id`) VALUES (3);
+
+COMMIT;
 
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`playoffs`
 -- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`playoffs` (`id`, `liga_regular_id`) VALUES (4, 1);
 INSERT INTO `PADEGEST`.`playoffs` (`id`, `liga_regular_id`) VALUES (5, 2);
 INSERT INTO `PADEGEST`.`playoffs` (`id`, `liga_regular_id`) VALUES (6, 3);
 
-
--- -----------------------------------------------------
--- Data for table `PADEGEST`.`configuracion`
--- -----------------------------------------------------
-INSERT INTO `PADEGEST`.`configuracion` (`duracionReservas`) VALUES ('1:0:0');
+COMMIT;
 
 -- -----------------------------------------------------
 -- Event `PADEGEST`.`limpieza_reservas_expiradas`
@@ -789,5 +903,3 @@ CREATE EVENT `PADEGEST`.`limpieza_reservas_expiradas`
             WHERE ADDTIME(`fecha`, duracion) <= NOW();
     END$$
 DELIMITER ;
-
-COMMIT;

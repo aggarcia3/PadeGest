@@ -78,7 +78,7 @@ printf '\n> Removing initial comments...\n'
 
 printf '\n> Adding custom initial comments...\n'
 {
-    printf -- '-- -----------------------------------------------------\n-- PadeGest application database\n-- For use by PadeGest\n-- Generated on %s\n-- -----------------------------------------------------\n' "$(LANG=en_US date '+%m %b %Y %T %Z')" | cat - "$DB_SCRIPT_FILENAME" > "$tmpFile"
+    printf -- '-- -----------------------------------------------------\n-- PadeGest application database\n-- For use by PadeGest\n-- Generated on %s\n-- -----------------------------------------------------\n' "$(LANG=en_US date '+%d %b %Y %T %Z')" | cat - "$DB_SCRIPT_FILENAME" > "$tmpFile"
     mv "$tmpFile" "$DB_SCRIPT_FILENAME"
 } || { echo '! Header insertion unsuccessful, aborting script execution.' >&2; exit 3; }
 
