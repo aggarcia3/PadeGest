@@ -75,6 +75,9 @@ class AppController extends Controller
             $this->Auth->allow();
         }
 
+        // Hacer AuthComponent accesible a las vistas
+        $this->set(compact('Auth'));
+
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html

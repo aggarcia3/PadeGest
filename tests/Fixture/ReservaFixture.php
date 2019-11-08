@@ -23,14 +23,17 @@ class ReservaFixture extends TestFixture
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'fecha' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'idPista' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'pista_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'usuario_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         '_indexes' => [
-            'FK_PISTA_idx' => ['type' => 'index', 'columns' => ['idPista'], 'length' => []],
+            'FK_PISTA_idx' => ['type' => 'index', 'columns' => ['pista_id'], 'length' => []],
+            'FK_RESERVA_USUARIO_idx' => ['type' => 'index', 'columns' => ['usuario_id'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'UNIQUE' => ['type' => 'unique', 'columns' => ['fecha', 'idPista'], 'length' => []],
-            'FK_RESERVA_PISTA' => ['type' => 'foreign', 'columns' => ['idPista'], 'references' => ['pista', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'UNIQUE' => ['type' => 'unique', 'columns' => ['fecha', 'pista_id'], 'length' => []],
+            'FK_RESERVA_PISTA' => ['type' => 'foreign', 'columns' => ['pista_id'], 'references' => ['pista', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'FK_RESERVA_USUARIO' => ['type' => 'foreign', 'columns' => ['usuario_id'], 'references' => ['usuario', 'id'], 'update' => 'cascade', 'delete' => 'setNull', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -48,8 +51,9 @@ class ReservaFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'fecha' => '2019-10-30 16:21:45',
-                'idPista' => 1
+                'fecha' => '2019-11-01 18:28:40',
+                'pista_id' => 1,
+                'usuario_id' => 1
             ],
         ];
         parent::init();

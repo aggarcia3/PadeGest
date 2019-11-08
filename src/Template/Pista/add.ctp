@@ -5,12 +5,17 @@
  */
 
 // Page title
-$this->assign('title', __('Gestión de pistas'));
+$this->assign('title', __('Gestión de {0}', __('pistas')));
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Acciones') ?></li>
-        <li><?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('{0,plural,=0{pistas}=1{pista} other{pistas}}', [0])), ['action' => 'index'], ['escapeTitle' => false]) ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('pistas')),
+                ['action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
     </ul>
 </nav>
 <div class="pista form large-9 medium-8 columns content">

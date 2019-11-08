@@ -24,7 +24,10 @@ class ReservaTableTest extends TestCase
      */
     public $fixtures = [
         'app.Reserva',
-        'app.Usuario'
+        'app.Pista',
+        'app.Usuario',
+        'app.Enfrentamiento',
+        'app.PartidoPromocionado'
     ];
 
     /**
@@ -67,6 +70,16 @@ class ReservaTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

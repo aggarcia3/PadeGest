@@ -3,67 +3,103 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Reserva $reserva
  */
+
+// Page title
+$this->assign('title', __('Gestión de {0}', __('reservas')));
+
+$ahora = new DateTimeImmutable();
+$esAdministrador = $auth->user('rol') === 'administrador';
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Reserva'), ['action' => 'edit', $reserva->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Reserva'), ['action' => 'delete', $reserva->id], ['confirm' => __('Are you sure you want to delete # {0}?', $reserva->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Reserva'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Reserva'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Usuario'), ['controller' => 'Usuario', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Usuario'), ['controller' => 'Usuario', 'action' => 'add']) ?> </li>
+        <li class="heading"><?= __('Acciones') ?></li>
+        <?php if ($esAdministrador): ?>
+        <li><?=
+            $this->Html->link(
+                '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('reserva')),
+                ['action' => 'edit', $reserva->id],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <?php endif; ?>
+        <li><?=
+            $this->Form->postLink(
+                '<i class="fas fa-calendar-minus delete-action-fa-icon"></i> ' . __($esAdministrador ? 'Eliminar {0}' : 'Cancelar {0}', __('reserva')),
+                ['action' => 'delete', $reserva->id],
+                ['escapeTitle' => false, 'confirm' =>
+                    __('¿Estás seguro de que quieres ' . ($esAdministrador ? 'eliminar' : 'cancelar') . ' {0}? Esto borrará toda su información asociada.', [__('la reserva número {0}', $reserva->id)])
+                ]
+            )
+        ?></li>
+        <li><?=
+            $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver ' . ($esAdministrador ? '' : 'mis ') . '{0}', __('reservas')),
+                ['action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?=
+            $this->Html->link(
+                '<i class="fas fa-calendar-plus add-action-fa-icon"></i> ' . __($esAdministrador ? 'Crear {0}' : 'Reservar {0}', __($esAdministrador ? 'reserva' : 'pista')),
+                ['action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
     </ul>
 </nav>
 <div class="reserva view large-9 medium-8 columns content">
-    <h3><?= h($reserva->id) ?></h3>
+    <h3><?= __('Detalles de la {0}', __('reserva')) . ' número ' . h($reserva->id) ?></h3>
     <table class="vertical-table">
         <tr>
-            <th scope="row"><?= __('Id') ?></th>
-            <td><?= $this->Number->format($reserva->id) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('IdPista') ?></th>
-            <td><?= $this->Number->format($reserva->idPista) ?></td>
+            <th scope="row"><?= __('Pista') ?></th>
+            <td>
+            <?php if ($esAdministrador): ?>
+            <?=
+                $this->Html->link(
+                    ucfirst(__(h($reserva->pista->localizacion))) . ', ' . __('número') . ' ' . $reserva->pista->id,
+                    ['controller' => 'Pista', 'action' => 'view', $reserva->pista->id]
+                )
+            ?>
+            <?php else: ?>
+            <span><?=
+                ucfirst(__(h($reserva->pista->localizacion))) . ', ' . __('número') . ' ' . $reserva->pista->id
+            ?></span>
+            <?php endif; ?>
+            </td>
         </tr>
         <tr>
             <th scope="row"><?= __('Fecha') ?></th>
             <td><?= h($reserva->fecha) ?></td>
         </tr>
-    </table>
-    <div class="related">
-        <h4><?= __('Related Usuario') ?></h4>
-        <?php if (!empty($reserva->usuario)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th scope="col"><?= __('Id') ?></th>
-                <th scope="col"><?= __('Login') ?></th>
-                <th scope="col"><?= __('Password') ?></th>
-                <th scope="col"><?= __('Nombre') ?></th>
-                <th scope="col"><?= __('Apellidos') ?></th>
-                <th scope="col"><?= __('Genero') ?></th>
-                <th scope="col"><?= __('EsSocio') ?></th>
-                <th scope="col"><?= __('Rol') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-            <?php foreach ($reserva->usuario as $usuario): ?>
-            <tr>
-                <td><?= h($usuario->id) ?></td>
-                <td><?= h($usuario->login) ?></td>
-                <td><?= h($usuario->password) ?></td>
-                <td><?= h($usuario->nombre) ?></td>
-                <td><?= h($usuario->apellidos) ?></td>
-                <td><?= h($usuario->genero) ?></td>
-                <td><?= h($usuario->esSocio) ?></td>
-                <td><?= h($usuario->rol) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'Usuario', 'action' => 'view', $usuario->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'Usuario', 'action' => 'edit', $usuario->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'Usuario', 'action' => 'delete', $usuario->id], ['confirm' => __('Are you sure you want to delete # {0}?', $usuario->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
+        <?php if ($esAdministrador): ?>
+        <tr>
+            <th scope="row"><?= __('Reservado por') ?></th>
+            <?php if ($reserva->has('usuario')): ?>
+                <td><?=
+                    $this->Html->link(
+                        $reserva->usuario->nombre . ' ' . $reserva->usuario->apellidos . ' (' . $reserva->usuario->username . ')',
+                        ['controller' => 'Usuario', 'action' => 'view', $reserva->usuario->id]
+                    )
+                ?></td>
+                <?php elseif ($reserva->has('enfrentamiento')): ?>
+                <td><?=
+                    $this->Html->link(
+                        __('Enfrentamiento') . ': '. $reserva->enfrentamiento->nombre,
+                        ['controller' => 'Enfrentamiento', 'action' => 'view', $reserva->enfrentamiento->id]
+                    )
+                ?></td>
+                <?php elseif ($reserva->has('partido_promocionado')): ?>
+                <td><?=
+                    $this->Html->link(
+                        __('Partido promocionado') . ': ' . $reserva->partido_promocionado->nombre,
+                        ['controller' => 'PartidoPromocionado', 'action' => 'view', $reserva->partido_promocionado->id]
+                    )
+                ?></td>
+                <?php else: ?>
+                <td>No disponible</td>
+                <?php endif; ?>
+            <td>
+        </tr>
         <?php endif; ?>
-    </div>
+    </table>
 </div>

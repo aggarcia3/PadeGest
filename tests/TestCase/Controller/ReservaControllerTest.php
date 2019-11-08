@@ -21,8 +21,10 @@ class ReservaControllerTest extends TestCase
      */
     public $fixtures = [
         'app.Reserva',
+        'app.Pista',
         'app.Usuario',
-        'app.UsuarioReserva'
+        'app.Enfrentamiento',
+        'app.PartidoPromocionado'
     ];
 
     /**

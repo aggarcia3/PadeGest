@@ -5,12 +5,17 @@
  */
 
 // Page title
-$this->assign('title', __('Gestión de pistas'));
+$this->assign('title', __('Gestión de {0}', __('pistas')));
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Acciones') ?></li>
-        <li><?= $this->Html->link('<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('pista')), ['action' => 'add'], ['escapeTitle' => false]) ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('pista')),
+                ['action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
     </ul>
 </nav>
 <div class="pista index large-9 medium-8 columns content">
@@ -30,13 +35,31 @@ $this->assign('title', __('Gestión de pistas'));
             <?php foreach ($pista as $pistaAct): ?>
             <tr>
                 <td><?= $this->Number->format($pistaAct->id) ?></td>
-                <td><?= ucfirst(h($pistaAct->tipoSuelo)) ?></td>
-                <td><?= ucfirst(h($pistaAct->tipoCerramiento)) ?></td>
-                <td><?= ucfirst(h($pistaAct->localizacion)) ?></td>
+                <td><?= ucfirst(h(__($pistaAct->tipoSuelo))) ?></td>
+                <td><?= ucfirst(h(__($pistaAct->tipoCerramiento))) ?></td>
+                <td><?= ucfirst(h(__($pistaAct->localizacion))) ?></td>
                 <td><?= $this->Number->format($pistaAct->focos) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $pistaAct->id], ['escapeTitle' => false]) ?>
-                    <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $pistaAct->id], ['escapeTitle' => false, 'confirm' => __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la pista número {0}', $pistaAct->id)])]) ?>
+                    <?= $this->Html->link(
+                            '<i class="fas fa-eye view-action-fa-icon"></i>',
+                            ['action' => 'view', $pistaAct->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Html->link(
+                            '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
+                            ['action' => 'edit', $pistaAct->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Form->postLink(
+                            '<i class="fas fa-minus-square delete-action-fa-icon"></i>',
+                            ['action' => 'delete', $pistaAct->id],
+                            ['escapeTitle' => false, 'confirm' =>
+                                __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la pista número {0}', $pistaAct->id)])
+                            ]
+                        )
+                    ?>
                 </td>
             </tr>
             <?php endforeach; ?>

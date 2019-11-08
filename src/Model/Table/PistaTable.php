@@ -9,6 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Pista Model
  *
+ * @property \App\Model\Table\ReservaTable&\Cake\ORM\Association\HasMany $Reserva
+ *
  * @method \App\Model\Entity\Pista get($primaryKey, $options = [])
  * @method \App\Model\Entity\Pista newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Pista[] newEntities(array $data, array $options = [])
@@ -33,6 +35,8 @@ class PistaTable extends Table
         $this->setTable('pista');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->hasMany('reserva')->setForeignKey('pista_id');
     }
 
     /**

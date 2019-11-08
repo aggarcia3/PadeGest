@@ -15,10 +15,16 @@ class ReservaController extends AppController
     /**
      * Index method
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
+        $this->paginate = [
+            'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado'],
+            'order' => [
+                'Reserva.fecha' => 'desc'
+            ]
+        ];
         $reserva = $this->paginate($this->Reserva);
 
         $this->set(compact('reserva'));
@@ -28,13 +34,13 @@ class ReservaController extends AppController
      * View method
      *
      * @param string|null $id Reserva id.
-     * @return void
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
         $reserva = $this->Reserva->get($id, [
-            'contain' => ['Usuario']
+            'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado']
         ]);
 
         $this->set('reserva', $reserva);
@@ -47,18 +53,24 @@ class ReservaController extends AppController
      */
     public function add()
     {
-        $reserva = $this->Reserva->newEntity();
         if ($this->request->is('post')) {
-            $reserva = $this->Reserva->patchEntity($reserva, $this->request->getData());
+            $reserva = $this->Reserva->newEntity($this->request->getData());
+
             if ($this->Reserva->save($reserva)) {
-                $this->Flash->success(__('The reserva has been saved.'));
+                $this->Flash->success(__('{0} creada con éxito.', __('Reserva')));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The reserva could not be saved. Please, try again.'));
+
+            $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
+        } else {
+            $reserva = $this->Reserva->newEntity();
         }
+
+        $pista = $this->Reserva->Pista->find('list', ['limit' => 200]);
         $usuario = $this->Reserva->Usuario->find('list', ['limit' => 200]);
-        $this->set(compact('reserva', 'usuario'));
+
+        $this->set(compact('reserva', 'pista', 'usuario'));
     }
 
     /**
@@ -71,7 +83,7 @@ class ReservaController extends AppController
     public function edit($id = null)
     {
         $reserva = $this->Reserva->get($id, [
-            'contain' => ['Usuario']
+            'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $reserva = $this->Reserva->patchEntity($reserva, $this->request->getData());
@@ -82,8 +94,9 @@ class ReservaController extends AppController
             }
             $this->Flash->error(__('The reserva could not be saved. Please, try again.'));
         }
+        $pista = $this->Reserva->Pista->find('list', ['limit' => 200]);
         $usuario = $this->Reserva->Usuario->find('list', ['limit' => 200]);
-        $this->set(compact('reserva', 'usuario'));
+        $this->set(compact('reserva', 'pista', 'usuario'));
     }
 
     /**
