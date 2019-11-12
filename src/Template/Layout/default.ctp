@@ -14,11 +14,12 @@
  */
 
 ?>
-<!DOCTYPE html>
-<html>
+<?= $this->Html->docType() ?>
+<html lang='es-ES'>
 <head>
     <?= $this->Html->charset() ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= '<noscript>' . $this->fetch('noscript') . '</noscript>' ?>
+    <?= $this->Html->meta('viewport', 'width=device-width, initial-scale=1.0') ?>
     <title>
         PadeGest:
         <?= $this->fetch('title') ?>
@@ -27,8 +28,6 @@
 
     <?= $this->Html->css('base') ?>
     <?= $this->Html->css('style') ?>
-    <?= $this->Html->css('bootstrap.min') ?>
-    <?= $this->Html->script(['bootstrap.min', 'jquery-2.2.4.min']) ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -38,15 +37,25 @@
     <nav class="top-bar expanded" data-topbar role="navigation">
         <ul class="title-area large-3 medium-4 columns">
             <li class="name">
-                <h1><a href="/usuario/index">Padegest</a></h1>
+                <h1><?= $this->Html->link('PadeGest', ['controller' => 'Usuario', 'action' => 'index']) ?></h1>
             </li>
         </ul>
         <div class="top-bar-section">
             <ul class="right">
-                <?php if($this->request->session()->read('Auth.User.id')){ ?>
-                    <li><a href="#"><?php echo ($this->request->session()->read('Auth.User.username')); ?></a></li>
-                    <li><a href="/usuario/logout">Logout</a></li>
-                <?php } ?>       
+                <?php if ($Auth->user() !== null): ?>
+                <li><?=
+                    $this->Html->link('<i class="fas fa-user"></i> ' . $Auth->user('username'), [
+                        'controller' => 'Usuario',
+                        'action' => 'view', $Auth->user('id')
+                    ], ['escapeTitle' => false])
+                ?></li>
+                <li><?=
+                    $this->Html->link('<i class="fas fa-sign-out-alt"></i>', [
+                        'controller' => 'Usuario',
+                        'action' => 'logout'
+                    ], ['escapeTitle' => false])
+                ?></li>
+                <?php endif; ?>
             </ul>
         </div>
     </nav>
@@ -54,9 +63,9 @@
     <div class="container clearfix">
         <?= $this->fetch('content') ?>
     </div>
-    
+
     <footer id="footer">
-    Aplicación desarollada por Alejandro González García, Pablo Lama Valencia, Pablo Pazos Domínguez y Salvador Pérez Salcedo
+        <p>Aplicación desarollada por Alejandro González García, Pablo Lama Valencia, Pablo Pazos Domínguez y Salvador Pérez Salcedo</p>
     </footer>
 </body>
 </html>
