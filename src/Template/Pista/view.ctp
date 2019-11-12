@@ -82,7 +82,7 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
             <?php foreach ($pista->reserva as $reserva): ?>
             <tr>
                 <td><?= h($reserva->id) ?></td>
-                <td><?= h($reserva->fecha) ?></td>
+                <td><?= h($reserva->fechaInicio) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(
                             '<i class="fas fa-eye view-action-fa-icon"></i>',
