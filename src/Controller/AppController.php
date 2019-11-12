@@ -80,7 +80,7 @@ class AppController extends Controller
         }
 
         // Hacer AuthComponent accesible a las vistas
-        $this->set(compact('Auth'));
+        $this->set('Auth', $this->Auth);
 
         /*
          * Enable the following component for recommended CakePHP security settings.
