@@ -23,8 +23,7 @@ class UsuarioControllerTest extends TestCase
         'app.Usuario',
         'app.PartidoPromocionado',
         'app.Reserva',
-        'app.UsuarioPartidoPromocionado',
-        'app.UsuarioReserva'
+        'app.UsuarioPartidoPromocionado'
     ];
 
     /**

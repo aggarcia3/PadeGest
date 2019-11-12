@@ -173,7 +173,8 @@ class PistaControllerTest extends TestCase
     {
         $this->post('/pista/edit/27');
 
-        $this->assertResponseError();
+        $this->assertRedirect(['controller' => 'pista']);
+        $this->assertFlashElement('Flash/error');
     }
 
     /**
@@ -198,6 +199,7 @@ class PistaControllerTest extends TestCase
     {
         $this->post('/pista/delete/27');
 
-        $this->assertResponseError();
+        $this->assertRedirect(['controller' => 'pista']);
+        $this->assertFlashElement('Flash/success');
     }
 }
