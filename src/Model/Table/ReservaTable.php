@@ -5,9 +5,10 @@ use Cake\Datasource\ConnectionManager;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use DateInterval;
-use DateTimeImmutable;
+use DateTimeInterface;
 
 /**
  * Reserva Model
@@ -81,10 +82,17 @@ class ReservaTable extends Table
             ->allowEmptyString('id', __('El número de reserva no puede estar en blanco.'), true);
 
         $validator
-            ->dateTime('fecha', ['ymd'], __('La fecha de reserva sigue un formato incorrecto.'))
-            ->requirePresence('fecha', 'create', __('Es necesario especificar una fecha para una reserva.'))
-            ->notEmptyDateTime('fecha', __('La fecha de reserva no puede estar vacía.'))
-            ->lessThanOrEqual('fecha', FrozenTime::now()->i18nFormat('Y-m-d'));
+            ->nonNegativeInteger('pista_id', __('Esa pista no existe en el sistema.'))
+            ->requirePresence('pista_id', 'create', __('No se puede crear una reserva sobre ninguna pista.'));
+
+        $validator
+            ->dateTime('fechaInicio', ['ymd'], __('La fecha de reserva sigue un formato incorrecto.'))
+            ->requirePresence('fechaInicio', 'create', __('Es necesario especificar una fecha para una reserva.'))
+            ->notEmptyDateTime('fechaInicio', __('La fecha de reserva no puede estar vacía.'));
+
+        // Por ahora, la fecha de fin se genera automáticamente
+        $validator
+            ->allowEmptyDateTime('fechaFin', __('La fecha de fin debe de estar vacía.'), true);
 
         return $validator;
     }
@@ -109,14 +117,14 @@ class ReservaTable extends Table
         ]);
 
         $rules->add([$this, 'pistaDisponibleParaReserva'], 'pistaDisponibleParaReserva', [
-            'errorField' => 'fecha',
+            'errorField' => 'fechaInicio',
             'message' => __('La pista está ocupada en esa fecha y hora.')
         ]);
 
-        for ($i = 0, $events = [ 'addUpdate', 'addDelete' ]; $i < 2; ++$i) {
+        for ($i = 0, $events = [ 'add', 'addDelete' ]; $i < 2; ++$i) {
             $funcName = $events[$i];
             $rules->$funcName([$this, 'esModificable'], 'esModificable', [
-                'errorField' => 'fecha',
+                'errorField' => 'fechaInicio',
                 'message' => __('No se puede modificar una reserva a menos de ' . self::getIntervaloSoloLectura()->h . ' horas de su comienzo.')
             ]);
         }
@@ -125,11 +133,12 @@ class ReservaTable extends Table
     }
 
     /**
-     * Comprueba si una pista está disponible para ser reservada.
+     * Comprueba si la pista asociada a una reserva está disponible en la fecha
+     * indicada por la reserva.
      *
      * @param \Cake\Datasource\EntityInterface $reserva La reserva a comprobar si es válida.
      * @param array $options Opciones específicas a la regla de validación.
-     * @return bool Verdadero si está disponible la pista para efectuar esta reserva, falso en otro caso.
+     * @return bool Verdadero si la reserva puede efectuarse, falso en otro caso.
      */
     public function pistaDisponibleParaReserva($reserva, $options = [])
     {
@@ -139,20 +148,22 @@ class ReservaTable extends Table
             ->prepare('SELECT `PADEGEST`.`reservaQueOcupaPista`(?, ?, ?) AS idReserva');
 
         $sentencia->bind(
-            [$reserva->get('pista_id'), $reserva->get('fecha'), $reserva->get('id')],
+            [$reserva->get('pista_id'), $reserva->get('fechaInicio'), $reserva->get('id')],
             ['integer', 'datetime', 'integer']
         );
 
         if ($sentencia->execute()) {
             $idReservaConflictiva = $sentencia->fetch('assoc')['idReserva'];
-            $toret = $idReservaConflictiva === null || $idReservaConflictiva !== $reserva->get('id');
+            $toret = $idReservaConflictiva == null;
         }
 
         return $toret;
     }
 
     /**
-     * Comprueba si una reserva es modificable.
+     * Comprueba si una reserva es modificable. Este método ejecuta una operación
+     * modificadora sobre el atributo fechaInicio, por lo que se recomienda que sea
+     * una instancia de una fecha inmutable.
      *
      * @param \Cake\Datasource\EntityInterface $reserva La reserva a comprobar si es válida.
      * @param array $options Opciones específicas a la regla de validación.
@@ -160,7 +171,7 @@ class ReservaTable extends Table
      */
     public function esModificable($reserva, $options = [])
     {
-        return new DateTimeImmutable() <= $reserva->get('fecha')->sub(self::getIntervaloSoloLectura());
+        return FrozenTime::now() <= $reserva->get('fechaInicio')->sub(self::getIntervaloSoloLectura());
     }
 
     /**
@@ -179,5 +190,38 @@ class ReservaTable extends Table
         }
 
         return $toret;
+    }
+
+    /**
+     * Obtiene la primera pista libre para una determinada fecha.
+     *
+     * @param DateTimeInterface $fecha La fecha a comprobar si tiene alguna pista libre.
+     * @return \App\Model\Entity\Pista|null La primera pista libre encontrada para esa fecha,
+     * o nulo si no hay ninguna.
+     */
+    public static function pistaLibre($fecha)
+    {
+        /** @var \App\Model\Entity\Pista */
+        $pistaLibre = null;
+
+        if ($fecha instanceof DateTimeInterface) {
+            $sentencia = ConnectionManager::get('default')
+                ->prepare('SELECT `PADEGEST`.`pistaDisponibleEnFecha`(?) AS idPista');
+
+            $sentencia->bind([$fecha], ['datetime']);
+
+            if ($sentencia->execute()) {
+                $idPista = $sentencia->fetch('assoc')['idPista'];
+
+                if (is_numeric($idPista)) {
+                    $pistaLibre = TableRegistry::getTableLocator()->get('Pista')
+                        ->find()
+                        ->where(['id' => $idPista])
+                        ->first();
+                }
+            }
+        }
+
+        return $pistaLibre;
     }
 }

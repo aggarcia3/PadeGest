@@ -14,7 +14,6 @@
 namespace App\View;
 
 use Cake\View\View;
-use BootstrapUI\View\UIViewTrait;
 
 /**
  * Application View
@@ -25,7 +24,6 @@ use BootstrapUI\View\UIViewTrait;
  */
 class AppView extends View
 {
-    use UIViewTrait;
     /**
      * Initialization hook method.
      *
@@ -37,14 +35,16 @@ class AppView extends View
      */
     public function initialize()
     {
-        // Registrar widgets personalizados
-        $this->loadHelper('Form', [
-            'widgets' => [
-                'horareservapicker' => ['HoraReservaPicker']
-            ]
+        parent::initialize();
+
+        $this->Form->setConfig([
+            'autoSetCustomValidity' => true
         ]);
+
+        // Registrar widgets personalizados
+        $this->Form->addWidget('flatpickr_date', ['Flatpickr']);
         $this->Form->setTemplates([
-            'horareservapicker' => '{{dia}}{{hora}}',
+            'flatpickrInput' => '<input type="text" placeholder="' . __('Escoge una fecha y hora') . '"{{attrs}}>'
         ]);
 
         // Usar Font Awesome

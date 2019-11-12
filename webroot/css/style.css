@@ -522,6 +522,8 @@ table td {
     word-break: break-all;
 }
 
+/* Estilos propios de PadeGest */
+
 .view-action-fa-icon {
     color: #7575ff;
 }
@@ -536,4 +538,36 @@ table td {
 
 .delete-action-fa-icon {
     color: #cf0000;
+}
+
+.pistas-trackpicker {
+    height: 200px;
+    overflow: auto;
+    font-size: 0;
+}
+
+div.pistas-trackpicker * {
+    font-size: 0.75rem;
+}
+
+div.pistas-trackpicker .boton-pista-trackpicker {
+    display: inline-block;
+    width: 25ch;
+    margin: 0 3ch 3ch 0;
+    padding: 10px;
+    text-align: center;
+    background-color: #dadada;
+}
+
+div.pistas-trackpicker .boton-pista-trackpicker:hover {
+    display: inline-block;
+    width: 25ch;
+    margin: 0 3ch 3ch 0;
+    padding: 10px;
+    text-align: center;
+    background-color: #d0d0d0;
+}
+
+.selector-pista-trackpicker {
+    display: none;
 }

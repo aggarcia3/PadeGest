@@ -1,29 +1,29 @@
 <?php
-use App\Model\Table\ReservaTable;
 
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Reserva[]|\Cake\Collection\CollectionInterface $reserva
  */
 
+use Cake\ORM\TableRegistry;
+
 // Page title
 $this->assign('title', __('Gestión de {0}', __('reservas')));
 
-$ahora = new DateTimeImmutable();
-$esAdministrador = $auth->user('rol') === 'administrador';
+$esAdministrador = $Auth->user('rol') === 'administrador';
 
 $necesarioGenerarColumnaAcciones = $esAdministrador;
 $htmlFilasReservas = '';
 
 foreach ($reserva as $reservaAct) {
-    $modificable = $ahora < $reservaAct->fecha->sub(ReservaTable::getUnmodifiableInterval());
+    $modificable = TableRegistry::getTableLocator()->get('Reserva')->esModificable($reservaAct);
 
     ob_start();
 
     ?>
         <tr>
             <td><?= $this->Number->format($reservaAct->id) ?></td>
-            <td><?= !$modificable ? '<b>' : '' ?><?= h($reservaAct->fecha) ?><?= !$modificable ? '</b>' : '' ?></td>
+            <td><?= !$modificable ? '<b>' : '' ?><?= h($reservaAct->fechaInicio) ?><?= !$modificable ? '</b>' : '' ?></td>
             <td>
             <?php if ($esAdministrador): ?>
             <?=

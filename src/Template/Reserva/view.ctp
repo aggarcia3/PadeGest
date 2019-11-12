@@ -7,13 +7,11 @@
 // Page title
 $this->assign('title', __('Gestión de {0}', __('reservas')));
 
-$ahora = new DateTimeImmutable();
-$esAdministrador = $auth->user('rol') === 'administrador';
+$esAdministrador = $Auth->user('rol') === 'administrador';
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Acciones') ?></li>
-        <?php if ($esAdministrador): ?>
         <li><?=
             $this->Html->link(
                 '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('reserva')),
@@ -21,7 +19,6 @@ $esAdministrador = $auth->user('rol') === 'administrador';
                 ['escapeTitle' => false]
             )
         ?></li>
-        <?php endif; ?>
         <li><?=
             $this->Form->postLink(
                 '<i class="fas fa-calendar-minus delete-action-fa-icon"></i> ' . __($esAdministrador ? 'Eliminar {0}' : 'Cancelar {0}', __('reserva')),
@@ -69,7 +66,7 @@ $esAdministrador = $auth->user('rol') === 'administrador';
         </tr>
         <tr>
             <th scope="row"><?= __('Fecha') ?></th>
-            <td><?= h($reserva->fecha) ?></td>
+            <td><?= h($reserva->fechaInicio) ?></td>
         </tr>
         <?php if ($esAdministrador): ?>
         <tr>
