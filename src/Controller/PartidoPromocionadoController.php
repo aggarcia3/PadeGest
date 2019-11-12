@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 
 /**
  * PartidoPromocionado Controller
@@ -11,8 +11,6 @@ use Cake\I18n\Time;
  *
  * @method \App\Model\Entity\PartidoPromocionado[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-Time::setDefaultLocale('es-ES');
-Time::setToStringFormat('yyyy-MM-dd HH:mm:ss');
 class PartidoPromocionadoController extends AppController
 {
     /**
@@ -42,6 +40,13 @@ class PartidoPromocionadoController extends AppController
         $this->set('partidoPromocionado', $partidoPromocionado);
     }
 
+    /**
+     * TODO
+     *
+     * @param string|null $id Partido Promocionado id.
+     * @return void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
     public function inscribirse($id = null)
     {
         $partidoPromocionado = $this->PartidoPromocionado->get($id, [
@@ -61,9 +66,9 @@ class PartidoPromocionadoController extends AppController
 
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            $fecha = $data['fecha'].' '.$data['hora'].':00';
+            $fecha = $data['fecha'] . ' ' . $data['hora'] . ':00';
             unset($data['hora']);
-            $data['fecha'] = new Time($fecha);
+            $data['fecha'] = new FrozenTime($fecha);
             $data['reserva_id'] = null;
             debug($data);
             $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $data);
@@ -76,6 +81,7 @@ class PartidoPromocionadoController extends AppController
         }
         $this->set(compact('partidoPromocionado'));
     }
+
     /**
      * Edit method
      *

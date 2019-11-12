@@ -6,7 +6,7 @@
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
 
-<?php if($this->request->session()->read('Auth.User.rol') == "deportista"){ ?>
+<?php if($Auth->user('rol') == "deportista"){ ?>
 
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
@@ -18,7 +18,7 @@
     </ul>
 
 
-<?php }else{ ?>  
+<?php }else{ ?>
 
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
@@ -30,8 +30,8 @@
         <li><?= $this->Html->link(__('Usuarios'), ['controller' => 'Usuario', 'action' => 'listar']) ?></li>
     </ul>
 
-<?php } ?> 
-    
+<?php } ?>
+
 </nav>
 <div class="usuario index large-9 medium-8 columns content">
 </div>

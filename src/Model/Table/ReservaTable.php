@@ -196,8 +196,8 @@ class ReservaTable extends Table
      * Obtiene la primera pista libre para una determinada fecha.
      *
      * @param DateTimeInterface $fecha La fecha a comprobar si tiene alguna pista libre.
-     * @return \App\Model\Entity\Pista|null La primera pista libre encontrada para esa fecha,
-     * o nulo si no hay ninguna.
+     * @return array|\Cake\Datasource\EntityInterface|null La primera pista libre encontrada
+     * para esa fecha, o nulo si no hay ninguna.
      */
     public static function pistaLibre($fecha)
     {

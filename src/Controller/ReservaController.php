@@ -34,7 +34,7 @@ class ReservaController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null
+     * @return void
      */
     public function index()
     {

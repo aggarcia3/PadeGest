@@ -15,7 +15,7 @@ class UsuarioPartidoPromocionadoController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null
+     * @return void
      */
     public function index()
     {
@@ -31,7 +31,7 @@ class UsuarioPartidoPromocionadoController extends AppController
      * View method
      *
      * @param string|null $id Usuario Partido Promocionado id.
-     * @return \Cake\Http\Response|null
+     * @return void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
@@ -52,7 +52,7 @@ class UsuarioPartidoPromocionadoController extends AppController
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            $data['usuario_id'] = $this->request->session()->read('Auth.User.id');
+            $data['usuario_id'] = $this->Auth->user('id');
 
             //se buscan y filtran todas las tuplas que tengan como id el enviado en el formulario
             $sitios = $this->UsuarioPartidoPromocionado->find('all');
@@ -62,9 +62,8 @@ class UsuarioPartidoPromocionadoController extends AppController
                 $reservas++;
             }
 
-
             $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->patchEntity($usuarioPartidoPromocionado, $data);
-            if ($this->UsuarioPartidoPromocionado->save($usuarioPartidoPromocionado) && $reservas <=4) {
+            if ($this->UsuarioPartidoPromocionado->save($usuarioPartidoPromocionado) && $reservas <= 4) {
                 $this->Flash->success(__('Te has inscrito correctamente'));
 
                 //Otra vez, se buscan y filtran todas las tuplas que tengan como id el enviado en el formulario para si es = 4 crear una reserva
@@ -73,30 +72,30 @@ class UsuarioPartidoPromocionadoController extends AppController
                 $reservas = 0;
                 foreach ($sitios as $sitios) {
                     $reservas++;
-                }  
+                }
 
-                if( $reservas == 4){
+                if ($reservas == 4) {
                     $this->Flash->error(__('Se crea reserva'));
 
                     /*
-                    
+
                     LLAMAR A FUNCIÓN CREAR RESERVA
-                    
+
                     */
                 }
 
                 return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);
             }
-        
-            if($reservas > 4){
+
+            if ($reservas > 4) {
                 $this->Flash->error(__('Ya está lleno el partido'));
-            }else{
+            } else {
                 $this->Flash->error(__('No te has podido inscribir, inténtalo de nuevo'));
             }
-            return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);   
 
-
+            return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);
         }
+
         $usuario = $this->UsuarioPartidoPromocionado->Usuario->find('list', ['limit' => 200]);
         $partidoPromocionado = $this->UsuarioPartidoPromocionado->PartidoPromocionado->find('list', ['limit' => 200]);
         $this->set(compact('usuarioPartidoPromocionado', 'usuario', 'partidoPromocionado'));
