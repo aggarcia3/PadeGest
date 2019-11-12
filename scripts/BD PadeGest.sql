@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 08 Nov 2019 14:01:03 CET
+-- Generated on 12 Nov 2019 22:24:49 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -59,11 +59,12 @@ DROP TABLE IF EXISTS `PADEGEST`.`reserva` ;
 
 CREATE TABLE IF NOT EXISTS `PADEGEST`.`reserva` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `fecha` DATETIME NOT NULL,
+  `fechaInicio` DATETIME NOT NULL,
+  `fechaFin` DATETIME GENERATED ALWAYS AS (ADDTIME(fechaInicio, '1:0:0')) VIRTUAL,
   `pista_id` INT UNSIGNED NOT NULL,
   `usuario_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `UNIQUE` (`fecha` ASC, `pista_id` ASC),
+  UNIQUE INDEX `UNIQUE` (`fechaInicio` ASC, `pista_id` ASC),
   INDEX `FK_PISTA_idx` (`pista_id` ASC),
   INDEX `FK_RESERVA_USUARIO_idx` (`usuario_id` ASC),
   CONSTRAINT `FK_RESERVA_PISTA`
@@ -330,21 +331,58 @@ DROP function IF EXISTS `PADEGEST`.`reservaQueOcupaPista`;
 
 DELIMITER $$
 USE `PADEGEST`$$
-CREATE FUNCTION `PADEGEST`.`reservaQueOcupaPista`(idPista INT UNSIGNED, fechaComprobacion DATETIME, idReservaIgnorada INT UNSIGNED)
+CREATE FUNCTION `PADEGEST`.`reservaQueOcupaPista`(idPista INT UNSIGNED, fechaInicioComp DATETIME, idReservaIgnorada INT UNSIGNED)
 RETURNS INT UNSIGNED NOT DETERMINISTIC READS SQL DATA
 SQL SECURITY INVOKER
 BEGIN
-	DECLARE duracionReservas TIME DEFAULT '1:0:0'; -- 1 h
+	DECLARE fechaFinComp DATETIME DEFAULT ADDTIME(fechaInicioComp, '1:0:0');
 
 	DECLARE EXIT HANDLER FOR NOT FOUND RETURN NULL;
 
+	-- Obtener la primera reserva cuyo id sea diferente del ignorado
+    -- (por si se quiere ignorar que una reserva haga conflicto con ella
+    -- misma), sobre la pista dada, cuyo intervalo de tiempo se solape
+    -- con el que se toma como referencia
 	RETURN (
 		SELECT `id` FROM `PADEGEST`.`reserva`
 		WHERE
-			`id` <=> idReservaIgnorada AND
+			NOT `id` <=> idReservaIgnorada AND
 			`pista_id` = idPista AND
-			fechaComprobacion BETWEEN `fecha` AND ADDTIME(`fecha`, duracionReservas)
+			fechaFinComp >= `fechaInicio` AND
+            fechaInicioComp <= `fechaFin`
 		LIMIT 1
+	);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- function pistaDisponibleEnFecha
+-- -----------------------------------------------------
+
+USE `PADEGEST`;
+DROP function IF EXISTS `PADEGEST`.`pistaDisponibleEnFecha`;
+
+DELIMITER $$
+USE `PADEGEST`$$
+CREATE FUNCTION `PADEGEST`.`pistaDisponibleEnFecha`(fechaInicioComp DATETIME)
+RETURNS INT UNSIGNED NOT DETERMINISTIC READS SQL DATA
+SQL SECURITY INVOKER
+BEGIN
+	DECLARE fechaFinComp DATETIME DEFAULT ADDTIME(fechaInicioComp, '1:0:0');
+
+	DECLARE EXIT HANDLER FOR NOT FOUND RETURN NULL;
+
+	-- Obtener el identificador de la primera pista que no pertenezca
+    -- al conjunto de pistas reservadas en el momento dado
+	RETURN (
+		SELECT `id` FROM `PADEGEST`.`pista` WHERE `id` NOT IN (
+			SELECT `pista_id` FROM `PADEGEST`.`reserva`
+			WHERE
+				fechaFinComp >= `fechaInicio` AND
+                fechaInicioComp <= `fechaFin`
+		)
+        LIMIT 1
 	);
 END$$
 
@@ -352,6 +390,30 @@ DELIMITER ;
 USE `PADEGEST`;
 
 DELIMITER $$
+
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`usuario_BEFORE_INSERT` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`usuario_BEFORE_INSERT`
+BEFORE INSERT ON `usuario` FOR EACH ROW
+BEGIN
+	IF NEW.`esSocio` <> 0 AND NEW.`esSocio` <> 1 THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'El valor del atributo esSocio de un usuario debe de ser 0 o 1';
+    END IF;
+END$$
+
+
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`usuario_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`usuario_BEFORE_UPDATE`
+BEFORE UPDATE ON `usuario` FOR EACH ROW
+BEGIN
+	IF NEW.`esSocio` <> 0 AND NEW.`esSocio` <> 1 THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'El valor del atributo esSocio de un usuario debe de ser 0 o 1';
+    END IF;
+END$$
+
 
 USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_BEFORE_INSERT` $$
@@ -373,7 +435,11 @@ BEGIN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una reserva no puede realizarse por un usuario y por un partido promocionado o enfrentamiento a la vez';
     END IF;
 
-	IF (SELECT `PADEGEST`.`reservaQueOcupaPista`(NEW.`pista_id`, NEW.`fecha`, NEW.`id`) IS NOT NULL) THEN
+	IF NEW.`fechaInicio` > NEW.`fechaFin` THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de fin de una reserva debe de ser posterior a la de inicio';
+    END IF;
+
+	IF (SELECT `PADEGEST`.`reservaQueOcupaPista`(NEW.`pista_id`, NEW.`fechaInicio`, NEW.`id`) IS NOT NULL) THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La pista asociada a la reserva está ocupada a la hora especificada';
     END IF;
 END$$
@@ -398,17 +464,12 @@ BEGIN
 	THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una reserva no puede realizarse por un usuario y por un partido promocionado o enfrentamiento a la vez';
     END IF;
-END$$
 
+	IF NEW.`fechaInicio` > NEW.`fechaFin` THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de fin de una reserva debe de ser posterior a la de inicio';
+    END IF;
 
-USE `PADEGEST`$$
-DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_AFTER_UPDATE` $$
-USE `PADEGEST`$$
-CREATE TRIGGER `PADEGEST`.`reserva_AFTER_UPDATE`
-AFTER UPDATE ON `reserva` FOR EACH ROW
-BEGIN
-	-- Hacemos esta comprobación después por si cambia la PK
-	IF (SELECT `PADEGEST`.`reservaQueOcupaPista`(NEW.`pista_id`, NEW.`fecha`, NEW.`id`) IS NOT NULL) THEN
+	IF (SELECT `PADEGEST`.`reservaQueOcupaPista`(NEW.`pista_id`, NEW.`fechaInicio`, NEW.`id`) IS NOT NULL) THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La pista asociada a la reserva está ocupada a la hora especificada';
     END IF;
 END$$
@@ -425,7 +486,7 @@ BEGIN
 	-- Ignorar reservas inexistentes
 	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
 
-	SELECT fecha FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
+	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
 	IF fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
@@ -444,7 +505,7 @@ BEGIN
 	-- Ignorar reservas inexistentes
 	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
 
-	SELECT fecha FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
+	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
 	IF fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
@@ -463,7 +524,7 @@ BEGIN
 	-- Ignorar reservas inexistentes
 	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
 
-	SELECT fecha FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
+	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
 	IF fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
@@ -482,7 +543,7 @@ BEGIN
 	-- Ignorar reservas inexistentes
 	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
 
-	SELECT fecha FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
+	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
 	IF fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
@@ -590,6 +651,12 @@ DELIMITER ;
 DROP USER IF EXISTS 'PadeGestApp';
 CREATE USER 'PadeGestApp' IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
 GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp';
+GRANT EXECUTE ON FUNCTION PADEGEST.reservaQueOcupaPista TO 'PadeGestApp';
+GRANT EXECUTE ON function `PADEGEST`.`pistaDisponibleEnFecha` TO 'PadeGestApp';
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
 -- Data for table `PADEGEST`.`usuario`
@@ -659,22 +726,22 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (1, '2019-10-21 22:00:00', 10, 20);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (2, '2019-10-25 20:00:00', 4, 8);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (3, '2019-10-24 08:00:00', 14, 18);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (4, '2019-10-22 11:00:00', 13, 12);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (5, '2019-10-23 21:00:00', 10, 24);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (6, '2019-10-22 16:00:00', 4, 24);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (7, '2019-10-25 10:00:00', 2, 9);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (8, '2019-10-21 15:00:00', 4, 26);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (9, '2019-10-20 16:00:00', 5, 11);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (10, '2019-10-23 22:00:00', 14, 26);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (11, '2019-10-16 22:00:00', 12, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (12, '2019-10-23 14:00:00', 12, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (13, '2019-10-19 17:00:00', 13, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (14, '2019-10-06 10:00:00', 3, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (15, '2019-10-15 18:00:00', 6, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fecha`, `pista_id`, `usuario_id`) VALUES (16, '2019-10-22 10:00:00', 7, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (1, '2019-10-21 22:00:00', DEFAULT, 10, 20);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (2, '2019-10-25 20:00:00', DEFAULT, 4, 8);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (3, '2019-10-24 08:00:00', DEFAULT, 14, 18);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (4, '2019-10-22 11:00:00', DEFAULT, 13, 12);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (5, '2019-10-23 21:00:00', DEFAULT, 10, 24);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (6, '2019-10-22 16:00:00', DEFAULT, 4, 24);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (7, '2019-10-25 10:00:00', DEFAULT, 2, 9);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (8, '2019-10-21 15:00:00', DEFAULT, 4, 26);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (9, '2019-10-20 16:00:00', DEFAULT, 5, 11);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (10, '2019-10-23 22:00:00', DEFAULT, 14, 26);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (11, '2019-10-16 22:00:00', DEFAULT, 12, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (12, '2019-10-23 14:00:00', DEFAULT, 12, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (13, '2019-10-19 17:00:00', DEFAULT, 13, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (14, '2019-10-06 10:00:00', DEFAULT, 3, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (15, '2019-10-15 18:00:00', DEFAULT, 6, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (16, '2019-10-22 10:00:00', DEFAULT, 7, NULL);
 
 COMMIT;
 
