@@ -58,7 +58,7 @@ class PistaController extends AppController
 
             $this->viewBuilder()->setTemplate('index');
 
-            return $this->index();
+            $this->index();
         }
 
         $this->set(compact('pista'));

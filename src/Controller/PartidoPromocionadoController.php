@@ -70,7 +70,7 @@ class PartidoPromocionadoController extends AppController
             unset($data['hora']);
             $data['fecha'] = new FrozenTime($fecha);
             $data['reserva_id'] = null;
-            debug($data);
+            //debug($data);
             $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $data);
             if ($this->PartidoPromocionado->save($partidoPromocionado)) {
                 $this->Flash->success(__('The partido promocionado has been saved.'));

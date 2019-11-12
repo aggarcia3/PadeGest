@@ -9,7 +9,7 @@ use Cake\Validation\Validator;
 /**
  * PartidoPromocionado Model
  *
- * @property &\Cake\ORM\Association\BelongsTo $Reserva
+ * @property \Cake\ORM\Association\BelongsTo $Reserva
  * @property \App\Model\Table\UsuarioTable&\Cake\ORM\Association\BelongsToMany $Usuario
  *
  * @method \App\Model\Entity\PartidoPromocionado get($primaryKey, $options = [])
