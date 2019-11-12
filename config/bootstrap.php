@@ -197,8 +197,8 @@ Type::build('timestamp')
 /*
  * Formatos de fecha predeterminados
  */
-FrozenTime::setToStringFormat('E, dd MMM yyyy, HH:mm:ss');
-Time::setToStringFormat('E, dd MMM yyyy, HH:mm:ss');
+FrozenTime::setToStringFormat('E, dd MMM yyyy, HH:mm');
+Time::setToStringFormat('E, dd MMM yyyy, HH:mm');
 
 /*
  * Custom Inflector rules, can be set to correctly pluralize or singularize
