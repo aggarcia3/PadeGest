@@ -57,24 +57,33 @@ class PartidoPromocionadoController extends AppController
      */
     public function add()
     {
-        $partidoPromocionado = $this->PartidoPromocionado->newEntity();
+        if($this->request->session()->read('Auth.User.rol') == "administrador"){
+            
+            $partidoPromocionado = $this->PartidoPromocionado->newEntity();
 
-        if ($this->request->is('post')) {
-            $data = $this->request->getData();
-            $fecha = $data['fecha'].' '.$data['hora'].':00';
-            unset($data['hora']);
-            $data['fecha'] = new Time($fecha);
-            $data['reserva_id'] = null;
-            debug($data);
-            $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $data);
-            if ($this->PartidoPromocionado->save($partidoPromocionado)) {
-                $this->Flash->success(__('The partido promocionado has been saved.'));
+            if ($this->request->is('post')) {
+                $data = $this->request->getData();
+                $fecha = $data['fecha'].' '.$data['hora'].':00';
+                unset($data['hora']);
+                $data['fecha'] = new Time($fecha);
+                $data['reserva_id'] = null;
+                debug($data);
+                $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $data);
+                if ($this->PartidoPromocionado->save($partidoPromocionado)) {
+                    $this->Flash->success(__('The partido promocionado has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                    return $this->redirect(['action' => 'index']);
+                }
+                $this->Flash->error(__('The partido promocionado could not be saved. Please, try again.'));
             }
-            $this->Flash->error(__('The partido promocionado could not be saved. Please, try again.'));
+            $this->set(compact('partidoPromocionado'));
+
+        }else{
+            return $this->redirect(
+                array('controller' => 'Usuario', 'action' => 'logout'));
         }
-        $this->set(compact('partidoPromocionado'));
+
+        
     }
     /**
      * Edit method
@@ -85,20 +94,25 @@ class PartidoPromocionadoController extends AppController
      */
     public function edit($id = null)
     {
-        $partidoPromocionado = $this->PartidoPromocionado->get($id, [
-            'contain' => ['Usuario']
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $this->request->getData());
-            if ($this->PartidoPromocionado->save($partidoPromocionado)) {
-                $this->Flash->success(__('The partido promocionado has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        if($this->request->session()->read('Auth.User.rol') == "administrador"){
+            $partidoPromocionado = $this->PartidoPromocionado->get($id, [
+                'contain' => ['Usuario']
+            ]);
+            if ($this->request->is(['patch', 'post', 'put'])) {
+                $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $this->request->getData());
+                if ($this->PartidoPromocionado->save($partidoPromocionado)) {
+                    $this->Flash->success(__('The partido promocionado has been saved.'));
+    
+                    return $this->redirect(['action' => 'index']);
+                }
+                $this->Flash->error(__('The partido promocionado could not be saved. Please, try again.'));
             }
-            $this->Flash->error(__('The partido promocionado could not be saved. Please, try again.'));
-        }
-        $usuario = $this->PartidoPromocionado->Usuario->find('list', ['limit' => 200]);
-        $this->set(compact('partidoPromocionado', 'usuario'));
+            $usuario = $this->PartidoPromocionado->Usuario->find('list', ['limit' => 200]);
+            $this->set(compact('partidoPromocionado', 'usuario'));
+        }else{
+            return $this->redirect(
+                array('controller' => 'Usuario', 'action' => 'logout'));
+        } 
     }
 
     /**
@@ -110,14 +124,22 @@ class PartidoPromocionadoController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $partidoPromocionado = $this->PartidoPromocionado->get($id);
-        if ($this->PartidoPromocionado->delete($partidoPromocionado)) {
-            $this->Flash->success(__('The partido promocionado has been deleted.'));
-        } else {
-            $this->Flash->error(__('The partido promocionado could not be deleted. Please, try again.'));
+
+        if($this->request->session()->read('Auth.User.rol') == "administrador"){
+            $this->request->allowMethod(['post', 'delete']);
+            $partidoPromocionado = $this->PartidoPromocionado->get($id);
+            if ($this->PartidoPromocionado->delete($partidoPromocionado)) {
+                $this->Flash->success(__('The partido promocionado has been deleted.'));
+            } else {
+                $this->Flash->error(__('The partido promocionado could not be deleted. Please, try again.'));
+            }
+
+            return $this->redirect(['action' => 'index']);
+        }else{
+            return $this->redirect(
+                array('controller' => 'Usuario', 'action' => 'logout'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        
     }
 }

@@ -4,14 +4,32 @@
  * @var \App\Model\Entity\PartidoPromocionado $partidoPromocionado
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Partido Promocionado'), ['action' => 'index']) ?> </li>
+<nav class="large-3 medium-4 columns" id="actions-sidebar" style="padding-bottom: 0px; margin-bottom:0px;" >
+    <ul class="side-nav ">
+
+<?php if($this->request->session()->read('Auth.User.id') && $this->request->session()->read('Auth.User.rol') == "administrador"){ ?>
+
+<?= $this->Html->link(__('Partidos Promocionados'), ['controller' => 'PartidoPromocionado', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Enfrentamientos Restantes'), ['controller' => 'Enfrentamiento', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Campeonatos'), ['controller' => 'Campeonato', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Reservas de Pistas'), ['controller' => 'Reserva', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Playoffs'), ['controller' => 'Playoffs', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Usuarios'), ['controller' => 'Usuario', 'action' => 'listar'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+
+<?php }else if($this->request->session()->read('Auth.User.id') && $this->request->session()->read('Auth.User.rol') == "deportista"){ ?> 
+
+<?= $this->Html->link(__('Partidos Promocionados'), ['controller' => 'PartidoPromocionado', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Enfrentamientos Restantes'), ['controller' => 'Enfrentamiento', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Campeonatos'), ['controller' => 'Campeonato', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Reservas de Pistas'), ['controller' => 'Reserva', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+<?= $this->Html->link(__('Playoffs'), ['controller' => 'Playoffs', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+
+<?php } ?> 
+
     </ul>
 </nav>
-<div class="partidoPromocionado view large-9 medium-8 columns content">
-    <h3><?= h($partidoPromocionado->id) ?></h3>
+<div class="partidoPromocionado view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<h3 class="card-title text-center" style="color: black;">Partido Promocionado: <?= h($partidoPromocionado->nombre) ?></h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Id') ?></th>
@@ -19,7 +37,7 @@
         </tr>
         <tr>
             <th scope="row"><?= __('Nombre') ?></th>
-            <td><?= $this->Number->format($partidoPromocionado->id) ?></td>
+            <td><?= h($partidoPromocionado->nombre) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('IdReserva') ?></th>
@@ -31,7 +49,7 @@
         </tr>
     </table>
     <div class="related">
-        <h4><?= __('Usuarios Inscritos') ?></h4>
+    <h3 class="card-title text-center" style="color: black;">Usuarios Inscritos</h3>
         <?php if (!empty($partidoPromocionado->usuario)): ?>
         <table cellpadding="0" cellspacing="0">
             <tr>
@@ -54,13 +72,14 @@
                 <td><?php echo ((h($usuario->esSocio) == 1 ) ? "Si" :  "No"); ?></td>
                 <td><?= h($usuario->rol) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'Usuario', 'action' => 'view', $usuario->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'Usuario', 'action' => 'edit', $usuario->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'Usuario', 'action' => 'delete', $usuario->id], ['confirm' => __('Are you sure you want to delete # {0}?', $usuario->id)]) ?>
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Usuario', 'action' => 'view', $usuario->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['controller' => 'Usuario', 'action' => 'edit', $usuario->id], ['escapeTitle' => false]) ?>
+                    <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['controller' => 'Usuario', 'action' => 'delete', $usuario->id], ['escapeTitle' => false, 'confirm' => __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('el usuario {0}', $usuario->username)])]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>
         </table>
         <?php endif; ?>
+    </div>
     </div>
 </div>
