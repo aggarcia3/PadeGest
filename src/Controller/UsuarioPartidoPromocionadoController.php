@@ -10,6 +10,7 @@ use App\Controller\AppController;
  *
  * @method \App\Model\Entity\UsuarioPartidoPromocionado[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
+
 class UsuarioPartidoPromocionadoController extends AppController
 {
     /**
@@ -17,6 +18,17 @@ class UsuarioPartidoPromocionadoController extends AppController
      *
      * @return void
      */
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), ['index', 'view']) ||
+               $user['rol'] === 'administrador';
+
+    }
+
+
     public function index()
     {
         $this->paginate = [
@@ -49,14 +61,19 @@ class UsuarioPartidoPromocionadoController extends AppController
      */
     public function add()
     {
+
+
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             $data['usuario_id'] = $this->Auth->user('id');
 
+
             //se buscan y filtran todas las tuplas que tengan como id el enviado en el formulario
             $sitios = $this->UsuarioPartidoPromocionado->find('all');
             $sitiosFiltrado = $sitios->where(['partido_promocionado_id' => $data['partido_promocionado_id']]);
+            
+            
             $reservas = 0;
             foreach ($sitios as $sitios) {
                 $reservas++;
@@ -75,12 +92,17 @@ class UsuarioPartidoPromocionadoController extends AppController
                 }
 
                 if ($reservas == 4) {
+                    //Borrar esta línea de código cuande se cree la reserva
+
                     $this->Flash->error(__('Se crea reserva'));
 
+
+                    $result = (new ReservaController())->add2($data['partido_promocionado_id']);
                     /*
 
                     LLAMAR A FUNCIÓN CREAR RESERVA
-
+                    LLAMAR A LA FUNCIÓN DE NOTIFICACIÓN A LOS USUARIOS QUEE ESTÉN INSCRITOS
+                    
                     */
                 }
 

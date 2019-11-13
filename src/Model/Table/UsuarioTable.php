@@ -60,7 +60,7 @@ class UsuarioTable extends Table
             ->scalar('password')
             ->lengthBetween('password', [32, 32], __('Ha ocurrido un error interno al almacenar la contraseña.'))
             ->requirePresence('password', 'create')
-            ->notEmptyString('password');
+            ->notEmptyString('password', null, 'create');
 
         $validator
             ->scalar('nombre')
