@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 14 Nov 2019 01:05:04 CET
+-- Generated on 14 Nov 2019 22:20:16 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`enfrentamiento` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `fecha` DATETIME NOT NULL,
+  `fase` ENUM('liga regular', 'playoffs') NOT NULL,
   `reserva_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
   INDEX `FK_ENFRENTAMIENTO_RESERVA_idx` (`reserva_id` ASC),
@@ -277,45 +278,6 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`pareja_enfrentamiento` (
   CONSTRAINT `FK_PAREJA_ENFRENTAMIENTO_ENFRENTAMIENTO`
     FOREIGN KEY (`enfrentamiento_id`)
     REFERENCES `PADEGEST`.`enfrentamiento` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `PADEGEST`.`liga_regular`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `PADEGEST`.`liga_regular` ;
-
-CREATE TABLE IF NOT EXISTS `PADEGEST`.`liga_regular` (
-  `id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `FK_LIGA_REGULAR_CAMPEONATO`
-    FOREIGN KEY (`id`)
-    REFERENCES `PADEGEST`.`campeonato` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `PADEGEST`.`playoffs`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `PADEGEST`.`playoffs` ;
-
-CREATE TABLE IF NOT EXISTS `PADEGEST`.`playoffs` (
-  `id` INT UNSIGNED NOT NULL,
-  `liga_regular_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `nombreLigaRegular_UNIQUE` (`liga_regular_id` ASC),
-  CONSTRAINT `FK_PLAYOFFS_LIGA_REGULAR`
-    FOREIGN KEY (`liga_regular_id`)
-    REFERENCES `PADEGEST`.`liga_regular` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `FK_PLAYOFFS_CAMPEONATO`
-    FOREIGN KEY (`id`)
-    REFERENCES `PADEGEST`.`campeonato` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -751,15 +713,15 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (1, 'Partido 1 European Veteran Championship', '2019-11-19 17:00:00', 13);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (2, 'Partido 2 European Veteran Championship', '2019-11-06 10:00:00', 14);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (3, 'Partido 1 Máster de Menores 2019', '2019-11-15 18:00:00', 15);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (4, 'Partido 2 Máster de Menores 2019', '2019-11-22 10:00:00', 16);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (5, 'Partido 1 TyC PREMIUM 3', '2019-10-28 12:00:00', NULL);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (6, 'Partido 3 European Veteran Championship', '2019-10-19 11:00:00', NULL);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (7, 'Partido 3 Máster de Menores 2019', '2019-10-05 17:00:00', NULL);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (8, 'Partido 2 TyC PREMIUM 3', '2019-10-28 18:00:00', NULL);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (9, 'Partido 3 TyC PREMIUM 3', '2019-10-05 20:00:00', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (1, 'Partido 1 European Veteran Championship', '2019-11-19 17:00:00', 'liga regular', 13);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (2, 'Partido 2 European Veteran Championship', '2019-11-06 10:00:00', 'liga regular', 14);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (3, 'Partido 1 Máster de Menores 2019', '2019-11-15 18:00:00', 'playoffs', 15);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (4, 'Partido 2 Máster de Menores 2019', '2019-11-22 10:00:00', 'liga regular', 16);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (5, 'Partido 1 TyC PREMIUM 3', '2019-10-28 12:00:00', 'playoffs', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (6, 'Partido 3 European Veteran Championship', '2019-10-19 11:00:00', 'liga regular', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (7, 'Partido 3 Máster de Menores 2019', '2019-10-05 17:00:00', 'liga regular', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (8, 'Partido 2 TyC PREMIUM 3', '2019-10-28 18:00:00', 'playoffs', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (9, 'Partido 3 TyC PREMIUM 3', '2019-10-05 20:00:00', 'liga regular', NULL);
 
 COMMIT;
 
@@ -811,9 +773,6 @@ USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (1, 'European Veteran Championship', 'Bases de campeonato de ejemplo', '2019-07-31 00:00:00', '2019-11-16 00:00:00');
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (2, 'Máster de Menores 2019', 'Bases de campeonato de ejemplo', '2019-06-10 00:00:00', '2019-06-29 00:00:00');
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (3, 'TyC PREMIUM 3', 'Bases de campeonato de ejemplo', '2019-09-29 00:00:00', '2019-12-05 00:00:00');
-INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (4, 'Playoffs European Veteran Championship', 'Bases de campeonato de ejemplo', '2019-07-10 00:00:00', '2019-07-20 00:00:00');
-INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (5, 'Playoffs máster de Menores 2019', 'Bases de campeonato de ejemplo', '2019-06-17 00:00:00', '2019-11-30 00:00:00');
-INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (6, 'Playoffs TyC PREMIUM 3', 'Bases de campeonato de ejemplo', '2019-08-28 00:00:00', '2019-09-05 00:00:00');
 
 COMMIT;
 
@@ -926,30 +885,6 @@ INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`
 INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`, `participacionConfirmada`) VALUES (7, 4, 1);
 INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`, `participacionConfirmada`) VALUES (2, 1, 1);
 INSERT INTO `PADEGEST`.`pareja_enfrentamiento` (`pareja_id`, `enfrentamiento_id`, `participacionConfirmada`) VALUES (28, 9, 0);
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `PADEGEST`.`liga_regular`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`liga_regular` (`id`) VALUES (1);
-INSERT INTO `PADEGEST`.`liga_regular` (`id`) VALUES (2);
-INSERT INTO `PADEGEST`.`liga_regular` (`id`) VALUES (3);
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `PADEGEST`.`playoffs`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`playoffs` (`id`, `liga_regular_id`) VALUES (4, 1);
-INSERT INTO `PADEGEST`.`playoffs` (`id`, `liga_regular_id`) VALUES (5, 2);
-INSERT INTO `PADEGEST`.`playoffs` (`id`, `liga_regular_id`) VALUES (6, 3);
 
 COMMIT;
 
