@@ -38,6 +38,14 @@ class ReservaTable extends Table
     private static $intervaloSoloLectura = null;
 
     /**
+     * El intervalo de tiempo de antelación mínima con el que una nueva
+     * reserva debe de hacerse.
+     *
+     * @var DateInterval
+     */
+    private static $antelacionCreacion = null;
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -88,7 +96,17 @@ class ReservaTable extends Table
         $validator
             ->dateTime('fechaInicio', ['ymd'], __('La fecha de reserva sigue un formato incorrecto.'))
             ->requirePresence('fechaInicio', 'create', __('Es necesario especificar una fecha para una reserva.'))
-            ->notEmptyDateTime('fechaInicio', __('La fecha de reserva no puede estar vacía.'));
+            ->notEmptyDateTime('fechaInicio', __('La fecha de reserva no puede estar vacía.'), 'create')
+            ->add('fechaInicio', 'conAntelacion', [
+                'rule' => function ($value, $context) {
+                    if (!$context['newRecord'] || !($value instanceof DateTimeInterface)) {
+                        return true;
+                    } else {
+                        return FrozenTime::now()->add(self::getAntelacionCreacion()) <= $value;
+                    }
+                },
+                'message' => __('Las reservas deben de crearse con la antelación suficiente.')
+            ]);
 
         // Por ahora, la fecha de fin se genera automáticamente
         $validator
@@ -183,10 +201,28 @@ class ReservaTable extends Table
     public static function getIntervaloSoloLectura()
     {
         if (self::$intervaloSoloLectura === null) {
-            $toret = new DateInterval('PT8H'); // 8 h
+            $toret = new DateInterval('PT12H'); // 12 h
             self::$intervaloSoloLectura = $toret;
         } else {
             $toret = self::$intervaloSoloLectura;
+        }
+
+        return $toret;
+    }
+
+    /**
+     * Devuelve el intervalo de tiempo de antelación mínima con el que una
+     * nueva reserva debe de hacerse.
+     *
+     * @return DateInterval El descrito intervalo.
+     */
+    public static function getAntelacionCreacion()
+    {
+        if (self::$antelacionCreacion === null) {
+            $toret = new DateInterval('P7D'); // 7 días
+            self::$antelacionCreacion = $toret;
+        } else {
+            $toret = self::$antelacionCreacion;
         }
 
         return $toret;

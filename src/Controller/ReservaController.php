@@ -28,7 +28,8 @@ class ReservaController extends AppController
      */
     public function isAuthorized($user)
     {
-        return true;
+        return $this->Auth->user('rol') === 'administrador' ||
+               $this->request->getParam('action') !== 'edit';
     }
 
     /**

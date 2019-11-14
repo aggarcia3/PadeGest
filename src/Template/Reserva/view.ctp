@@ -4,14 +4,19 @@
  * @var \App\Model\Entity\Reserva $reserva
  */
 
+use Cake\ORM\TableRegistry;
+
 // Page title
 $this->assign('title', __('Gestión de {0}', __('reservas')));
+
+$modificable = TableRegistry::getTableLocator()->get('Reserva')->esModificable($reserva);
 
 $esAdministrador = $Auth->user('rol') === 'administrador';
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Acciones') ?></li>
+        <?php if ($esAdministrador && $modificable): ?>
         <li><?=
             $this->Html->link(
                 '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('reserva')),
@@ -19,6 +24,8 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
                 ['escapeTitle' => false]
             )
         ?></li>
+        <?php endif; ?>
+        <?php if ($modificable): ?>
         <li><?=
             $this->Form->postLink(
                 '<i class="fas fa-calendar-minus delete-action-fa-icon"></i> ' . __($esAdministrador ? 'Eliminar {0}' : 'Cancelar {0}', __('reserva')),
@@ -28,6 +35,7 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
                 ]
             )
         ?></li>
+        <?php endif; ?>
         <li><?=
             $this->Html->link(
                 '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver ' . ($esAdministrador ? '' : 'mis ') . '{0}', __('reservas')),
