@@ -75,7 +75,7 @@ foreach ($reserva as $reservaAct) {
                     )
                 ?>
                 <?php endif; ?>
-                <?php if ($modificable): ?>
+                <?php if ($esAdministrador && $modificable): ?>
                 <?=
                     $this->Html->link(
                         '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
@@ -83,6 +83,8 @@ foreach ($reserva as $reservaAct) {
                         ['escapeTitle' => false]
                     )
                 ?>
+                <?php endif; ?>
+                <?php if ($modificable): ?>
                 <?=
                     $this->Form->postLink(
                         '<i class="fas fa-calendar-minus delete-action-fa-icon"></i>',

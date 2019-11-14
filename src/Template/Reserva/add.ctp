@@ -13,9 +13,6 @@ $this->assign('title', __('Gestión de {0}', __('reservas')));
 // Importar dependencias de Flatpickr
 FlatpickrWidget::importarDependencias($this);
 
-// Sweetalert
-$this->Html->script('https://unpkg.com/sweetalert/dist/sweetalert.min.js', ['block' => true]);
-
 $esAdministrador = $Auth->user('rol') === 'administrador';
 
 $timestampLimiteModificable = $hoy->add(ReservaTable::getIntervaloSoloLectura())->getTimestamp() * 1000; // Conversión a ms
@@ -58,9 +55,8 @@ $timestampLimiteModificable = $hoy->add(ReservaTable::getIntervaloSoloLectura())
                 'type' => 'flatpickr_date',
                 'label' => __('Fecha y hora'),
                 'flatpickrOptions' => [
-                    'minDate' => ($esAdministrador ? $hoy->subMonths(2) : $hoy->add(ReservaTable::getIntervaloSoloLectura())->addDay())->getTimestamp() * 1000,
-                    'maxDate' => $hoy->add(ReservaTable::getIntervaloSoloLectura())->addMonth()->getTimestamp() * 1000,
-                    'onClose' => 'function(fechasSel) { if (fechasSel.length > 0 && fechasSel[0].getTime() <= (new Date(' . $timestampLimiteModificable . ')).getTime() && (ultimaFechaSel === undefined || ultimaFechaSel != fechasSel[0].getTime())) { swal("Aviso", "' . __('La fecha escogida creará una reserva que no se podrá editar o eliminar después. Si eso no es deseable, establece una fecha posterior.') . '", "info", { button: "' . __('De acuerdo') . '" }); ultimaFechaSel = fechasSel[0].getTime(); } }'
+                    'minDate' => $hoy->addDays(7)->getTimestamp() * 1000,
+                    'maxDate' => $hoy->add(ReservaTable::getIntervaloSoloLectura())->addMonth()->getTimestamp() * 1000
                 ]
             ])
         ?>
