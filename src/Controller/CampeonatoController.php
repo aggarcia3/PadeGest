@@ -196,15 +196,22 @@ class CampeonatoController extends AppController
         $resultsIteratorObject = $categoriaNivel->find()->where(['campeonato_id' => $var[0]])->all();
 
         foreach ($resultsIteratorObject as $categoriaNivel) {
-            $var2[$j] = $campeonato['id'];
+            $var2[$j] = $categoriaNivel['id'];
                 $j++;
         }
-        debug($var2[0]);
+        $l = 0;
         $pareja = TableRegistry::getTableLocator()->get('Pareja');
         $resultsIteratorObject2 = $pareja->find()->where(['categoria_nivel_id' => $var2[0]])->all();
         foreach ($resultsIteratorObject2 as $pareja) {
-            debug($pareja);
+            $var3[$l] = $categoriaNivel['id'];
+            $l++;
         }
-        die();
+        $numeroGrupos = intval(sizeof($var3)/8);
+
+        $grupo = (new GrupoController());
+        for ($t = 0; $t < $numeroGrupos; $t++) {
+            $grupoValues['categoria_nivel_id'] = $var2[0];
+            $grupo->add2($grupoValues);
+        }
     }
 }

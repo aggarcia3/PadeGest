@@ -60,6 +60,22 @@ class GrupoController extends AppController
         $this->set(compact('grupo'));
     }
 
+    public function add2($var)
+    {
+        debug($var);
+        $grupo = $this->Grupo->newEntity();
+        $grupo = $this->Grupo->patchEntity($grupo, $var);
+        if ($this->Grupo->save($grupo)) {
+            $this->Flash->success(__('The grupo has been saved.'));
+
+            return $this->redirect(['action' => 'index']);
+        }else{
+            $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
+        }    
+    
+        $this->set(compact('grupo'));
+    }
+
     /**
      * Edit method
      *

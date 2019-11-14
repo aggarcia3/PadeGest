@@ -22,17 +22,17 @@ class GrupoFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-        'idCategoriaNivel' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'categoria_nivel_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         '_indexes' => [
-            'FK_GRUPO_CATEGORIA_NIVEL_idx' => ['type' => 'index', 'columns' => ['idCategoriaNivel'], 'length' => []],
+            'FK_GRUPO_CATEGORIA_NIVEL_idx' => ['type' => 'index', 'columns' => ['categoria_nivel_id'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'FK_GRUPO_CATEGORIA_NIVEL' => ['type' => 'foreign', 'columns' => ['idCategoriaNivel'], 'references' => ['categoria_nivel', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'FK_GRUPO_CATEGORIA_NIVEL' => ['type' => 'foreign', 'columns' => ['categoria_nivel_id'], 'references' => ['categoria_nivel', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_bin'
+            'collation' => 'utf8mb4_bin'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -46,7 +46,7 @@ class GrupoFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'idCategoriaNivel' => 1
+                'categoria_nivel_id' => 1
             ],
         ];
         parent::init();
