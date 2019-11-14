@@ -253,7 +253,8 @@ return [
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
              * the following line and set the port accordingly
              */
-            'port' => '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock:3306',
+            // Pablo: descomenta esto en tu app.php, pero por favor, no toques esto
+            //'port' => '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock:3306',
             'username' => 'root',
             'password' => '',
             'database' => 'PADEGEST',

@@ -71,8 +71,8 @@ class PartidoPromocionadoController extends AppController
      */
     public function add()
     {
-        if($this->request->session()->read('Auth.User.rol') == "administrador"){
-            
+        if($this->Auth->user('rol') == "administrador"){
+
             $partidoPromocionado = $this->PartidoPromocionado->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
@@ -96,7 +96,7 @@ class PartidoPromocionadoController extends AppController
                 array('controller' => 'Usuario', 'action' => 'logout'));
         }
 
-        
+
     }
 
     /**
@@ -108,7 +108,7 @@ class PartidoPromocionadoController extends AppController
      */
     public function edit($id = null)
     {
-        if($this->request->session()->read('Auth.User.rol') == "administrador"){
+        if($this->Auth->user('rol') == "administrador"){
             $partidoPromocionado = $this->PartidoPromocionado->get($id, [
                 'contain' => ['Usuario']
             ]);
@@ -116,7 +116,7 @@ class PartidoPromocionadoController extends AppController
                 $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $this->request->getData());
                 if ($this->PartidoPromocionado->save($partidoPromocionado)) {
                     $this->Flash->success(__('The partido promocionado has been saved.'));
-    
+
                     return $this->redirect(['action' => 'index']);
                 }
                 $this->Flash->error(__('The partido promocionado could not be saved. Please, try again.'));
@@ -126,7 +126,7 @@ class PartidoPromocionadoController extends AppController
         }else{
             return $this->redirect(
                 array('controller' => 'Usuario', 'action' => 'logout'));
-        } 
+        }
     }
 
     /**
@@ -139,7 +139,7 @@ class PartidoPromocionadoController extends AppController
     public function delete($id = null)
     {
 
-        if($this->request->session()->read('Auth.User.rol') == "administrador"){
+        if($this->Auth->user('rol') == "administrador"){
             $this->request->allowMethod(['post', 'delete']);
             $partidoPromocionado = $this->PartidoPromocionado->get($id);
             if ($this->PartidoPromocionado->delete($partidoPromocionado)) {
@@ -154,6 +154,6 @@ class PartidoPromocionadoController extends AppController
                 array('controller' => 'Usuario', 'action' => 'logout'));
         }
 
-        
+
     }
 }

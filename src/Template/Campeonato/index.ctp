@@ -7,7 +7,7 @@
 <?= $this->element('menu') ?>
 <div class="campeonato index large-9 medium-8 columns content">
 
-<?php if($this->request->session()->read('Auth.User.rol') == "administrador"){ ?>
+<?php if($Auth->user('rol') == "administrador"){ ?>
 
     <h3 class="card-title text-center" style="color: black;">Campeonatos<a href="/campeonato/add" class="btn btn-primary btn-sm float-right">Añadir campeonato</a></h3>
 
@@ -39,7 +39,7 @@
                 <td><?= $this->Number->format($campeonato->id) ?></td>
 
 <?php } ?>
-                
+
                 <td><?= h($campeonato->nombre) ?></td>
                 <td><?= h($campeonato->fechaInicioInscripciones) ?></td>
                 <td><?= h($campeonato->fechaFinInscripciones) ?></td>
