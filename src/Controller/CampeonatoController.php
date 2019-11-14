@@ -17,6 +17,25 @@ class CampeonatoController extends AppController
      *
      * @return void
      */
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), ['view', 'index', 'inscribirse']) ||
+               $user['rol'] === 'administrador';
+
+    }
+
+    public function inscribirse($id = null)
+    {
+        $campeonato = $this->Campeonato->get($id, [
+            'contain' => []
+        ]);
+
+        $this->set('campeonato', $campeonato);
+    }
+
     public function index()
     {
         $campeonato = $this->paginate($this->Campeonato);

@@ -6,8 +6,11 @@ use Cake\ORM\Entity;
 /**
  * UsuarioPartidoPromocionado Entity
  *
- * @property int $idUsuario
- * @property int $idPartidoPromocionado
+ * @property int $usuario_id
+ * @property int $partido_promocionado_id
+ *
+ * @property \App\Model\Entity\Usuario $usuario
+ * @property \App\Model\Entity\PartidoPromocionado $partido_promocionado
  */
 class UsuarioPartidoPromocionado extends Entity
 {
@@ -21,8 +24,7 @@ class UsuarioPartidoPromocionado extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true,
-        'idUsuario' => false,
-        'idPartidoPromocionado' => false
+        'usuario_id' => true,
+        'partido_promocionado_id' => true
     ];
 }

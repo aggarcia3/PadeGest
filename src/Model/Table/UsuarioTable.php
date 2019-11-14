@@ -36,17 +36,6 @@ class UsuarioTable extends Table
         $this->setTable('usuario');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
-
-        $this->belongsToMany('PartidoPromocionado', [
-            'foreignKey' => 'usuario_id',
-            'targetForeignKey' => 'partido_promocionado_id',
-            'joinTable' => 'usuario_partido_promocionado'
-        ]);
-        $this->belongsToMany('Reserva', [
-            'foreignKey' => 'usuario_id',
-            'targetForeignKey' => 'reserva_id',
-            'joinTable' => 'usuario_reserva'
-        ]);
     }
 
     /**
@@ -62,17 +51,16 @@ class UsuarioTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->scalar('login')
-            ->maxLength('login', 32)
-            ->requirePresence('login', 'create')
-            ->notEmptyString('login')
-            ->add('login', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->scalar('username')
+            ->maxLength('username', 32)
+            ->requirePresence('username', 'create')
+            ->notEmptyString('username');
 
         $validator
             ->scalar('password')
-            ->maxLength('password', 32)
+            ->lengthBetween('password', [32, 32], __('Ha ocurrido un error interno al almacenar la contraseña.'))
             ->requirePresence('password', 'create')
-            ->notEmptyString('password');
+            ->notEmptyString('password', null, 'create');
 
         $validator
             ->scalar('nombre')
@@ -82,22 +70,21 @@ class UsuarioTable extends Table
 
         $validator
             ->scalar('apellidos')
-            ->maxLength('apellidos', 50)
-            ->requirePresence('apellidos', 'create')
-            ->notEmptyString('apellidos');
+            ->maxLength('apellidos', 50, __('Los apellidos son demasiado largos.'))
+            ->requirePresence('apellidos', 'create', __('Es obligatorio especificar los apellidos.'))
+            ->notEmptyString('apellidos', __('Los apellidos no pueden estar en blanco.'));
 
         $validator
-            ->scalar('genero')
-            ->requirePresence('genero', 'create')
-            ->notEmptyString('genero');
+            ->requirePresence('genero', 'create', __('Es necesario especificar el género de un usuario.'))
+            ->inList('genero', ['masculino', 'femenino'], __('El género especificado no es uno esperado por este sistema.'));
 
         $validator
-            ->notEmptyString('esSocio');
+            ->requirePresence('esSocio', 'create', __('Debe de saberse si un usuario es socio o no.'))
+            ->inList('esSocio', [0, 1], __('Ha ocurrido un error interno al registrar el estado de asociación.'));
 
         $validator
-            ->scalar('rol')
-            ->requirePresence('rol', 'create')
-            ->notEmptyString('rol');
+            ->requirePresence('rol', 'create', __('Todo usuario debe de tener un rol asignado.'))
+            ->inList('rol', ['deportista', 'administrador'], __('El rol especificado no es válido.'));
 
         return $validator;
     }
@@ -111,7 +98,7 @@ class UsuarioTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['login']));
+        $rules->add($rules->isUnique(['username']));
 
         return $rules;
     }

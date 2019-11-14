@@ -1,63 +1,75 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Usuario[]|\Cake\Collection\CollectionInterface $usuario
+ * @var \App\Model\Entity\Usuario $usuario
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Usuario'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Partido Promocionado'), ['controller' => 'PartidoPromocionado', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Partido Promocionado'), ['controller' => 'PartidoPromocionado', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Reserva'), ['controller' => 'Reserva', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Reserva'), ['controller' => 'Reserva', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="usuario index large-9 medium-8 columns content">
-    <h3><?= __('Usuario') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('login') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('password') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('apellidos') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('genero') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('esSocio') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('rol') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($usuario as $usuario): ?>
-            <tr>
-                <td><?= $this->Number->format($usuario->id) ?></td>
-                <td><?= h($usuario->login) ?></td>
-                <td><?= h($usuario->password) ?></td>
-                <td><?= h($usuario->nombre) ?></td>
-                <td><?= h($usuario->apellidos) ?></td>
-                <td><?= h($usuario->genero) ?></td>
-                <td><?= $this->Number->format($usuario->esSocio) ?></td>
-                <td><?= h($usuario->rol) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $usuario->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $usuario->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $usuario->id], ['confirm' => __('Are you sure you want to delete # {0}?', $usuario->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+<?= $this->element('menu') ?>   
+  <!-- Page Content -->
+  <div class="container">
+
+    <!-- Jumbotron Header -->
+    <div class="jumbotron my-4" style="background-image: url('/img/header-padel.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+      <h1 class="display-3">Bienvenido a PadeGest</h1>
+      <p class="lead p-header">Estamos considerados el mejor club de pádel de Ourense con miles de valoraciones positivas entre los numerosos aficionados y profesionales de este deporte. ¡Te invitamos a que nos descubras en nuestra nueva página web!</p>
+      
+      <?php if(!$this->request->session()->read('Auth.User.id')){ ?>
+      
+      <a href="/usuario/register" class="btn btn-primary btn-lg">¡Regístrate Gratis!</a>
+
+      <?php } ?>
+
     </div>
-</div>
+
+    <!-- Page Features -->
+    <div class="row text-center">
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+          <img class="card-img-top" src="/img/padel.png" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Campeonatos</h4>
+            <p class="card-text">Tenemos torneos de tres categorías y niveles distintos, difrútalos cada muy poco tiempo</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+          <img class="card-img-top" src="/img/images.jpeg" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Reserva una Pista</h4>
+            <p class="card-text">Reserva una pista de las muchas que tenemos para poder jugar con tus amigos y mejorar cada día más</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+          <img class="card-img-top" src="/img/promocion.png" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Partidos con Promoción</h4>
+            <p class="card-text">Tenemos partidos promocionados por el club para mantener activos anuestros deportistas, una ayuda siempre viene bien!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+          <img class="card-img-top" src="/img/podio.jpg" alt="">
+          <div class="card-body">
+            <h4 class="card-title">Rankings</h4>
+            <p class="card-text">Competir de una manera sana permite mejorar y mantener una rivalidad amigable, permios asegurados a los primeros todos los meses</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.row -->
+
+  </div>
+  
+
+</body>
+
+</html>

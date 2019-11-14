@@ -1,0 +1,16 @@
+<?php
+/**
+ * @var \{{ namespace }}\View\AppView $this
+ */
+?>
+<div class="{{ pluralVar }} form">
+<?= $this->Flash->render('auth') ?>
+    <?= $this->Form->create() ?>
+    <fieldset>
+        <legend><?= __('Introduce tus credenciales') ?></legend>
+        <?= $this->Form->control('username') ?>
+        <?= $this->Form->control('password') ?>
+    </fieldset>
+    <?= $this->Form->button(__('Conectarse')); ?>
+    <?= $this->Form->end() ?>
+</div>

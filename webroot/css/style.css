@@ -1,3 +1,14 @@
+.barralateral{
+    height: 100px;
+}
+h1{
+    color: white;
+}
+
+.p-header{
+    color: white;
+}
+
 .disabled a,
 a.disabled {
     pointer-events: none;
@@ -154,7 +165,6 @@ input[type=radio] {
 .time select,
 .datetime select {
     display: inline;
-    width: auto;
     margin-right: 10px;
 }
 
@@ -521,4 +531,22 @@ div.message.hidden {
 table td {
     vertical-align: top;
     word-break: break-all;
+}
+
+/* Estilos propios de PadeGest */
+
+.view-action-fa-icon {
+    color: #7575ff;
+}
+
+.add-action-fa-icon {
+    color: #00af00;
+}
+
+.edit-action-fa-icon {
+    color: #acac00;
+}
+
+.delete-action-fa-icon {
+    color: #cf0000;
 }

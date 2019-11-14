@@ -4,17 +4,9 @@
  * @var \App\Model\Entity\Campeonato $campeonato
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Campeonato'), ['action' => 'edit', $campeonato->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Campeonato'), ['action' => 'delete', $campeonato->id], ['confirm' => __('Are you sure you want to delete # {0}?', $campeonato->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Campeonato'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Campeonato'), ['action' => 'add']) ?> </li>
-    </ul>
-</nav>
+<?= $this->element('menu') ?>
 <div class="campeonato view large-9 medium-8 columns content">
-    <h3><?= h($campeonato->id) ?></h3>
+    <h3 class="card-title text-center" style="color: black;">Editar Campeonato: <?= h($campeonato->nombre) ?> </h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Nombre') ?></th>
@@ -33,8 +25,6 @@
             <td><?= h($campeonato->fechaFinInscripciones) ?></td>
         </tr>
     </table>
-    <div class="row">
-        <h4><?= __('Bases') ?></h4>
+        <h5 class="card-title" style="color: black;">Bases</h5>
         <?= $this->Text->autoParagraph(h($campeonato->bases)); ?>
-    </div>
 </div>

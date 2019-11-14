@@ -15,6 +15,7 @@
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 
 /**
@@ -44,23 +45,44 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
+
         $this->loadComponent('Flash');
 
-        //Componente que carga un formulario de login
         $this->loadComponent('Auth', [
             'loginAction' => [
                 'controller' => 'Usuario',
                 'action' => 'login'
             ],
-            'authError' => 'Did you really think you are allowed to see that?',
+            'authError' => __('No tienes los permisos necesarios para acceder a ese recurso.'),
             'authenticate' => [
                 'Form' => [
-                    'userModel' => 'usuario',
-                    'fields' => ['username' => 'login', 'password' => 'password']
+                    'fields' => ['username' => 'username', 'password' => 'password'],
+                    // TODO: antes de que la aplicación se use en producción, hay que reemplazar esto por
+                    // un algoritmo de resumen más seguro, como Cake\Auth\DefaultPasswordHasher.
+                    // Por ahora, se usa un algoritmo intencionadamente débil para acelerar la generación
+                    // de datos de prueba y demostraciones
+                    'passwordHasher' => ['className' => 'Weak', 'hashType' => 'md5'],
+                    'userModel' => 'Usuario'
                 ]
+            ],
+            'authorize' => ['Controller'],
+            'loginRedirect' => [
+                'controller' => 'Usuario',
+                'action' => 'index'
+            ],
+            'logoutRedirect' => [
+                'controller' => 'Usuario',
+                'action' => 'login'
             ],
             'storage' => 'Session'
         ]);
+
+        if (Configure::read('skipAuth')) {
+            $this->Auth->allow();
+        }
+
+        // Hacer AuthComponent accesible a las vistas
+        $this->set('Auth', $this->Auth);
 
         /*
          * Enable the following component for recommended CakePHP security settings.

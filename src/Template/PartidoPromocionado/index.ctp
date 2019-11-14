@@ -4,35 +4,62 @@
  * @var \App\Model\Entity\PartidoPromocionado[]|\Cake\Collection\CollectionInterface $partidoPromocionado
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Partido Promocionado'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Usuario'), ['controller' => 'Usuario', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Usuario'), ['controller' => 'Usuario', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="partidoPromocionado index large-9 medium-8 columns content">
-    <h3><?= __('Partido Promocionado') ?></h3>
+<?= $this->element('menu') ?>
+<div class="partidoPromocionado index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+
+<?php if($this->request->session()->read('Auth.User.rol') == "administrador"){ ?>
+
+    <h3 class="card-title text-center" style="color: black;">Partidos Promocionados<a href="/partido-promocionado/add" class="btn btn-primary btn-sm float-right">Añadir Partido Promocionado</a></h3>
+
+
+<?php }else{ ?>
+
+    <h3 class="card-title text-center" style="color: black;">Partidos Promocionados</h3>
+
+<?php }?>
+
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
+
+
+<?php if($Auth->user('rol') == "administrador"){ ?>
+
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fecha') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('idReserva') ?></th>
+
+<?php } ?>
+                <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fecha') ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($partidoPromocionado as $partidoPromocionado): ?>
             <tr>
-                <td><?= $this->Number->format($partidoPromocionado->id) ?></td>
+
+<?php if($Auth->user('rol') == "administrador"){ ?>
+
+                    <td><?= $this->Number->format($partidoPromocionado->id) ?></td>
+                    <td><?php if($this->Number->format($partidoPromocionado->idReserva)== 0){ echo "No hay reserva de Pista"; }else{ echo $this->Number->format($partidoPromocionado->idReserva); } ?></td>
+
+<?php } ?>
+
+                <td><?= h($partidoPromocionado->nombre) ?></td>
                 <td><?= h($partidoPromocionado->fecha) ?></td>
-                <td><?= $this->Number->format($partidoPromocionado->idReserva) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $partidoPromocionado->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $partidoPromocionado->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $partidoPromocionado->id], ['confirm' => __('Are you sure you want to delete # {0}?', $partidoPromocionado->id)]) ?>
+
+<?php if($Auth->user('rol') == "deportista"){ ?>
+
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i> Inscribirse', ['action' => 'inscribirse', $partidoPromocionado->id], ['escapeTitle' => false]) ?>
+<?php } else { ?>
+
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>', ['action' => 'view', $partidoPromocionado->id], ['escapeTitle' => false]) ?>
+                    <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $partidoPromocionado->id], ['escapeTitle' => false]) ?>
+                    <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $partidoPromocionado->id], ['escapeTitle' => false, 'confirm' => __('¿Quieres eliminar el Partido Promocionado "{0}"?', $partidoPromocionado->nombre)]) ?>
+
+<?php }  ?>
+
                 </td>
             </tr>
             <?php endforeach; ?>

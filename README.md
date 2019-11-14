@@ -6,7 +6,7 @@ Un proyecto de aplicación web de gestión integral de un club de pádel para la
 
 Primero descarga [Composer](https://getcomposer.org/doc/00-intro.md), o actualízalo: `composer self-update`.
 
-### Instalación tras clonado manual
+### Método 1: instalación tras clonado manual
 
 Asumiendo que ya has clonado este repositorio, y que tu directorio de trabajo actual es el directorio raíz del repositorio, instala PadeGest usando Composer:
 
@@ -14,18 +14,18 @@ Asumiendo que ya has clonado este repositorio, y que tu directorio de trabajo ac
 composer install
 ```
 
-### Instalación automática
+### Método 2: instalación automática
 
-Alternativamente, puedes dejar que Composer clone el repositorio por ti. Para ello, crea o edita el fichero `config.json` en el directorio [COMPOSER_HOME](https://getcomposer.org/doc/03-cli.md#composer-home), de forma que tenga el siguiente contenido:
+Alternativamente al método anterior, puedes dejar que Composer clone el repositorio por ti. Para ello, crea o edita el fichero `config.json` en el directorio [COMPOSER_HOME](https://getcomposer.org/doc/03-cli.md#composer-home), de forma que tenga el siguiente contenido:
 
 ```json
 {
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "git@github.com:aggarcia3/PadeGest.git"
-		}
-	]
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:aggarcia3/PadeGest.git"
+        }
+    ]
 }
 ```
 
@@ -63,3 +63,14 @@ Se recomienda Visual Studio Code, con las extensiones recomendadas indicadas por
 Usamos ContinuousPHP para ejecutar un trabajo para cada confirmación enviada al repositorio, enfocado a ejecutar tests de integración y de coherencia del código fuente. Este servicio de CI es también una buena fuente de información acerca de cómo trabajar con la aplicación, y qué requisitos tiene.
 
 Para ver los resultados de CI de una confirmación, observa la lista de "Commits" del repositorio, y haz clic en la aspa roja o tick verde de la confirmación deseada (el aspa significa que algo ha ido mal, mientras que el tick simboliza que todo fue bien).
+
+## Corregir que el DebugKit de CakePHP no se visualice
+El DebugKit de CakePHP es un menú desplegable con opciones de depuración bastante útiles, que aparece en la esquina inferior derecha de todas las páginas web de la aplicación, y debería de ser visible mientras esté activado el modo de depuración:
+
+![Icono de DebugKit](https://i.imgur.com/MOEloC5.png)
+
+Sin embargo, dependiendo de cómo esté configurado PHP en el sistema, este menú puede no aparecer, pues el componente necesita la extensión `pdo_sqlite` para funcionar en su configuración por defecto. La solución más sencilla a este problema relativamente común es añadir una entrada como la siguiente al archivo de configuración `php.ini`:
+
+```ini
+extension=pdo_sqlite
+```

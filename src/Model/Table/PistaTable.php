@@ -9,14 +9,16 @@ use Cake\Validation\Validator;
 /**
  * Pista Model
  *
- * @method \App\Model\Entity\Pistum get($primaryKey, $options = [])
- * @method \App\Model\Entity\Pistum newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\Pistum[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Pistum|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Pistum saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Pistum patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Pistum[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Pistum findOrCreate($search, callable $callback = null, $options = [])
+ * @property \App\Model\Table\ReservaTable&\Cake\ORM\Association\HasMany $Reserva
+ *
+ * @method \App\Model\Entity\Pista get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Pista newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Pista[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Pista|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Pista saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Pista patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Pista[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Pista findOrCreate($search, callable $callback = null, $options = [])
  */
 class PistaTable extends Table
 {
@@ -33,6 +35,8 @@ class PistaTable extends Table
         $this->setTable('pista');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->hasMany('reserva')->setForeignKey('pista_id');
     }
 
     /**
@@ -45,26 +49,24 @@ class PistaTable extends Table
     {
         $validator
             ->nonNegativeInteger('id')
-            ->allowEmptyString('id', null, 'create');
+            ->allowEmptyString('id', null, true);
 
         $validator
-            ->scalar('tipoSuelo')
-            ->requirePresence('tipoSuelo', 'create')
-            ->notEmptyString('tipoSuelo');
+            ->inList('tipoSuelo', ['césped', 'moqueta', 'hormigón', 'cemento'], __('Una pista solo puede tener un suelo de césped, de moqueta, de hormigón o de cemento.'))
+            ->requirePresence('tipoSuelo', 'create');
 
         $validator
-            ->scalar('tipoCerramiento')
-            ->requirePresence('tipoCerramiento', 'create')
-            ->notEmptyString('tipoCerramiento');
+            ->inList('tipoCerramiento', ['valla', 'pared', 'cristal'], __('Una pista solo puede ser tener como tipo de cerramiento una valla, una pared o cristales.'))
+            ->requirePresence('tipoCerramiento', 'create');
 
         $validator
-            ->scalar('localizacion')
-            ->requirePresence('localizacion', 'create')
-            ->notEmptyString('localizacion');
+            ->inList('localizacion', ['exterior', 'interior'], __('Una pista solo puede ser exterior o interior.'))
+            ->requirePresence('localizacion', 'create');
 
         $validator
-            ->requirePresence('focos', 'create')
-            ->notEmptyString('focos');
+            ->nonNegativeInteger('focos')
+            ->lessThanOrEqual('focos', 100, __('Una pista puede tener hasta un máximo de 100 focos.'))
+            ->requirePresence('focos', 'create');
 
         return $validator;
     }

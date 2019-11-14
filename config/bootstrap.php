@@ -38,6 +38,8 @@ use Cake\Database\Type;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorHandler;
 use Cake\Http\ServerRequest;
+use Cake\I18n\FrozenTime;
+use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\Mailer\Email;
 use Cake\Mailer\TransportFactory;
@@ -193,6 +195,12 @@ Type::build('timestamp')
     ->useImmutable();
 
 /*
+ * Formatos de fecha predeterminados
+ */
+FrozenTime::setToStringFormat('E, dd MMM yyyy, HH:mm');
+Time::setToStringFormat('E, dd MMM yyyy, HH:mm');
+
+/*
  * Custom Inflector rules, can be set to correctly pluralize or singularize
  * table, model, controller names or whatever other string is passed to the
  * inflection functions.
@@ -201,3 +209,6 @@ Type::build('timestamp')
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
 //Inflector::rules('transliteration', ['/å/' => 'aa']);
+
+// Use our own bake theme
+Configure::write('Bake.theme', 'PadeGestApp');

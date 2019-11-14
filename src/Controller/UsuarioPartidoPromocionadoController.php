@@ -10,6 +10,7 @@ use App\Controller\AppController;
  *
  * @method \App\Model\Entity\UsuarioPartidoPromocionado[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
+
 class UsuarioPartidoPromocionadoController extends AppController
 {
     /**
@@ -17,8 +18,22 @@ class UsuarioPartidoPromocionadoController extends AppController
      *
      * @return void
      */
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), ['add']) ||
+               $user['rol'] === 'administrador';
+
+    }
+
+
     public function index()
     {
+        $this->paginate = [
+            'contain' => ['Usuario', 'PartidoPromocionado']
+        ];
         $usuarioPartidoPromocionado = $this->paginate($this->UsuarioPartidoPromocionado);
 
         $this->set(compact('usuarioPartidoPromocionado'));
@@ -34,9 +49,8 @@ class UsuarioPartidoPromocionadoController extends AppController
     public function view($id = null)
     {
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->get($id, [
-            'contain' => []
+            'contain' => ['Usuario', 'PartidoPromocionado']
         ]);
-
         $this->set('usuarioPartidoPromocionado', $usuarioPartidoPromocionado);
     }
 
@@ -47,17 +61,64 @@ class UsuarioPartidoPromocionadoController extends AppController
      */
     public function add()
     {
+
+
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->newEntity();
         if ($this->request->is('post')) {
-            $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->patchEntity($usuarioPartidoPromocionado, $this->request->getData());
-            if ($this->UsuarioPartidoPromocionado->save($usuarioPartidoPromocionado)) {
-                $this->Flash->success(__('The usuario partido promocionado has been saved.'));
+            $data = $this->request->getData();
+            $data['usuario_id'] = $this->Auth->user('id');
 
-                return $this->redirect(['action' => 'index']);
+
+            //se buscan y filtran todas las tuplas que tengan como id el enviado en el formulario
+            $sitios = $this->UsuarioPartidoPromocionado->find('all');
+            $sitiosFiltrado = $sitios->where(['partido_promocionado_id' => $data['partido_promocionado_id']]);
+            
+            
+            $reservas = 0;
+            foreach ($sitios as $sitios) {
+                $reservas++;
             }
-            $this->Flash->error(__('The usuario partido promocionado could not be saved. Please, try again.'));
+
+            $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->patchEntity($usuarioPartidoPromocionado, $data);
+            if ($this->UsuarioPartidoPromocionado->save($usuarioPartidoPromocionado) && $reservas <= 4) {
+                $this->Flash->success(__('Te has inscrito correctamente'));
+
+                //Otra vez, se buscan y filtran todas las tuplas que tengan como id el enviado en el formulario para si es = 4 crear una reserva
+                $sitios = $this->UsuarioPartidoPromocionado->find('all');
+                $sitiosFiltrado = $sitios->where(['partido_promocionado_id' => $data['partido_promocionado_id']]);
+                $reservas = 0;
+                foreach ($sitios as $sitios) {
+                    $reservas++;
+                }
+
+                if ($reservas == 4) {
+                    //Borrar esta línea de código cuande se cree la reserva
+
+                    $this->Flash->error(__('Se crea reserva'));
+
+                    /*
+
+                    LLAMAR A FUNCIÓN CREAR RESERVA
+                    LLAMAR A LA FUNCIÓN DE NOTIFICACIÓN A LOS USUARIOS QUEE ESTÉN INSCRITOS
+                    
+                    */
+                }
+
+                return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);
+            }
+
+            if ($reservas > 4) {
+                $this->Flash->error(__('Ya está lleno el partido'));
+            } else {
+                $this->Flash->error(__('No te has podido inscribir, inténtalo de nuevo'));
+            }
+
+            return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);
         }
-        $this->set(compact('usuarioPartidoPromocionado'));
+
+        $usuario = $this->UsuarioPartidoPromocionado->Usuario->find('list', ['limit' => 200]);
+        $partidoPromocionado = $this->UsuarioPartidoPromocionado->PartidoPromocionado->find('list', ['limit' => 200]);
+        $this->set(compact('usuarioPartidoPromocionado', 'usuario', 'partidoPromocionado'));
     }
 
     /**
@@ -81,7 +142,9 @@ class UsuarioPartidoPromocionadoController extends AppController
             }
             $this->Flash->error(__('The usuario partido promocionado could not be saved. Please, try again.'));
         }
-        $this->set(compact('usuarioPartidoPromocionado'));
+        $usuario = $this->UsuarioPartidoPromocionado->Usuario->find('list', ['limit' => 200]);
+        $partidoPromocionado = $this->UsuarioPartidoPromocionado->PartidoPromocionado->find('list', ['limit' => 200]);
+        $this->set(compact('usuarioPartidoPromocionado', 'usuario', 'partidoPromocionado'));
     }
 
     /**

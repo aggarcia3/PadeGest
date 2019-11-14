@@ -7,10 +7,15 @@ use Cake\ORM\Entity;
  * Reserva Entity
  *
  * @property int $id
- * @property \Cake\I18n\FrozenTime $fecha
- * @property int $idPista
+ * @property \Cake\I18n\FrozenTime $fechaInicio
+ * @property \Cake\I18n\FrozenTime $fechaFin
+ * @property int $pista_id
+ * @property int|null $usuario_id
  *
- * @property \App\Model\Entity\Usuario[] $usuario
+ * @property \App\Model\Entity\Pista $pista
+ * @property \App\Model\Entity\Usuario $usuario
+ * @property \App\Model\Entity\Enfrentamiento|null $enfrentamiento
+ * @property \App\Model\Entity\PartidoPromocionado|null $partido_promocionado
  */
 class Reserva extends Entity
 {
@@ -24,8 +29,12 @@ class Reserva extends Entity
      * @var array
      */
     protected $_accessible = [
-        'fecha' => true,
-        'idPista' => true,
-        'usuario' => true
+        'fechaInicio' => true,
+        'pista_id' => true,
+        'usuario_id' => true,
+        'pista' => true,
+        'usuario' => true,
+        'enfrentamiento' => true,
+        'partido_promocionado' => true
     ];
 }

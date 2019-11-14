@@ -23,7 +23,9 @@ class UsuarioPartidoPromocionadoTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.UsuarioPartidoPromocionado'
+        'app.UsuarioPartidoPromocionado',
+        'app.Usuario',
+        'app.PartidoPromocionado'
     ];
 
     /**
@@ -61,11 +63,11 @@ class UsuarioPartidoPromocionadoTableTest extends TestCase
     }
 
     /**
-     * Test validationDefault method
+     * Test buildRules method
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

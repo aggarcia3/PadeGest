@@ -22,7 +22,7 @@ class UsuarioFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-        'login' => ['type' => 'string', 'length' => 32, 'null' => false, 'default' => null, 'collate' => 'utf8_bin', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'username' => ['type' => 'string', 'length' => 32, 'null' => false, 'default' => null, 'collate' => 'utf8_bin', 'comment' => '', 'precision' => null, 'fixed' => null],
         'password' => ['type' => 'string', 'length' => 32, 'fixed' => true, 'null' => false, 'default' => null, 'collate' => 'utf8_bin', 'comment' => '', 'precision' => null],
         'nombre' => ['type' => 'string', 'length' => 50, 'null' => false, 'default' => null, 'collate' => 'utf8_bin', 'comment' => '', 'precision' => null, 'fixed' => null],
         'apellidos' => ['type' => 'string', 'length' => 50, 'null' => false, 'default' => null, 'collate' => 'utf8_bin', 'comment' => '', 'precision' => null, 'fixed' => null],
@@ -31,7 +31,7 @@ class UsuarioFixture extends TestFixture
         'rol' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => null, 'collate' => 'utf8_bin', 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'login_UNIQUE' => ['type' => 'unique', 'columns' => ['login'], 'length' => []],
+            'login_UNIQUE' => ['type' => 'unique', 'columns' => ['username'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -49,7 +49,7 @@ class UsuarioFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'login' => 'Lorem ipsum dolor sit amet',
+                'username' => 'Lorem ipsum dolor sit amet',
                 'password' => 'Lorem ipsum dolor sit amet',
                 'nombre' => 'Lorem ipsum dolor sit amet',
                 'apellidos' => 'Lorem ipsum dolor sit amet',

@@ -7,8 +7,9 @@ use Cake\ORM\Entity;
  * PartidoPromocionado Entity
  *
  * @property int $id
+ * @property string $nombre
  * @property \Cake\I18n\FrozenTime $fecha
- * @property int|null $idReserva
+ * @property int|null $reserva_id
  *
  * @property \App\Model\Entity\Usuario[] $usuario
  */
@@ -24,8 +25,9 @@ class PartidoPromocionado extends Entity
      * @var array
      */
     protected $_accessible = [
+        'nombre' => true,
         'fecha' => true,
-        'idReserva' => true,
+        'reserva_id' => true,
         'usuario' => true
     ];
 }

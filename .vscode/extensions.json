@@ -1,7 +1,7 @@
 {
     // https://go.microsoft.com/fwlink/?LinkId=827846
 
-	"recommendations": [
+    "recommendations": [
         "editorconfig.editorconfig",
         "davidanson.vscode-markdownlint",
         "neilbrayfield.php-docblocker",
@@ -9,6 +9,8 @@
         "valeryanm.vscode-phpsab",
         "breezelin.phpstan",
         "emallin.phpunit",
-        "bajdzis.vscode-database"
-	]
+        "kasik96.latte",
+        "felixfbecker.php-debug",
+        "timonwong.shellcheck"
+    ]
 }
