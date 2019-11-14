@@ -31,15 +31,25 @@ class UsuarioController extends AppController
      * @return bool Verdadero si se le debe de conceder acceso a la acción al usuario, falso en
      * caso contrario.
      */
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $this->Auth->allow('register');
+        $this->Auth->allow('login');
+        $this->Auth->allow('logout');
+    }
+
     public function isAuthorized($user)
     {
         // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
         // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
         // y los usuarios no se podrían desconectar
-        return in_array($this->request->getParam('action'), ['index', 'logout', 'register', 'edit']) ||
+        return in_array($this->request->getParam('action'), ['register','index', 'logout', 'edit']) ||
                $user['rol'] === 'administrador';
 
     }
+
+    
     public function index(){
 
     }

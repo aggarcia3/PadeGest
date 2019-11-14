@@ -4,18 +4,27 @@
  * @var \App\Model\Entity\Campeonato[]|\Cake\Collection\CollectionInterface $campeonato
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Campeonato'), ['action' => 'add']) ?></li>
-    </ul>
-</nav>
+<?= $this->element('menu') ?>
 <div class="campeonato index large-9 medium-8 columns content">
-    <h3><?= __('Campeonato') ?></h3>
+
+<?php if($this->request->session()->read('Auth.User.rol') == "administrador"){ ?>
+
+    <h3 class="card-title text-center" style="color: black;">Campeonatos<a href="/campeonato/add" class="btn btn-primary btn-sm float-right">Añadir campeonato</a></h3>
+
+<?php }else{ ?>
+
+    <h3 class="card-title text-center" style="color: black;">Campeonatos</h3>
+
+<?php }?>
+
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
+<?php if($Auth->user('rol') == "administrador"){ ?>
+
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+<?php } ?>
+
                 <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('fechaInicioInscripciones') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('fechaFinInscripciones') ?></th>
@@ -25,15 +34,29 @@
         <tbody>
             <?php foreach ($campeonato as $campeonato): ?>
             <tr>
+<?php if($Auth->user('rol') == "administrador"){ ?>
+
                 <td><?= $this->Number->format($campeonato->id) ?></td>
+
+<?php } ?>
+                
                 <td><?= h($campeonato->nombre) ?></td>
                 <td><?= h($campeonato->fechaInicioInscripciones) ?></td>
                 <td><?= h($campeonato->fechaFinInscripciones) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $campeonato->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $campeonato->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $campeonato->id], ['confirm' => __('Are you sure you want to delete # {0}?', $campeonato->id)]) ?>
-                </td>
+
+<?php if($Auth->user('rol') == "deportista"){ ?>
+
+                <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i> Inscribirse', ['action' => 'inscribirse', $campeonato->id], ['escapeTitle' => false]) ?>
+
+<?php } else { ?>
+
+                <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>', ['action' => 'view', $campeonato->id], ['escapeTitle' => false]) ?>
+                <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $campeonato->id], ['escapeTitle' => false]) ?>
+                <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $campeonato->id], ['escapeTitle' => false, 'confirm' => __('¿Quieres eliminar el Campeonato "{0}"?', $campeonato->nombre)]) ?>
+
+<?php }  ?>
+
             </tr>
             <?php endforeach; ?>
         </tbody>

@@ -4,16 +4,11 @@
  * @var \App\Model\Entity\Campeonato $campeonato
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Campeonato'), ['action' => 'index']) ?></li>
-    </ul>
-</nav>
+<?= $this->element('menu') ?>
 <div class="campeonato form large-9 medium-8 columns content">
+<h3 class="card-title text-center" style="color: black;">Añadir Campeonato</h3>
     <?= $this->Form->create($campeonato) ?>
     <fieldset>
-        <legend><?= __('Add Campeonato') ?></legend>
         <?php
             echo $this->Form->control('nombre');
             echo $this->Form->control('bases');
@@ -21,6 +16,7 @@
             echo $this->Form->control('fechaFinInscripciones');
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
+    <br>
+    <?= $this->Form->button(__('Añadir'), array('class' => 'btn btn-primary')) ?>
     <?= $this->Form->end() ?>
 </div>

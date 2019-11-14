@@ -23,7 +23,7 @@ class UsuarioPartidoPromocionadoController extends AppController
         // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
         // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
         // y los usuarios no se podrían desconectar
-        return in_array($this->request->getParam('action'), ['index', 'view']) ||
+        return in_array($this->request->getParam('action'), ['add']) ||
                $user['rol'] === 'administrador';
 
     }
@@ -96,8 +96,6 @@ class UsuarioPartidoPromocionadoController extends AppController
 
                     $this->Flash->error(__('Se crea reserva'));
 
-
-                    $result = (new ReservaController())->add2($data['partido_promocionado_id']);
                     /*
 
                     LLAMAR A FUNCIÓN CREAR RESERVA
