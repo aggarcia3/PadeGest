@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+/*Pushed */
 /**
  * LigaRegular Controller
  *
@@ -22,6 +22,15 @@ class LigaRegularController extends AppController
         $ligaRegular = $this->paginate($this->LigaRegular);
 
         $this->set(compact('ligaRegular'));
+    }
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), ['view']) ||
+               $user['rol'] === 'administrador';
+
     }
 
     /**

@@ -12,8 +12,9 @@
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
-use Cake\Routing\Router;
+if($this->request->session()->read('Auth.User.id')){
+    $rutaEditarPerfil = "/usuario/edit/".$this->request->session()->read('Auth.User.id');
+}
 ?>
 <?= $this->Html->docType() ?>
 <html lang='es-ES'>
@@ -43,19 +44,19 @@ use Cake\Routing\Router;
 
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="<?= Router::url(['controller' => 'Usuario']) ?>">Padegest</a>
+        <a class="navbar-brand" href="/usuario/index">Padegest</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
 
-<?php if($Auth->user('id')){ ?>
+<?php if($this->request->session()->read('Auth.User.id')){ ?> 
 
-                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'edit', $Auth->user('id')]) ?>"><?= $Auth->user('username') ?></a></li>
-                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'logout']) ?>">Logout</a></li>
+                <li><a class="nav-link" href="<?php echo $rutaEditarPerfil?>"><?php echo ($this->request->session()->read('Auth.User.username')); ?></a></li>
+                <li><a class="nav-link" href="/usuario/logout">Logout</a></li>
 
-<?php }else{ ?>
+<?php }else{ ?> 
 
                 <li><a class="nav-link" href="/usuario/login">Log In</a></li>
 
@@ -64,7 +65,7 @@ use Cake\Routing\Router;
             </ul>
         </div>
     </nav>
-
+    
     <?= $this->Flash->render() ?>
     <div class="clearfix">
         <?= $this->fetch('content') ?>

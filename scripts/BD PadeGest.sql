@@ -649,7 +649,7 @@ DELIMITER ;
 -- User PadeGestApp
 -- -----------------------------------------------------
 DROP USER IF EXISTS 'PadeGestApp';
-CREATE USER 'PadeGestApp' IDENTIFIED BY 'PadeGestApp';
+CREATE USER 'PadeGestApp' IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
 GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp';
 GRANT EXECUTE ON FUNCTION PADEGEST.reservaQueOcupaPista TO 'PadeGestApp';
 GRANT EXECUTE ON function `PADEGEST`.`pistaDisponibleEnFecha` TO 'PadeGestApp';
