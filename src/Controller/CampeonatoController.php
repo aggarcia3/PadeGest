@@ -203,7 +203,7 @@ class CampeonatoController extends AppController
         $pareja = TableRegistry::getTableLocator()->get('Pareja');
         $resultsIteratorObject2 = $pareja->find()->where(['categoria_nivel_id' => $var2[0]])->all();
         foreach ($resultsIteratorObject2 as $pareja) {
-            $var3[$l] = $categoriaNivel['id'];
+            $var3[$l] = $pareja['id'];
             $l++;
         }
         $numeroGrupos = intval(sizeof($var3)/8);
@@ -213,5 +213,28 @@ class CampeonatoController extends AppController
             $grupoValues['categoria_nivel_id'] = $var2[0];
             $grupo->add2($grupoValues);
         }
+
+        $grupo = TableRegistry::getTableLocator()->get('Grupo');
+        $resultsIteratorObject3 = $grupo->find()->where(['categoria_nivel_id' => $var2[0]])->all();
+        $k = 0;
+        foreach ($resultsIteratorObject3 as $grupo) {
+            $var4[$k] = $grupo['id'];
+            $k++;
+        }
+
+        debug($var4);
+        $x = 0;
+        $parejaController = (new ParejaController());
+        for ($s = 0; $s < sizeof($var3); $s++) {
+            if($x == sizeof($var4)){
+                $x = 0;
+            }
+            $parejaGrupo['grupo_id'] = $var4[$x];
+            $parejaController->edit2($var3[$s],$parejaGrupo);
+            $x++;
+        }
+
+
+        die();
     }
 }

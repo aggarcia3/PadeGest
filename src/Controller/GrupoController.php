@@ -62,7 +62,6 @@ class GrupoController extends AppController
 
     public function add2($var)
     {
-        debug($var);
         $grupo = $this->Grupo->newEntity();
         $grupo = $this->Grupo->patchEntity($grupo, $var);
         if ($this->Grupo->save($grupo)) {

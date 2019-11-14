@@ -132,6 +132,22 @@ class ParejaController extends AppController
         $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);
         $this->set(compact('pareja', 'enfrentamiento'));
     }
+    public function edit2($var, $var2)
+    {
+        $pareja = $this->Pareja->get($var, [
+            'contain' => ['Enfrentamiento']
+        ]);
+            $pareja = $this->Pareja->patchEntity($pareja, $var2);
+            if ($this->Pareja->save($pareja)) {
+                $this->Flash->success(__('The pareja has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }else{
+                $this->Flash->error(__('The pareja could not be saved. Please, try again.'));
+            }
+        $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);
+        $this->set(compact('pareja', 'enfrentamiento'));
+    }
 
     /**
      * Delete method
