@@ -60,6 +60,21 @@ class CategoriaNivelController extends AppController
         $this->set(compact('categoriaNivel'));
     }
 
+    public function add2($var)
+    {
+        $categoriaNivel = $this->CategoriaNivel->newEntity();
+        if ($this->request->is('post')) {
+            $categoriaNivel = $this->CategoriaNivel->patchEntity($categoriaNivel, $var);
+            if ($this->CategoriaNivel->save($categoriaNivel)) {
+                $this->Flash->success(__('The categoria nivel has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The categoria nivel could not be saved. Please, try again.'));
+        }
+        $this->set(compact('categoriaNivel'));
+    }
+
     /**
      * Edit method
      *

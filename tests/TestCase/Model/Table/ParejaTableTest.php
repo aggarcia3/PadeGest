@@ -24,6 +24,8 @@ class ParejaTableTest extends TestCase
      */
     public $fixtures = [
         'app.Pareja',
+        'app.CategoriaNivel',
+        'app.Grupo',
         'app.Enfrentamiento'
     ];
 
@@ -67,6 +69,16 @@ class ParejaTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

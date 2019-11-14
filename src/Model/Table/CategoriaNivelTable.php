@@ -9,6 +9,10 @@ use Cake\Validation\Validator;
 /**
  * CategoriaNivel Model
  *
+ * @property &\Cake\ORM\Association\BelongsTo $Campeonato
+ * @property &\Cake\ORM\Association\HasMany $Grupo
+ * @property &\Cake\ORM\Association\HasMany $Pareja
+ *
  * @method \App\Model\Entity\CategoriaNivel get($primaryKey, $options = [])
  * @method \App\Model\Entity\CategoriaNivel newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\CategoriaNivel[] newEntities(array $data, array $options = [])
@@ -33,6 +37,17 @@ class CategoriaNivelTable extends Table
         $this->setTable('categoria_nivel');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('Campeonato', [
+            'foreignKey' => 'campeonato_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->hasMany('Grupo', [
+            'foreignKey' => 'categoria_nivel_id'
+        ]);
+        $this->hasMany('Pareja', [
+            'foreignKey' => 'categoria_nivel_id'
+        ]);
     }
 
     /**
@@ -57,11 +72,20 @@ class CategoriaNivelTable extends Table
             ->requirePresence('nivel', 'create')
             ->notEmptyString('nivel');
 
-        $validator
-            ->nonNegativeInteger('idCampeonato')
-            ->requirePresence('idCampeonato', 'create')
-            ->notEmptyString('idCampeonato');
-
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['campeonato_id'], 'Campeonato'));
+
+        return $rules;
     }
 }
