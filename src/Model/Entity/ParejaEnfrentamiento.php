@@ -6,8 +6,8 @@ use Cake\ORM\Entity;
 /**
  * ParejaEnfrentamiento Entity
  *
- * @property int $idPareja
- * @property int $idEnfrentamiento
+ * @property int $pareja_id
+ * @property int $enfrentamiento_id
  * @property int $participacionConfirmada
  */
 class ParejaEnfrentamiento extends Entity
@@ -22,6 +22,8 @@ class ParejaEnfrentamiento extends Entity
      * @var array
      */
     protected $_accessible = [
-        'participacionConfirmada' => true
+        'pareja_id' => true,
+        'participacionConfirmada' => true,
+        'enfrentamiento_id' => true
     ];
 }

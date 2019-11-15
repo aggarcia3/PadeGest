@@ -9,6 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Enfrentamiento Model
  *
+ * @property \App\Model\Table\ReservaTable&\Cake\ORM\Association\BelongsTo $Reserva
+ * @property \App\Model\Table\ResultadoTable&\Cake\ORM\Association\HasMany $Resultado
  * @property \App\Model\Table\ParejaTable&\Cake\ORM\Association\BelongsToMany $Pareja
  *
  * @method \App\Model\Entity\Enfrentamiento get($primaryKey, $options = [])
@@ -36,6 +38,12 @@ class EnfrentamientoTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->belongsTo('Reserva', [
+            'foreignKey' => 'reserva_id'
+        ]);
+        $this->hasMany('Resultado', [
+            'foreignKey' => 'enfrentamiento_id'
+        ]);
         $this->belongsToMany('Pareja', [
             'foreignKey' => 'enfrentamiento_id',
             'targetForeignKey' => 'pareja_id',
@@ -56,14 +64,37 @@ class EnfrentamientoTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
+            ->scalar('nombre')
+            ->maxLength('nombre', 45)
+            ->requirePresence('nombre', 'create')
+            ->notEmptyString('nombre')
+            ->add('nombre', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+
+        $validator
             ->dateTime('fecha')
             ->requirePresence('fecha', 'create')
             ->notEmptyDateTime('fecha');
 
         $validator
-            ->nonNegativeInteger('idReserva')
-            ->allowEmptyString('idReserva');
+            ->scalar('fase')
+            ->requirePresence('fase', 'create')
+            ->notEmptyString('fase');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->isUnique(['nombre']));
+        $rules->add($rules->existsIn(['reserva_id'], 'Reserva'));
+
+        return $rules;
     }
 }

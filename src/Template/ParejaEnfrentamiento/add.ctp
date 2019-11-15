@@ -3,6 +3,9 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\ParejaEnfrentamiento $parejaEnfrentamiento
  */
+
+// Page title
+$this->assign('title', __('Gestión de {0}', __('parejaEnfrentamiento')));
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
@@ -15,6 +18,8 @@
     <fieldset>
         <legend><?= __('Add Pareja Enfrentamiento') ?></legend>
         <?php
+            echo $this->Form->control('pareja_id');
+            echo $this->Form->control('enfrentamiento_id');
             echo $this->Form->control('participacionConfirmada');
         ?>
     </fieldset>

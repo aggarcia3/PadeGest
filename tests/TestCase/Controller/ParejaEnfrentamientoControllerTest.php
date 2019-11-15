@@ -34,6 +34,16 @@ class ParejaEnfrentamientoControllerTest extends TestCase
     }
 
     /**
+     * Test isAuthorized method
+     *
+     * @return void
+     */
+    public function testIsAuthorized()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
      * Test view method
      *
      * @return void
@@ -49,6 +59,16 @@ class ParejaEnfrentamientoControllerTest extends TestCase
      * @return void
      */
     public function testAdd()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test add2 method
+     *
+     * @return void
+     */
+    public function testAdd2()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

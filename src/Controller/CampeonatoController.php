@@ -274,6 +274,33 @@ class CampeonatoController extends AppController
                         }
                     }
                 }
+                for ($s = 0; $s < sizeof($matchs); $s++) {
+                    $enfrentamiento = (new EnfrentamientoController());
+                    $data['nombre'] = 'Grupo'.$grupo['id'].$s;
+                    $data['fase'] = 'liga regular';
+                    $data['fecha'] = '1000-01-01 00:00:00';
+                    $enfrentamiento->add2($data);
+                }
+
+
+                $indice = 0;
+                $partidos = TableRegistry::getTableLocator()->get('Enfrentamiento');
+                $parejaEnfrentamiento = (new ParejaEnfrentamientoController());
+                $resultsIteratorObject5 = $partidos->find()->where(['nombre LIKE' => "Grupo".$grupo['id']."%"])->all();
+                foreach($resultsIteratorObject5 as $idPartidos){
+
+                    $data4['pareja_id'] = $matchs[$indice][0];
+                    $data4['enfrentamiento_id'] = $idPartidos['id'];
+                    $data4['participacionConfirmada'] = 0;
+                    $parejaEnfrentamiento->add2($data4);
+
+                    
+                    $data5['pareja_id'] = $matchs[$indice][1];
+                    $data5['enfrentamiento_id'] = $idPartidos['id'];
+                    $data5['participacionConfirmada'] = 0;
+                    $parejaEnfrentamiento->add2($data5);
+                    $indice++;
+                }
             } 
         } 
         return 0;

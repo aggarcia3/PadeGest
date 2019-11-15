@@ -22,7 +22,8 @@ class EnfrentamientoControllerTest extends TestCase
     public $fixtures = [
         'app.Enfrentamiento',
         'app.Pareja',
-        'app.ParejaEnfrentamiento'
+        'app.Reserva',
+        'app.Resultado'
     ];
 
     /**
