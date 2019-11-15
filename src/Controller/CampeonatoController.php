@@ -181,7 +181,7 @@ class CampeonatoController extends AppController
             $this->Flash->error(__('The campeonato could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return 0;
     }
 
     public function agrupar(){
@@ -195,7 +195,7 @@ class CampeonatoController extends AppController
                 $i++;
             }
         }
-        die();
+        return $this->redirect(['action' => 'index']);
     }
 
     public function obtenerCategoriaNivel($var){
@@ -207,6 +207,7 @@ class CampeonatoController extends AppController
             $var2[$j] = $categoriaNivel['id'];
             $this->obtenerParejas($categoriaNivel['id']);
         }
+        return 0;
     }
 
     public function obtenerParejas($var){
@@ -217,13 +218,22 @@ class CampeonatoController extends AppController
             $var3[$l] = $pareja['id'];
             $l++;
         }
-        if(sizeof($var3) >= 8){
+        if(isset($var3) && sizeof($var3)>= 8){
             $numeroGrupos = intval(sizeof($var3)/8);
 
-            $grupo = (new GrupoController());
-            for ($t = 0; $t < $numeroGrupos; $t++) {
-                $grupoValues['categoria_nivel_id'] = $var;
-                $grupo->add2($grupoValues);
+            $grupo = TableRegistry::getTableLocator()->get('Grupo');
+            $resultsIteratorObject6 = $grupo->find()->where(['categoria_nivel_id' => $var])->all();
+            $f = 0;
+            foreach ($resultsIteratorObject6 as $grupo) {
+                $var5[$f] = $grupo['id'];
+                $f++;
+            }
+            if(sizeof($var5) == 0){
+                $grupo = (new GrupoController());
+                for ($t = 0; $t < $numeroGrupos; $t++) {
+                    $grupoValues['categoria_nivel_id'] = $var;
+                    $grupo->add2($grupoValues);
+                }
             }
 
             $grupo = TableRegistry::getTableLocator()->get('Grupo');
@@ -233,18 +243,39 @@ class CampeonatoController extends AppController
                 $var4[$k] = $grupo['id'];
                 $k++;
             }
-
-            debug($var4);
-            $x = 0;
-            $parejaController = (new ParejaController());
-            for ($s = 0; $s < sizeof($var3); $s++) {
-                if($x == sizeof($var4)){
-                    $x = 0;
+            if(isset($var4)){
+                $x = 0;
+                $parejaController = (new ParejaController());
+                for ($s = 0; $s < sizeof($var3); $s++) {
+                    if($x == sizeof($var4)){
+                        $x = 0;
+                    }
+                    $parejaGrupo['grupo_id'] = $var4[$x];
+                    $parejaController->edit2($var3[$s],$parejaGrupo);
+                    $x++;
                 }
-                $parejaGrupo['grupo_id'] = $var4[$x];
-                $parejaController->edit2($var3[$s],$parejaGrupo);
-                $x++;
             }
-        }
+
+
+            $parejas = TableRegistry::getTableLocator()->get('Pareja');
+            foreach ($resultsIteratorObject3 as $grupo) {
+                $resultsIteratorObject4 = $parejas->find()->where(['grupo_id' => $grupo['id']])->all();
+                $resultsIteratorObject5 = $parejas->find()->where(['grupo_id' => $grupo['id']])->all();
+                $matchs = array();
+                foreach($resultsIteratorObject4 as $k){
+                    foreach($resultsIteratorObject5 as $j){
+                        if($k['id'] == $j['id']){
+                            continue;
+                        }
+                        $z = array($k['id'],$j['id']);
+                        sort($z);
+                        if(!in_array($z,$matchs)){
+                            $matchs[] = $z;
+                        }
+                    }
+                }
+            } 
+        } 
+        return 0;
     }
 }
