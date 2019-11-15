@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * CategoriaNivel Controller
@@ -17,6 +18,15 @@ class CategoriaNivelController extends AppController
      *
      * @return void
      */
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), []) ||
+               $user['rol'] === 'administrador';
+
+    }
     public function index()
     {
         $categoriaNivel = $this->paginate($this->CategoriaNivel);
@@ -37,7 +47,10 @@ class CategoriaNivelController extends AppController
             'contain' => []
         ]);
 
-        $this->set('categoriaNivel', $categoriaNivel);
+        $grupo = TableRegistry::getTableLocator()->get('Grupo');
+        $resultsIteratorObject3 = $grupo->find()->where(['categoria_nivel_id' => $id])->all();
+
+        $this->set(compact('categoriaNivel', 'resultsIteratorObject3'));
     }
 
     /**

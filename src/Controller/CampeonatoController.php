@@ -58,7 +58,10 @@ class CampeonatoController extends AppController
             'contain' => []
         ]);
 
-        $this->set('campeonato', $campeonato);
+        $categoriaNivel = TableRegistry::getTableLocator()->get('CategoriaNivel');
+        $resultsIteratorObject = $categoriaNivel->find()->where(['campeonato_id' => $id])->all();
+
+        $this->set(compact('campeonato', 'resultsIteratorObject'));
     }
 
     /**
@@ -182,59 +185,66 @@ class CampeonatoController extends AppController
     }
 
     public function agrupar(){
+        $i = 0;
         $fecha_actual = FrozenTime::now();
         $campeonatos = $this->Campeonato->find('all');
-        $i = 0;
         foreach($campeonatos as $campeonato){
             if($campeonato['fechaFinInscripciones'] <  $fecha_actual){
                 $var[$i] = $campeonato['id'];
+                $this->obtenerCategoriaNivel($campeonato['id']);
                 $i++;
             }
         }
+        die();
+    }
+
+    public function obtenerCategoriaNivel($var){
         $j = 0;
         $categoriaNivel = TableRegistry::getTableLocator()->get('CategoriaNivel');
-        $resultsIteratorObject = $categoriaNivel->find()->where(['campeonato_id' => $var[0]])->all();
+        $resultsIteratorObject = $categoriaNivel->find()->where(['campeonato_id' => $var])->all();
 
         foreach ($resultsIteratorObject as $categoriaNivel) {
             $var2[$j] = $categoriaNivel['id'];
-                $j++;
+            $this->obtenerParejas($categoriaNivel['id']);
         }
+    }
+
+    public function obtenerParejas($var){
         $l = 0;
         $pareja = TableRegistry::getTableLocator()->get('Pareja');
-        $resultsIteratorObject2 = $pareja->find()->where(['categoria_nivel_id' => $var2[0]])->all();
+        $resultsIteratorObject2 = $pareja->find()->where(['categoria_nivel_id' => $var])->all();
         foreach ($resultsIteratorObject2 as $pareja) {
             $var3[$l] = $pareja['id'];
             $l++;
         }
-        $numeroGrupos = intval(sizeof($var3)/8);
+        if(sizeof($var3) >= 8){
+            $numeroGrupos = intval(sizeof($var3)/8);
 
-        $grupo = (new GrupoController());
-        for ($t = 0; $t < $numeroGrupos; $t++) {
-            $grupoValues['categoria_nivel_id'] = $var2[0];
-            $grupo->add2($grupoValues);
-        }
-
-        $grupo = TableRegistry::getTableLocator()->get('Grupo');
-        $resultsIteratorObject3 = $grupo->find()->where(['categoria_nivel_id' => $var2[0]])->all();
-        $k = 0;
-        foreach ($resultsIteratorObject3 as $grupo) {
-            $var4[$k] = $grupo['id'];
-            $k++;
-        }
-
-        debug($var4);
-        $x = 0;
-        $parejaController = (new ParejaController());
-        for ($s = 0; $s < sizeof($var3); $s++) {
-            if($x == sizeof($var4)){
-                $x = 0;
+            $grupo = (new GrupoController());
+            for ($t = 0; $t < $numeroGrupos; $t++) {
+                $grupoValues['categoria_nivel_id'] = $var;
+                $grupo->add2($grupoValues);
             }
-            $parejaGrupo['grupo_id'] = $var4[$x];
-            $parejaController->edit2($var3[$s],$parejaGrupo);
-            $x++;
+
+            $grupo = TableRegistry::getTableLocator()->get('Grupo');
+            $resultsIteratorObject3 = $grupo->find()->where(['categoria_nivel_id' => $var])->all();
+            $k = 0;
+            foreach ($resultsIteratorObject3 as $grupo) {
+                $var4[$k] = $grupo['id'];
+                $k++;
+            }
+
+            debug($var4);
+            $x = 0;
+            $parejaController = (new ParejaController());
+            for ($s = 0; $s < sizeof($var3); $s++) {
+                if($x == sizeof($var4)){
+                    $x = 0;
+                }
+                $parejaGrupo['grupo_id'] = $var4[$x];
+                $parejaController->edit2($var3[$s],$parejaGrupo);
+                $x++;
+            }
         }
-
-
-        die();
     }
 }

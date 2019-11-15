@@ -139,7 +139,6 @@ class ParejaController extends AppController
         ]);
             $pareja = $this->Pareja->patchEntity($pareja, $var2);
             if ($this->Pareja->save($pareja)) {
-                $this->Flash->success(__('The pareja has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }else{

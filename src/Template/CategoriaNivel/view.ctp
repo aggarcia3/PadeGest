@@ -4,15 +4,7 @@
  * @var \App\Model\Entity\CategoriaNivel $categoriaNivel
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Categoria Nivel'), ['action' => 'edit', $categoriaNivel->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Categoria Nivel'), ['action' => 'delete', $categoriaNivel->id], ['confirm' => __('Are you sure you want to delete # {0}?', $categoriaNivel->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Categoria Nivel'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Categoria Nivel'), ['action' => 'add']) ?> </li>
-    </ul>
-</nav>
+<?= $this->element('menu') ?>
 <div class="categoriaNivel view large-9 medium-8 columns content">
     <h3><?= h($categoriaNivel->id) ?></h3>
     <table class="vertical-table">
@@ -29,8 +21,27 @@
             <td><?= $this->Number->format($categoriaNivel->id) ?></td>
         </tr>
         <tr>
-            <th scope="row"><?= __('IdCampeonato') ?></th>
-            <td><?= $this->Number->format($categoriaNivel->idCampeonato) ?></td>
+            <th scope="row"><?= __('campeonato_id') ?></th>
+            <td><?= $this->Number->format($categoriaNivel->campeonato_id) ?></td>
         </tr>
     </table>
+
+
+    <div class="related">
+    <h3 class="card-title text-center" style="color: black;">Grupos de la categoría</h3>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th scope="col"><?= __('Id') ?></th>
+                <th scope="col" class="actions"><?= __('Actions') ?></th>
+            </tr>
+            <?php foreach ($resultsIteratorObject3 as $grupo): ?>
+            <tr>
+                <td><?= h($grupo->id) ?></td>
+                <td class="actions">
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Grupo', 'action' => 'view', $grupo->id], ['escapeTitle' => false]) ?>  
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
 </div>

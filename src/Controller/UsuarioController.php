@@ -34,6 +34,7 @@ class UsuarioController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
+        $this->Auth->allow('index');
         $this->Auth->allow('register');
         $this->Auth->allow('login');
         $this->Auth->allow('logout');
