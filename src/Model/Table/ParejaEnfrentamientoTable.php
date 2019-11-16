@@ -9,6 +9,9 @@ use Cake\Validation\Validator;
 /**
  * ParejaEnfrentamiento Model
  *
+ * @property &\Cake\ORM\Association\BelongsTo $Pareja
+ * @property &\Cake\ORM\Association\BelongsTo $Enfrentamiento
+ *
  * @method \App\Model\Entity\ParejaEnfrentamiento get($primaryKey, $options = [])
  * @method \App\Model\Entity\ParejaEnfrentamiento newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\ParejaEnfrentamiento[] newEntities(array $data, array $options = [])
@@ -31,8 +34,17 @@ class ParejaEnfrentamientoTable extends Table
         parent::initialize($config);
 
         $this->setTable('pareja_enfrentamiento');
-        $this->setDisplayField('idEnfrentamiento');
-        $this->setPrimaryKey(['idEnfrentamiento', 'idPareja']);
+        $this->setDisplayField('enfrentamiento_id');
+        $this->setPrimaryKey(['enfrentamiento_id', 'pareja_id']);
+
+        $this->belongsTo('Pareja', [
+            'foreignKey' => 'pareja_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Enfrentamiento', [
+            'foreignKey' => 'enfrentamiento_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
@@ -44,16 +56,23 @@ class ParejaEnfrentamientoTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->nonNegativeInteger('idPareja')
-            ->allowEmptyString('idPareja', null, 'create');
-
-        $validator
-            ->nonNegativeInteger('idEnfrentamiento')
-            ->allowEmptyString('idEnfrentamiento', null, 'create');
-
-        $validator
             ->notEmptyString('participacionConfirmada');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['pareja_id'], 'Pareja'));
+        $rules->add($rules->existsIn(['enfrentamiento_id'], 'Enfrentamiento'));
+
+        return $rules;
     }
 }

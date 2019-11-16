@@ -27,4 +27,28 @@
     </table>
         <h5 class="card-title" style="color: black;">Bases</h5>
         <?= $this->Text->autoParagraph(h($campeonato->bases)); ?>
-</div>
+
+
+<div class="related">
+    <h3 class="card-title text-center" style="color: black;">Categorias del campeonato</h3>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th scope="col"><?= __('Id') ?></th>
+                <th scope="col"><?= __('categoria') ?></th>
+                <th scope="col"><?= __('nivel') ?></th>
+                <th scope="col" class="actions"><?= __('Actions') ?></th>
+            </tr>
+            <?php foreach ($resultsIteratorObject as $CategoriaNivel): ?>
+            <tr>
+                <td><?= h($CategoriaNivel->id) ?></td>
+                <td><?= h($CategoriaNivel->categoria) ?></td>
+                <td><?= h($CategoriaNivel->nivel) ?></td>
+                <td class="actions">
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'CategoriaNivel', 'action' => 'view', $CategoriaNivel->id], ['escapeTitle' => false]) ?>  
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+
+    </div>

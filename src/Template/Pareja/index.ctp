@@ -20,8 +20,8 @@
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('idCapitan') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('idCompanero') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('idCategoriaNivel') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('idGrupo') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('categoria_nivel_id') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('grupo_id') ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
@@ -31,8 +31,8 @@
                 <td><?= $this->Number->format($pareja->id) ?></td>
                 <td><?= $this->Number->format($pareja->idCapitan) ?></td>
                 <td><?= $this->Number->format($pareja->idCompanero) ?></td>
-                <td><?= $this->Number->format($pareja->idCategoriaNivel) ?></td>
-                <td><?= $this->Number->format($pareja->idGrupo) ?></td>
+                <td><?= $this->Number->format($pareja->categoria_nivel_id) ?></td>
+                <td><?= $this->Number->format($pareja->grupo_id) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $pareja->id]) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $pareja->id]) ?>

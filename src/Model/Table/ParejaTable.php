@@ -9,6 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Pareja Model
  *
+ * @property \App\Model\Table\CategoriaNivelTable&\Cake\ORM\Association\BelongsTo $CategoriaNivel
+ * @property \App\Model\Table\GrupoTable&\Cake\ORM\Association\BelongsTo $Grupo
  * @property \App\Model\Table\EnfrentamientoTable&\Cake\ORM\Association\BelongsToMany $Enfrentamiento
  *
  * @method \App\Model\Entity\Pareja get($primaryKey, $options = [])
@@ -36,6 +38,13 @@ class ParejaTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->belongsTo('CategoriaNivel', [
+            'foreignKey' => 'categoria_nivel_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Grupo', [
+            'foreignKey' => 'grupo_id'
+        ]);
         $this->belongsToMany('Enfrentamiento', [
             'foreignKey' => 'pareja_id',
             'targetForeignKey' => 'enfrentamiento_id',
@@ -65,15 +74,21 @@ class ParejaTable extends Table
             ->requirePresence('idCompanero', 'create')
             ->notEmptyString('idCompanero');
 
-        $validator
-            ->nonNegativeInteger('idCategoriaNivel')
-            ->requirePresence('idCategoriaNivel', 'create')
-            ->notEmptyString('idCategoriaNivel');
-
-        $validator
-            ->nonNegativeInteger('idGrupo')
-            ->allowEmptyString('idGrupo');
-
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['categoria_nivel_id'], 'CategoriaNivel'));
+        $rules->add($rules->existsIn(['grupo_id'], 'Grupo'));
+
+        return $rules;
     }
 }

@@ -34,6 +34,7 @@ class UsuarioController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
+        $this->Auth->allow('index');
         $this->Auth->allow('register');
         $this->Auth->allow('login');
         $this->Auth->allow('logout');
@@ -105,7 +106,10 @@ class UsuarioController extends AppController
             $data['esSocio'] = '0';
             $data['password'] = $this->hashPassword($data['password']);
             $usuario = $this->Usuario->patchEntity($usuario, $data);
+<<<<<<< HEAD
             
+=======
+>>>>>>> master
             if ($this->Usuario->save($usuario)) {
                 $this->Flash->success(__('El usuario ha sigo registrado'));
 

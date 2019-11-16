@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Pareja Controller
@@ -58,15 +59,50 @@ class ParejaController extends AppController
      */
     public function add()
     {
+        $data = $this->request->getData();
+        $usuario = TableRegistry::getTableLocator()->get('Usuario');
+        $resultsIteratorObject = $usuario->find()->where(['username' => $data['usernameCapitan']])->all();
+        $resultsIteratorObject2 = $usuario->find()->where(['username' => $data['usernamePareja']])->all();
+
+        $categoriaNivel = TableRegistry::getTableLocator()->get('CategoriaNivel');
+        $resultsIteratorObject3 = $categoriaNivel->find()->where(['campeonato_id' => $data['campeonatoId']])->all();
+
+        foreach ($resultsIteratorObject as $usuario) {
+            $var = $usuario->id;
+        }
+
+        foreach ($resultsIteratorObject2 as $usuario) {
+            $var2 = $usuario->id;
+        }
+        foreach ($resultsIteratorObject3 as $categoriaNivel) {
+            if($data['categoria'] == $categoriaNivel['categoria'] && $data['nivel'] == $categoriaNivel['nivel']){
+                $var3 = $categoriaNivel['id'];
+            }
+        }
+
         $pareja = $this->Pareja->newEntity();
+
+        $data['idCapitan'] = $var;
+        $data['idCompanero'] = $var2;
+        $data['categoria_nivel_id'] = $var3;
+        $data['grupo_id'] = null;
+
+        unset($data['usernameCapitan']);     
+        unset($data['usernamePareja']);    
+        unset($data['categoria']);
+        unset($data['nivel']); 
+        unset($data['nivel']); 
+        unset($data['campeonatoId']); 
+
         if ($this->request->is('post')) {
-            $pareja = $this->Pareja->patchEntity($pareja, $this->request->getData());
+            $pareja = $this->Pareja->patchEntity($pareja, $data);
             if ($this->Pareja->save($pareja)) {
                 $this->Flash->success(__('The pareja has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
             }
             $this->Flash->error(__('The pareja could not be saved. Please, try again.'));
+            return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
         }
         $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);
         $this->set(compact('pareja', 'enfrentamiento'));
@@ -93,6 +129,21 @@ class ParejaController extends AppController
             }
             $this->Flash->error(__('The pareja could not be saved. Please, try again.'));
         }
+        $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);
+        $this->set(compact('pareja', 'enfrentamiento'));
+    }
+    public function edit2($var, $var2)
+    {
+        $pareja = $this->Pareja->get($var, [
+            'contain' => ['Enfrentamiento']
+        ]);
+            $pareja = $this->Pareja->patchEntity($pareja, $var2);
+            if ($this->Pareja->save($pareja)) {
+
+                return $this->redirect(['action' => 'index']);
+            }else{
+                $this->Flash->error(__('The pareja could not be saved. Please, try again.'));
+            }
         $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);
         $this->set(compact('pareja', 'enfrentamiento'));
     }

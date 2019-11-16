@@ -76,6 +76,14 @@ printf '\n> Removing initial comments...\n'
     mv "$tmpFile" "$DB_SCRIPT_FILENAME"
 } || { echo '! Header removal unsuccessful, aborting script execution.' >&2; exit 2; }
 
+# Naively fix MySQL Workbench not supporting inserting rows with generated columns it
+# allows to create (nice design there)
+printf '\n> Making string '\''DEFAULT'\'' a keyword...\n'
+{
+    sed 's/'\''DEFAULT'\''/DEFAULT/g' "$DB_SCRIPT_FILENAME" > "$tmpFile"
+    mv "$tmpFile" "$DB_SCRIPT_FILENAME"
+} || { echo '! String substitution unsuccessful, aborting script execution.' >&2; exit 2; }
+
 printf '\n> Adding custom initial comments...\n'
 {
     printf -- '-- -----------------------------------------------------\n-- PadeGest application database\n-- For use by PadeGest\n-- Generated on %s\n-- -----------------------------------------------------\n' "$(LANG=en_US date '+%d %b %Y %T %Z')" | cat - "$DB_SCRIPT_FILENAME" > "$tmpFile"
