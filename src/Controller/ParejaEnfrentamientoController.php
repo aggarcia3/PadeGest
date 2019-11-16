@@ -24,6 +24,15 @@ class ParejaEnfrentamientoController extends AppController
         $this->set(compact('parejaEnfrentamiento'));
     }
 
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), []) ||
+               $user['rol'] === 'administrador';
+
+    }
     /**
      * View method
      *
@@ -58,6 +67,18 @@ class ParejaEnfrentamientoController extends AppController
             $this->Flash->error(__('The pareja enfrentamiento could not be saved. Please, try again.'));
         }
         $this->set(compact('parejaEnfrentamiento'));
+    }
+
+    public function add2($var)
+    {
+        $parejaEnfrentamiento = $this->ParejaEnfrentamiento->newEntity();
+        $parejaEnfrentamiento = $this->ParejaEnfrentamiento->patchEntity($parejaEnfrentamiento, $var);
+            if ($this->ParejaEnfrentamiento->save($parejaEnfrentamiento)) {
+
+                return $this->redirect(['action' => 'index']);
+            }else{
+                $this->Flash->error(__('The pareja enfrentamiento could not be saved. Please, try again.'));
+            }
     }
 
     /**

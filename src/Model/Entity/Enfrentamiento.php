@@ -7,10 +7,14 @@ use Cake\ORM\Entity;
  * Enfrentamiento Entity
  *
  * @property int $id
+ * @property string $nombre
  * @property \Cake\I18n\FrozenTime $fecha
- * @property int|null $idReserva
+ * @property string $fase
+ * @property int|null $reserva_id
  *
- * @property \App\Model\Entity\Pareja[] $pareja
+ * @property \App\Model\Entity\Pareja $pareja
+ * @property \App\Model\Entity\Reserva $reserva
+ * @property \App\Model\Entity\Resultado[] $resultado
  */
 class Enfrentamiento extends Entity
 {
@@ -24,8 +28,12 @@ class Enfrentamiento extends Entity
      * @var array
      */
     protected $_accessible = [
+        'nombre' => true,
         'fecha' => true,
-        'idReserva' => true,
-        'pareja' => true
+        'fase' => true,
+        'reserva_id' => true,
+        'pareja' => true,
+        'reserva' => true,
+        'resultado' => true
     ];
 }

@@ -54,6 +54,16 @@ class CategoriaNivelControllerTest extends TestCase
     }
 
     /**
+     * Test add2 method
+     *
+     * @return void
+     */
+    public function testAdd2()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
      * Test edit method
      *
      * @return void

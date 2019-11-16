@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Grupo Controller
@@ -17,6 +18,15 @@ class GrupoController extends AppController
      *
      * @return void
      */
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), ['register','index', 'logout', 'edit']) ||
+               $user['rol'] === 'administrador';
+
+    }
     public function index()
     {
         $grupo = $this->paginate($this->Grupo);
@@ -37,7 +47,10 @@ class GrupoController extends AppController
             'contain' => []
         ]);
 
-        $this->set('grupo', $grupo);
+        $pareja = TableRegistry::getTableLocator()->get('Pareja');
+        $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->all();
+
+        $this->set(compact('grupo', 'resultsIteratorObject3'));
     }
 
     /**
@@ -57,6 +70,20 @@ class GrupoController extends AppController
             }
             $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
         }
+        $this->set(compact('grupo'));
+    }
+
+    public function add2($var)
+    {
+        $grupo = $this->Grupo->newEntity();
+        $grupo = $this->Grupo->patchEntity($grupo, $var);
+        if ($this->Grupo->save($grupo)) {
+
+            return $this->redirect(['action' => 'index']);
+        }else{
+            $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
+        }    
+    
         $this->set(compact('grupo'));
     }
 

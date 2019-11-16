@@ -7,7 +7,7 @@ use Cake\ORM\Entity;
  * Grupo Entity
  *
  * @property int $id
- * @property int $idCategoriaNivel
+ * @property int $categoria_nivel_id
  */
 class Grupo extends Entity
 {
@@ -21,6 +21,6 @@ class Grupo extends Entity
      * @var array
      */
     protected $_accessible = [
-        'idCategoriaNivel' => true
+        'categoria_nivel_id' => true
     ];
 }

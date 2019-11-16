@@ -9,7 +9,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $categoria
  * @property string $nivel
- * @property int $idCampeonato
+ * @property int $campeonato_id
  */
 class CategoriaNivel extends Entity
 {
@@ -25,6 +25,6 @@ class CategoriaNivel extends Entity
     protected $_accessible = [
         'categoria' => true,
         'nivel' => true,
-        'idCampeonato' => true
+        'campeonato_id' => true
     ];
 }

@@ -3,13 +3,55 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Enfrentamiento[]|\Cake\Collection\CollectionInterface $enfrentamiento
  */
+
+// Page title
+$this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Enfrentamiento'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Pareja'), ['controller' => 'Pareja', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Pareja'), ['controller' => 'Pareja', 'action' => 'add']) ?></li>
+        <li class="heading"><?= __('Acciones') ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Enfrentamiento')),
+                ['action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
+                ['controller' => 'Pareja', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
+                ['controller' => 'Pareja', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Reserva')),
+                ['controller' => 'Reserva', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Reserva')),
+                ['controller' => 'Reserva', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Resultado')),
+                ['controller' => 'Resultado', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Resultado')),
+                ['controller' => 'Resultado', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
     </ul>
 </nav>
 <div class="enfrentamiento index large-9 medium-8 columns content">
@@ -18,21 +60,42 @@
         <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('fecha') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('idReserva') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fase') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('reserva_id') ?></th>
+                <th scope="col" class="actions"></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($enfrentamiento as $enfrentamiento): ?>
             <tr>
                 <td><?= $this->Number->format($enfrentamiento->id) ?></td>
+                <td><?= h($enfrentamiento->nombre) ?></td>
                 <td><?= h($enfrentamiento->fecha) ?></td>
-                <td><?= $this->Number->format($enfrentamiento->idReserva) ?></td>
+                <td><?= h($enfrentamiento->fase) ?></td>
+                <td><?= $enfrentamiento->has('reserva') ? $this->Html->link($enfrentamiento->reserva->id, ['controller' => 'Reserva', 'action' => 'view', $enfrentamiento->reserva->id]) : '' ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $enfrentamiento->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $enfrentamiento->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $enfrentamiento->id], ['confirm' => __('Are you sure you want to delete # {0}?', $enfrentamiento->id)]) ?>
+                    <?= $this->Html->link(
+                            '<i class="fas fa-eye view-action-fa-icon"></i>',
+                            ['action' => 'view', $enfrentamiento->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Html->link(
+                            '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
+                            ['action' => 'edit', $enfrentamiento->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Form->postLink(
+                            '<i class="fas fa-minus-square delete-action-fa-icon"></i>',
+                            ['action' => 'delete', $enfrentamiento->id],
+                            ['escapeTitle' => false, 'confirm' =>
+                                __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la enfrentamiento número {0}', $enfrentamiento->id)])
+                            ]
+                        )
+                    ?>
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -40,12 +103,12 @@
     </table>
     <div class="paginator">
         <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
+            <?= $this->Paginator->first('<i class="fas fa-angle-double-left"></i>', ['escape' => false]) ?>
+            <?= $this->Paginator->prev('<i class="fas fa-angle-left"></i>', ['escape' => false]) ?>
             <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
+            <?= $this->Paginator->next('<i class="fas fa-angle-right"></i>', ['escape' => false]) ?>
+            <?= $this->Paginator->last('<i class="fas fa-angle-double-right"></i>', ['escape' => false]) ?>
         </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+        <p><?= $this->Paginator->counter(['format' => __('Viendo {{current}} de {{count}} ') . __('{0,plural,=0{$enfrentamiento}=1{$enfrentamiento} other{$enfrentamiento}}', [count($enfrentamiento)])]) ?></p>
     </div>
 </div>

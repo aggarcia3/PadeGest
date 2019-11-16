@@ -28,7 +28,7 @@ Time::setToStringFormat('yyyy-MM-dd HH:mm:ss');
 <?php
 
             echo $this->Form->control('usernameCapitan'); 
-            echo $this->Form->control('usernameCapitan'); 
+            echo $this->Form->control('usernamePareja'); 
             echo $this->Form->label('Categoria');
             echo $this->Form->select('categoria', [
                 'masculina' => 'Masculina',
@@ -41,6 +41,7 @@ Time::setToStringFormat('yyyy-MM-dd HH:mm:ss');
                 '2' => '2 nivel',
                 '3' => '3 nivel'
             ]);
+            echo $this->Form->input('campeonatoId', ['type' => 'hidden', 'default'=>$campeonato->id]);
 
 ?>
 

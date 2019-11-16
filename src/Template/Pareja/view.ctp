@@ -4,18 +4,8 @@
  * @var \App\Model\Entity\Pareja $pareja
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Pareja'), ['action' => 'edit', $pareja->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Pareja'), ['action' => 'delete', $pareja->id], ['confirm' => __('Are you sure you want to delete # {0}?', $pareja->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Pareja'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Pareja'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Enfrentamiento'), ['controller' => 'Enfrentamiento', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Enfrentamiento'), ['controller' => 'Enfrentamiento', 'action' => 'add']) ?> </li>
-    </ul>
-</nav>
-<div class="pareja view large-9 medium-8 columns content">
+<?= $this->element('menu') ?>
+<div class="pareja view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= h($pareja->id) ?></h3>
     <table class="vertical-table">
         <tr>

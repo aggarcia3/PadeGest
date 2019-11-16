@@ -20,7 +20,7 @@ class LigaRegular extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true,
-        'id' => false
+        'id' => true,
+
     ];
 }

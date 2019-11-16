@@ -34,6 +34,7 @@ class UsuarioController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
+        $this->Auth->allow('index');
         $this->Auth->allow('register');
         $this->Auth->allow('login');
         $this->Auth->allow('logout');
@@ -105,8 +106,10 @@ class UsuarioController extends AppController
             $data['esSocio'] = '0';
             $data['password'] = $this->hashPassword($data['password']);
             $usuario = $this->Usuario->patchEntity($usuario, $data);
-            debug($usuario);
-            debug($data);
+<<<<<<< HEAD
+            
+=======
+>>>>>>> master
             if ($this->Usuario->save($usuario)) {
                 $this->Flash->success(__('El usuario ha sigo registrado'));
 
@@ -171,6 +174,19 @@ class UsuarioController extends AppController
                 return $this->redirect(['action' => 'listar']);
             }
             $this->Flash->error(__('The usuario could not be saved. Please, try again.'));
+        }
+        $this->set(compact('usuario'));
+    }
+    public function hacerseSocio($id=null)
+    {
+        $usuario=$this->Usuario->get($this->Auth->user('id')); 
+        if($this->request->is(['patch','post','put'])){
+            $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
+            if ($this->Usuario->save($usuario)) {
+                $this->Flash->success(__('Estado de socio cambiado'));
+                return $this->redirect(['action'=>'listar']);
+            }
+            $this->Flash->error(__('Ha habido un error, intentalo de nuevo'));
         }
         $this->set(compact('usuario'));
     }

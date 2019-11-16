@@ -9,9 +9,11 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $idCapitan
  * @property int $idCompanero
- * @property int $idCategoriaNivel
- * @property int|null $idGrupo
+ * @property int $categoria_nivel_id
+ * @property int|null $grupo_id
  *
+ * @property \App\Model\Entity\CategoriaNivel $categoria_nivel
+ * @property \App\Model\Entity\Grupo $grupo
  * @property \App\Model\Entity\Enfrentamiento[] $enfrentamiento
  */
 class Pareja extends Entity
@@ -28,8 +30,10 @@ class Pareja extends Entity
     protected $_accessible = [
         'idCapitan' => true,
         'idCompanero' => true,
-        'idCategoriaNivel' => true,
-        'idGrupo' => true,
+        'categoria_nivel_id' => true,
+        'grupo_id' => true,
+        'categoria_nivel' => true,
+        'grupo' => true,
         'enfrentamiento' => true
     ];
 }

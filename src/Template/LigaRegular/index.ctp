@@ -4,12 +4,7 @@
  * @var \App\Model\Entity\LigaRegular[]|\Cake\Collection\CollectionInterface $ligaRegular
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Liga Regular'), ['action' => 'add']) ?></li>
-    </ul>
-</nav>
+<?= $this->element('menu') ?> 
 <div class="ligaRegular index large-9 medium-8 columns content">
     <h3><?= __('Liga Regular') ?></h3>
     <table cellpadding="0" cellspacing="0">
@@ -30,8 +25,11 @@
                 </td>
             </tr>
             <?php endforeach; ?>
+           
         </tbody>
+        
     </table>
+    <?= $this->Html->link(__('Añadir liga regular'), ['action' => 'add']) ?>
     <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>

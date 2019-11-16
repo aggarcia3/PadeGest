@@ -9,6 +9,9 @@ use Cake\Validation\Validator;
 /**
  * Grupo Model
  *
+ * @property &\Cake\ORM\Association\BelongsTo $CategoriaNivel
+ * @property &\Cake\ORM\Association\HasMany $Pareja
+ *
  * @method \App\Model\Entity\Grupo get($primaryKey, $options = [])
  * @method \App\Model\Entity\Grupo newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Grupo[] newEntities(array $data, array $options = [])
@@ -33,6 +36,14 @@ class GrupoTable extends Table
         $this->setTable('grupo');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('CategoriaNivel', [
+            'foreignKey' => 'categoria_nivel_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->hasMany('Pareja', [
+            'foreignKey' => 'grupo_id'
+        ]);
     }
 
     /**
@@ -47,11 +58,20 @@ class GrupoTable extends Table
             ->nonNegativeInteger('id')
             ->allowEmptyString('id', null, 'create');
 
-        $validator
-            ->nonNegativeInteger('idCategoriaNivel')
-            ->requirePresence('idCategoriaNivel', 'create')
-            ->notEmptyString('idCategoriaNivel');
-
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['categoria_nivel_id'], 'CategoriaNivel'));
+
+        return $rules;
     }
 }
