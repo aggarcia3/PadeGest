@@ -3,17 +3,20 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Campeonato[]|\Cake\Collection\CollectionInterface $campeonato
  */
+
+use Cake\Routing\Router;
+
 ?>
 <?= $this->element('menu') ?>
 <div class="campeonato index large-9 medium-8 columns content">
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
-    <h3 class="card-title text-center" style="color: black;">Campeonatos<a href="/campeonato/add" class="btn btn-primary btn-sm float-right">Añadir campeonato</a></h3>
+    <h3 class="card-title text-center">Campeonatos<a href="<?= Router::url(['controller' => 'Campeonato', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">Añadir campeonato</a></h3>
 
 <?php }else{ ?>
 
-    <h3 class="card-title text-center" style="color: black;">Campeonatos</h3>
+    <h3 class="card-title text-center">Campeonatos</h3>
 
 <?php }?>
 

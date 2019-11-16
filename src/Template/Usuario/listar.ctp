@@ -3,10 +3,13 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Usuario[]|\Cake\Collection\CollectionInterface $usuario
  */
+
+use Cake\Routing\Router;
+
 ?>
 <?= $this->element('menu') ?>
 <div class="usuario index large-9 medium-8 columns content thead-dark" style="padding-bottom: 0px; margin-bottom:0px;">
-<h3 class="card-title text-center" style="color: black;">Usuarios<a href="/usuario/add" class="btn btn-primary btn-sm float-right">Añadir Usuario</a></h3>
+<h3 class="card-title text-center">Usuarios<a href="<?= Router::url(['controller' => 'Usuario', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">Añadir Usuario</a></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
@@ -29,7 +32,7 @@
                 <td><?php echo ((h($usuario->esSocio) == 1 ) ? "Si" :  "No"); ?></td>
                 <td><?= h($usuario->rol) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['action' => 'view', $usuario->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['action' => 'view', $usuario->id], ['escapeTitle' => false]) ?>
                     <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $usuario->id], ['escapeTitle' => false]) ?>
                     <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $usuario->id], ['escapeTitle' => false, 'confirm' => __('¿Estás seguro de que quieres eliminar el usuario "{0}"? Esto borrará toda su información asociada.', [__('{0}', $usuario->username)])]) ?>
                 </td>

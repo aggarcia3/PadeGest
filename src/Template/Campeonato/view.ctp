@@ -6,7 +6,7 @@
 ?>
 <?= $this->element('menu') ?>
 <div class="campeonato view large-9 medium-8 columns content">
-    <h3 class="card-title text-center" style="color: black;">Editar Campeonato: <?= h($campeonato->nombre) ?> </h3>
+    <h3 class="card-title text-center">Editar Campeonato: <?= h($campeonato->nombre) ?> </h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Nombre') ?></th>
@@ -25,12 +25,12 @@
             <td><?= h($campeonato->fechaFinInscripciones) ?></td>
         </tr>
     </table>
-        <h5 class="card-title" style="color: black;">Bases</h5>
+        <h5 class="card-title">Bases</h5>
         <?= $this->Text->autoParagraph(h($campeonato->bases)); ?>
 
 
 <div class="related">
-    <h3 class="card-title text-center" style="color: black;">Categorias del campeonato</h3>
+    <h3 class="card-title text-center">Categorias del campeonato</h3>
         <table cellpadding="0" cellspacing="0">
             <tr>
                 <th scope="col"><?= __('Id') ?></th>
@@ -44,7 +44,7 @@
                 <td><?= h($CategoriaNivel->categoria) ?></td>
                 <td><?= h($CategoriaNivel->nivel) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'CategoriaNivel', 'action' => 'view', $CategoriaNivel->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'CategoriaNivel', 'action' => 'view', $CategoriaNivel->id], ['escapeTitle' => false]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

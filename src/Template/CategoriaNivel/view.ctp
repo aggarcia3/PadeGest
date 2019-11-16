@@ -28,7 +28,7 @@
 
 
     <div class="related">
-    <h3 class="card-title text-center" style="color: black;">Grupos de la categoría</h3>
+    <h3 class="card-title text-center">Grupos de la categoría</h3>
         <table cellpadding="0" cellspacing="0">
             <tr>
                 <th scope="col"><?= __('Id') ?></th>
@@ -38,7 +38,7 @@
             <tr>
                 <td><?= h($grupo->id) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Grupo', 'action' => 'view', $grupo->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Grupo', 'action' => 'view', $grupo->id], ['escapeTitle' => false]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

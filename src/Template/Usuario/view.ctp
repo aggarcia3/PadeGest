@@ -6,7 +6,7 @@
 ?>
 <?= $this->element('menu') ?>
 <div class="usuario view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
-<h3 class="card-title text-center" style="color: black;"><?= h($usuario->username) ?></h3>
+<h3 class="card-title text-center"><?= h($usuario->username) ?></h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Username') ?></th>
@@ -32,6 +32,6 @@
             <th scope="row"><?= __('EsSocio') ?></th>
             <td><?php echo ((h($usuario->esSocio) == 1 ) ? "Si" :  "No"); ?></td>
         </tr>
-        
+
     </table>
 </div>

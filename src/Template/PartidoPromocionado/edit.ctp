@@ -9,7 +9,7 @@
 <div class="partidoPromocionado form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create($partidoPromocionado) ?>
     <fieldset>
-        <h3 class="card-title text-center" style="color: black;">Editar Partido Promocionado</h3>
+        <h3 class="card-title text-center">Editar Partido Promocionado</h3>
         <?php
             echo $this->Form->control('nombre');
             echo $this->Form->control('fecha');

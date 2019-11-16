@@ -6,7 +6,7 @@
 ?>
 <?= $this->element('menu') ?>
 <div class="campeonato form large-9 medium-8 columns content">
-<h3 class="card-title text-center" style="color: black;">Añadir Campeonato</h3>
+<h3 class="card-title text-center">Añadir Campeonato</h3>
     <?= $this->Form->create($campeonato) ?>
     <fieldset>
         <?php

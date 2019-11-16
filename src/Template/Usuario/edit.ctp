@@ -8,7 +8,7 @@
 <div class="usuario form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create($usuario) ?>
     <fieldset>
-        <h3 class="card-title text-center" style="color: black;">Editar Usuario</h3>
+        <h3 class="card-title text-center">Editar Usuario</h3>
         <?php
             echo $this->Form->control('username');
             echo $this->Form->control('password', array('required' => false));

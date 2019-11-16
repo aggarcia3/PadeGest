@@ -3,18 +3,21 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\PartidoPromocionado[]|\Cake\Collection\CollectionInterface $partidoPromocionado
  */
+
+use Cake\Routing\Router;
+
 ?>
 <?= $this->element('menu') ?>
 <div class="partidoPromocionado index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
-    <h3 class="card-title text-center" style="color: black;">Partidos Promocionados<a href="/partido-promocionado/add" class="btn btn-primary btn-sm float-right">Añadir Partido Promocionado</a></h3>
+    <h3 class="card-title text-center">Partidos Promocionados<a href="<?= Router::url(['controller' => 'PartidoPromocionado', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">Añadir Partido Promocionado</a></h3>
 
 
 <?php }else{ ?>
 
-    <h3 class="card-title text-center" style="color: black;">Partidos Promocionados</h3>
+    <h3 class="card-title text-center">Partidos Promocionados</h3>
 
 <?php }?>
 

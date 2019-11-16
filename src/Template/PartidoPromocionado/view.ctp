@@ -6,7 +6,7 @@
 ?>
 <?= $this->element('menu') ?>
 <div class="partidoPromocionado view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
-<h3 class="card-title text-center" style="color: black;">Partido Promocionado: <?= h($partidoPromocionado->nombre) ?></h3>
+<h3 class="card-title text-center">Partido Promocionado: <?= h($partidoPromocionado->nombre) ?></h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Id') ?></th>
@@ -26,7 +26,7 @@
         </tr>
     </table>
     <div class="related">
-    <h3 class="card-title text-center" style="color: black;">Usuarios Inscritos</h3>
+    <h3 class="card-title text-center">Usuarios Inscritos</h3>
         <?php if (!empty($partidoPromocionado->usuario)): ?>
         <table cellpadding="0" cellspacing="0">
             <tr>
@@ -49,7 +49,7 @@
                 <td><?php echo ((h($usuario->esSocio) == 1 ) ? "Si" :  "No"); ?></td>
                 <td><?= h($usuario->rol) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Usuario', 'action' => 'view', $usuario->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Usuario', 'action' => 'view', $usuario->id], ['escapeTitle' => false]) ?>
                     <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['controller' => 'Usuario', 'action' => 'edit', $usuario->id], ['escapeTitle' => false]) ?>
                     <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['controller' => 'Usuario', 'action' => 'delete', $usuario->id], ['escapeTitle' => false, 'confirm' => __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('el usuario {0}', $usuario->username)])]) ?>
                 </td>
