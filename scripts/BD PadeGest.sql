@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 15 Nov 2019 00:48:14 CET
+-- Generated on 16 Nov 2019 12:38:06 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -88,7 +88,7 @@ DROP TABLE IF EXISTS `PADEGEST`.`enfrentamiento` ;
 CREATE TABLE IF NOT EXISTS `PADEGEST`.`enfrentamiento` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
-  `fecha` DATETIME NOT NULL,
+  `fecha` DATETIME NULL,
   `fase` ENUM('liga regular', 'playoffs') NOT NULL,
   `reserva_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
@@ -450,7 +450,7 @@ BEGIN
 
 	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF fechaReserva <> NEW.`fecha` THEN
+	IF NEW.`fecha` IS NULL OR fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
     END IF;
 END$$
@@ -469,7 +469,7 @@ BEGIN
 
 	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF fechaReserva <> NEW.`fecha` THEN
+	IF NEW.`fecha` IS NULL OR fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
     END IF;
 END$$
