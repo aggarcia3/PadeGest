@@ -14,6 +14,7 @@
  */
 
 use Cake\Routing\Router;
+
 ?>
 <?= $this->Html->docType() ?>
 <html lang='es-ES'>
@@ -32,8 +33,8 @@ use Cake\Routing\Router;
 
     <?= $this->Html->css('bootstrap.min') ?>
     <?= $this->Html->css('heroic-features') ?>
-    <?= $this->Html->script(['bootstrap.min', 'jquery-2.2.4.min']) ?>
-
+    <?= $this->Html->css('fa.all.min.css') ?>
+    <?= $this->Html->script(['jquery-3.3.1.slim.min.js', 'bootstrap.min']) ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -43,23 +44,23 @@ use Cake\Routing\Router;
 
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="<?= Router::url(['controller' => 'Usuario']) ?>">Padegest</a>
+        <a class="navbar-brand" href="<?= Router::url(['controller' => 'Usuario']) ?>">PadeGest</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
 
-<?php if($Auth->user('id')){ ?>
+<?php if ($Auth->user() !== null): ?>
 
-                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'edit', $Auth->user('id')]) ?>"><?= $Auth->user('username') ?></a></li>
-                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'logout']) ?>">Logout</a></li>
+                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'edit', $Auth->user('id')]) ?>"><i class="fas fa-user"></i> <?= $Auth->user('username') ?></a></li>
+                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'logout']) ?>"><i class="fas fa-sign-out-alt"></i></a></li>
 
-<?php }else{ ?>
+<?php else: ?>
 
-                <li><a class="nav-link" href="/usuario/login">Log In</a></li>
+                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'login']) ?>"><i class="fas fa-sign-in-alt"></i></a></li>
 
-<?php } ?>
+<?php endif; ?>
 
             </ul>
         </div>
@@ -79,6 +80,5 @@ use Cake\Routing\Router;
 <br>
 <footer class="py-5 bg-dark bottom">
         <p class="m-0 text-center text-white">Copyright &copy; Pablo Pazos Domínguez, Alejandro González García, Pablo Lama Valencia, Salvador Pérez Salcedo</p>
-        <!-- /.container -->
 </footer>
 </html>
