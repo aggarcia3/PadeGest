@@ -543,3 +543,9 @@ table td {
 .delete-action-fa-icon {
     color: #cf0000;
 }
+
+footer div {
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

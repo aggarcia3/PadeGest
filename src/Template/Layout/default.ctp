@@ -17,7 +17,7 @@ use Cake\Routing\Router;
 
 ?>
 <?= $this->Html->docType() ?>
-<html lang='es-ES'>
+<html lang="es-ES" class="h-100">
 <head>
     <?= $this->Html->charset() ?>
     <?= '<noscript>' . $this->fetch('noscript') . '</noscript>' ?>
@@ -40,9 +40,7 @@ use Cake\Routing\Router;
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 </head>
-<body>
-
-
+<body class="d-flex flex-column h-100">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="<?= Router::url(['controller' => 'Usuario']) ?>">PadeGest</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,18 +65,16 @@ use Cake\Routing\Router;
     </nav>
 
     <?= $this->Flash->render() ?>
-    <div class="clearfix">
-        <?= $this->fetch('content') ?>
-    </div>
+    <main class="flex-shrink-0" role="main">
+        <div class="container">
+            <?= $this->fetch('content') ?>
+        </div>
+    </main>
 
-
+    <footer class="footer mt-auto py-3 bg-dark">
+        <div class="container">
+            <p class="mb-0 text-center text-white">Copyright &copy; Pablo Pazos Domínguez, Alejandro González García, Pablo Lama Valencia, Salvador Pérez Salcedo</p>
+        </div>
+    </footer>
 </body>
-<br>
-<br>
-<br>
-<br>
-<br>
-<footer class="py-5 bg-dark bottom">
-        <p class="m-0 text-center text-white">Copyright &copy; Pablo Pazos Domínguez, Alejandro González García, Pablo Lama Valencia, Salvador Pérez Salcedo</p>
-</footer>
 </html>
