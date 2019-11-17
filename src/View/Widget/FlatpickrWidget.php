@@ -1,7 +1,6 @@
 <?php
 namespace App\View\Widget;
 
-use Cake\I18n\Time;
 use Cake\Routing\Router;
 use Cake\View\Form\ContextInterface;
 use Cake\View\Widget\WidgetInterface;
@@ -9,8 +8,8 @@ use Cake\View\Widget\WidgetInterface;
 /**
  * Un widget reutilizable para mostrar un selector de fecha
  * y hora Flatpickr al usuario. Los usuarios de este widget
- * son responsables de asegurar que los scripts y estilos de
- * Flatpickr son cargados.
+ * son responsables de asegurar que el método estático
+ * importarDependencias es llamado.
  *
  * @author Alejandro González García
  * @see https://flatpickr.js.org/
@@ -22,19 +21,15 @@ class FlatpickrWidget implements WidgetInterface
     /**
      * Las opciones base a usar para Flatpickr. Véase
      * https://flatpickr.js.org/options/.
-     * minTime y maxTime estarán en franja horaria peninsular española,
-     * y se convertirán a la hora local correspondiente en el cliente.
      * El cliente enviará al servidor una timestamp Unix, que se puede
      * interpretar de manera inequívoca en la franja horaria local.
      */
     private $defaultFlatpickrOptions =
-        'enableTime: true, altInput: true, altFormat: "{{FORMATO_FECHA}}", ' .
+        'altInput: true, altFormat: "{{FORMATO_FECHA}}", ' .
         'ariaDateFormat: "{{FORMATO_FECHA}}", dateFormat: "U", ' .
         'prevArrow: "<i class=\"fas fa-angle-left\"></i>", ' .
         'nextArrow: "<i class=\"fas fa-angle-right\"></i>", ' .
-        'time_24hr: true, locale: "{{IDIOMA}}", ' .
-        'minTime: {{HORA_APERTURA}}, maxTime: {{HORA_CIERRE}}, ' .
-        'minuteIncrement: 1';
+        'locale: "{{IDIOMA}}"';
 
     /**
      * El Javascript que el agente de usuario empleará para cargar Flatpickr
@@ -47,46 +42,19 @@ class FlatpickrWidget implements WidgetInterface
      */
     public function __construct($templates)
     {
-        // Horarios de apertura y cierre del club, convertidos a UTC
-        $horaApertura = new Time('09:00', 'Europe/Madrid');
-        $horaApertura->setTimezone('UTC');
-        $horaCierre = new Time('20:00', 'Europe/Madrid');
-        $horaCierre->setTimezone('UTC');
-
         $this->_templates = $templates;
+
         $this->defaultFlatpickrOptions = str_replace(
             '{{FORMATO_FECHA}}',
-            __('l, j F Y, H:i'),
+            __('l, j F Y'),
             $this->defaultFlatpickrOptions
         );
+
         $this->defaultFlatpickrOptions = str_replace(
             '{{IDIOMA}}',
             __('es'),
             $this->defaultFlatpickrOptions
         );
-
-        /**
-         * Expresión de Javascript para convertir una hora UTC con precisión de minutos
-         * a su representación local, valiéndose un objeto Date.
-         *
-         * @var string
-         */
-        $horaLocal = 'new Date(new Date().setUTCHours({{HORA_UTC}}, {{MIN_UTC}}))';
-
-        foreach (['Apertura', 'Cierre'] as $puntoHorario) {
-            ${'hora' . $puntoHorario . 'Local'} = str_replace('{{HORA_UTC}}', ${'hora' . $puntoHorario}->hour, $horaLocal);
-            ${'hora' . $puntoHorario . 'Local'} = str_replace('{{MIN_UTC}}', ${'hora' . $puntoHorario}->minute, ${'hora' . $puntoHorario . 'Local'});
-        }
-
-        foreach (['Apertura' => '{{HORA_APERTURA}}', 'Cierre' => '{{HORA_CIERRE}}'] as $puntoHorario => $parametroConfig) {
-            $this->defaultFlatpickrOptions = str_replace(
-                $parametroConfig,
-                // Compleja expresión de Javascript para leer horas en UTC y transformarlas a
-                // cadenas de horas locales, sin usar variables ni funcionalidades no estándar
-                "((${'hora' . $puntoHorario . 'Local'}).getHours() < 10 ? \"0\" + (${'hora' . $puntoHorario . 'Local'}).getHours() : (${'hora' . $puntoHorario . 'Local'}).getHours()) + \":\" + ((${'hora' . $puntoHorario . 'Local'}).getMinutes() < 10 ? \"0\" + (${'hora' . $puntoHorario . 'Local'}).getMinutes() : (${'hora' . $puntoHorario . 'Local'}).getMinutes())",
-                $this->defaultFlatpickrOptions
-            );
-        }
     }
 
     /**
@@ -154,6 +122,5 @@ class FlatpickrWidget implements WidgetInterface
         // Scripts y plugins
         $vista->Html->script('https://cdn.jsdelivr.net/npm/flatpickr', ['block' => true]);
         $vista->Html->script('https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js', ['block' => true]);
-        $vista->Html->script('https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/minMaxTimePlugin.js', ['block' => true]);
     }
 }

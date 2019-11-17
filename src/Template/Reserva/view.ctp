@@ -4,56 +4,17 @@
  * @var \App\Model\Entity\Reserva $reserva
  */
 
-use Cake\ORM\TableRegistry;
+use App\Model\Table\ReservaTable;
 
 // Page title
 $this->assign('title', __('Gestión de {0}', __('reservas')));
 
-$modificable = TableRegistry::getTableLocator()->get('Reserva')->esModificable($reserva);
+$modificable = ReservaTable::esModificable($reserva);
 
 $esAdministrador = $Auth->user('rol') === 'administrador';
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <?php if ($esAdministrador && $modificable): ?>
-        <li><?=
-            $this->Html->link(
-                '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('reserva')),
-                ['action' => 'edit', $reserva->id],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <?php endif; ?>
-        <?php if ($modificable): ?>
-        <li><?=
-            $this->Form->postLink(
-                '<i class="fas fa-calendar-minus delete-action-fa-icon"></i> ' . __($esAdministrador ? 'Eliminar {0}' : 'Cancelar {0}', __('reserva')),
-                ['action' => 'delete', $reserva->id],
-                ['escapeTitle' => false, 'confirm' =>
-                    __('¿Estás seguro de que quieres ' . ($esAdministrador ? 'eliminar' : 'cancelar') . ' {0}? Esto borrará toda su información asociada.', [__('la reserva número {0}', $reserva->id)])
-                ]
-            )
-        ?></li>
-        <?php endif; ?>
-        <li><?=
-            $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver ' . ($esAdministrador ? '' : 'mis ') . '{0}', __('reservas')),
-                ['action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?=
-            $this->Html->link(
-                '<i class="fas fa-calendar-plus add-action-fa-icon"></i> ' . __($esAdministrador ? 'Crear {0}' : 'Reservar {0}', __($esAdministrador ? 'reserva' : 'pista')),
-                ['action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-    </ul>
-</nav>
-<div class="reserva view large-9 medium-8 columns content">
-    <h3><?= __('Detalles de la {0}', __('reserva')) . ' número ' . h($reserva->id) ?></h3>
+<div class="reserva view content">
+    <h3 class="card-title text-center"><?= __('Detalles de la {0}', __('reserva')) . ' número ' . h($reserva->id) ?></h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Pista') ?></th>

@@ -44,10 +44,9 @@ class AppView extends View
         // Registrar widgets personalizados
         $this->Form->addWidget('flatpickr_date', ['Flatpickr']);
         $this->Form->setTemplates([
-            'flatpickrInput' => '<input type="text" placeholder="' . __('Escoge una fecha y hora') . '"{{attrs}}>'
+            'flatpickrInput' => '<input type="text"{{attrs}}>'
         ]);
 
-        // Usar Font Awesome
-        $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css', ['block' => true]);
+        $this->Form->addWidget('franja_horaria', ['FranjaPicker']);
     }
 }

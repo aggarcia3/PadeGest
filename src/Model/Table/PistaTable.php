@@ -1,10 +1,12 @@
 <?php
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
+use Cake\Datasource\ConnectionManager;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use DateTimeInterface;
+use Exception;
 
 /**
  * Pista Model
@@ -69,5 +71,42 @@ class PistaTable extends Table
             ->requirePresence('focos', 'create');
 
         return $validator;
+    }
+
+    /**
+     * Obtiene la primera pista libre para una determinada fecha.
+     *
+     * @param DateTimeInterface $fecha La fecha a comprobar si tiene alguna pista libre.
+     * @return array|\Cake\Datasource\EntityInterface|null La primera pista libre encontrada
+     * para esa fecha, o nulo si no hay ninguna.
+     */
+    public function libreEn($fecha)
+    {
+        /** @var \App\Model\Entity\Pista */
+        $pistaLibre = null;
+
+        try {
+            if ($fecha instanceof DateTimeInterface) {
+                $sentencia = ConnectionManager::get(self::defaultConnectionName())
+                    ->prepare('SELECT `PADEGEST`.`pistaDisponibleEnFecha`(?) AS idPista');
+
+                $sentencia->bind([$fecha], ['datetime']);
+
+                if ($sentencia->execute()) {
+                    $idPista = $sentencia->fetch('assoc')['idPista'];
+
+                    if (is_numeric($idPista)) {
+                        $pistaLibre = $this
+                            ->find()
+                            ->where(['id' => $idPista])
+                            ->first();
+                    }
+                }
+            }
+        } catch (Exception $_) {
+            throw new InternalErrorException();
+        }
+
+        return $pistaLibre;
     }
 }

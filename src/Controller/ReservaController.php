@@ -2,10 +2,13 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Model\Table\PistaTable;
 use App\Model\Table\ReservaTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 /**
  * Reserva Controller
@@ -28,8 +31,9 @@ class ReservaController extends AppController
      */
     public function isAuthorized($user)
     {
-        return $this->Auth->user('rol') === 'administrador' ||
-               $this->request->getParam('action') !== 'edit';
+        // Permitir el uso de todas las acciones, excepto franjasFecha, por todos los usuarios.
+        // El uso de franjasFecha solo se permite si la solicitud es Ajax
+        return $this->request->getParam('action') !== 'franjasFecha' || $this->request->is('ajax');
     }
 
     /**
@@ -101,9 +105,26 @@ class ReservaController extends AppController
         if ($this->request->is('post')) {
             $datos = $this->request->getData();
 
-            // Convertir timestamp UTC a objeto de tipo fecha en franja
-            // horaria local. El método usado puede devolver falso
-            $datos['fechaInicio'] = FrozenTime::now()->setTimestamp($datos['fechaInicio']);
+            // Convertir timestamp de fecha y franja a objeto de tipo fecha.
+            // La fecha final se calcula a partir del número de franja y la
+            // duración de cada reserva
+            $franjas = ReservaTable::franjasReservas();
+            if (isset($datos['fechaInicio']) &&
+                isset($datos['franja']) &&
+                is_numeric($datos['fechaInicio']) &&
+                is_numeric($datos['franja']) &&
+                isset($franjas[$datos['franja']])
+            ) {
+                $fecha = FrozenTime::now()
+                    ->setTimestamp($datos['fechaInicio']);
+
+                $datos['fechaInicio'] = $fecha->setTime(
+                    $franjas[$datos['franja']]->hour,
+                    $franjas[$datos['franja']]->minute
+                );
+            } else {
+                $datos['fechaInicio'] = null;
+            }
 
             // Los usuarios solo pueden crear reservas a su nombre
             if ($this->Auth->user('rol') !== 'administrador') {
@@ -117,11 +138,19 @@ class ReservaController extends AppController
                     ->where(['id' => $datos['pista_id']])
                     ->first();
             } else {
-                $pistaLibre = ReservaTable::pistaLibre($datos['fechaInicio']);
+                $tablaPista = TableRegistry::getTableLocator()->get('Pista');
+                assert($tablaPista instanceof PistaTable);
+
+                $pistaLibre = $tablaPista->libreEn($datos['fechaInicio']);
             }
 
             if ($pistaLibre instanceof Entity) {
                 $datos['pista_id'] = $pistaLibre->id;
+
+                // Establecer AuthComponent para realizar las validaciones oportunas
+                $tablaReserva = TableRegistry::getTableLocator()->get('Reserva');
+                assert($tablaReserva instanceof ReservaTable);
+                $tablaReserva->setAuth($this->Auth);
 
                 $reserva = $this->Reserva->newEntity($datos);
 
@@ -162,52 +191,6 @@ class ReservaController extends AppController
     }
 
     /**
-     * Edit method
-     *
-     * @param string|null $id Reserva id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     */
-    public function edit($id = null)
-    {
-        $getOptions = [];
-
-        // Los usuarios no administradores solo editan sus reservas
-        if ($this->Auth->user('rol') !== 'administrador') {
-            $getOptions += [
-                'conditions' => ['usuario_id =' => $this->Auth->user('id')]
-            ];
-        }
-
-        try {
-            $reserva = $this->Reserva->get($id, $getOptions);
-        } catch (RecordNotFoundException $_) {
-            $this->Flash->error(__('La {0} especificada no existe, o no tienes permiso para editarla.', __('reserva')));
-
-            return $this->redirect(['action' => 'index']);
-        }
-
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $datos = $this->request->getData();
-
-            // Convertir fecha en timestamp a objeto fecha
-            $datos['fechaInicio'] = FrozenTime::now()->setTimestamp($datos['fechaInicio']);
-
-            $reserva = $this->Reserva->patchEntity($reserva, $datos);
-
-            if ($this->Reserva->save($reserva)) {
-                $this->Flash->success(__('{0} editada con éxito.', [__('Reserva')]));
-
-                return $this->redirect(['action' => 'index']);
-            }
-
-            $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
-        }
-
-        $this->set('hoy', FrozenTime::now());
-        $this->set(compact('reserva'));
-    }
-
-    /**
      * Delete method
      *
      * @param string|null $id Reserva id.
@@ -228,16 +211,65 @@ class ReservaController extends AppController
                     $reserva->usuario_id === $this->Auth->user('id')
                 ) && $this->Reserva->delete($reserva)
             ) {
-                $this->Flash->success(__('{0} borrada con éxito.', __('Reserva')));
+                $this->Flash->success(
+                    __(
+                        '{0} {1} con éxito.',
+                        __('Reserva'),
+                        $this->Auth->user('rol') === 'administrador' ? __('borrada') : __('cancelada')
+                    )
+                );
             } else {
                 $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
             }
         } catch (RecordNotFoundException $_) {
             // Ignorar el error
-            $this->Flash->success(__('{0} borrada con éxito.', __('Reserva')));
+            $this->Flash->success(
+                __(
+                    '{0} {1} con éxito.',
+                    __('Reserva'),
+                    $this->Auth->user('rol') === 'administrador' ? __('borrada') : __('cancelada')
+                )
+            );
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Obtiene las franjas horarias disponibles y ocupadas para una fecha dada.
+     *
+     * @return void Renderiza la vista.
+     */
+    public function franjasFecha()
+    {
+        $this->request->allowMethod('get');
+
+        $timestamp = $this->request->getQueryParams()['fecha'];
+        if (!is_numeric($timestamp)) {
+            throw new BadRequestException();
+        }
+
+        $dia = FrozenTime::now()->setTimestamp($timestamp / 1000);
+        if ($dia === false) {
+            throw new BadRequestException();
+        }
+
+        $this->viewBuilder()->setClassName('Json');
+
+        $tablaPistas = TableRegistry::getTableLocator()->get('Pista');
+        assert($tablaPistas instanceof PistaTable);
+
+        $franjas = ReservaTable::franjasReservas();
+        foreach ($franjas as &$franja) {
+            $franja = [
+                $franja->format('H:i'),
+                $franja->add(ReservaTable::getDuracionReservas())->format('H:i'),
+                $tablaPistas->libreEn($dia->setTime($franja->hour, $franja->minute)) !== null
+            ];
+        }
+
+        $this->set(compact('franjas'));
+        $this->set('_serialize', ['franjas']);
     }
 
     /**
