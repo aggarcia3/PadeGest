@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 17 Nov 2019 16:29:02 CET
+-- Generated on 17 Nov 2019 21:53:08 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`enfrentamiento` (
   PRIMARY KEY (`id`),
   INDEX `FK_ENFRENTAMIENTO_RESERVA_idx` (`reserva_id` ASC),
   UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC),
+  INDEX `fecha_INDEX` (`fase` ASC),
   CONSTRAINT `FK_ENFRENTAMIENTO_RESERVA`
     FOREIGN KEY (`reserva_id`)
     REFERENCES `PADEGEST`.`reserva` (`id`)
@@ -114,6 +115,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`partido_promocionado` (
   `reserva_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC),
+  INDEX `fecha_INDEX` (`fecha` ASC),
   CONSTRAINT `FK_PARTIDO_PROMOCIONADO_RESERVA`
     FOREIGN KEY (`reserva_id`)
     REFERENCES `PADEGEST`.`reserva` (`id`)
@@ -403,6 +405,31 @@ BEGIN
 
 	IF (SELECT `PADEGEST`.`reservaQueOcupaPista`(NEW.`pista_id`, NEW.`fechaInicio`, NEW.`id`) IS NOT NULL) THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La pista asociada a la reserva está ocupada a la hora especificada';
+    END IF;
+END$$
+
+
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_AFTER_INSERT` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`reserva_AFTER_INSERT`
+AFTER INSERT ON `reserva` FOR EACH ROW
+BEGIN
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
+
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
+
+	SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fechaInicio`) INTO pistaDisponible;
+
+	-- Si no quedan pistas disponibles, borrar los partidos promocionados
+    -- y enfrentamientos que todavía no tengan una reserva de pista para
+    -- esa hora
+	IF pistaDisponible IS NULL THEN
+		DELETE FROM `PADEGEST`.`partido_promocionado`
+        WHERE `fecha` = NEW.`fechaInicio` AND `reserva_id` IS NULL;
+
+		DELETE FROM `PADEGEST`.`enfrentamiento`
+        WHERE `fecha` <=> NEW.`fechaInicio` AND `reserva_id` IS NULL;
     END IF;
 END$$
 
