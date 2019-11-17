@@ -7,8 +7,7 @@
 use Cake\Routing\Router;
 
 ?>
-<?= $this->element('menu') ?>
-<div class="campeonato index large-9 medium-8 columns content">
+<div class="campeonato index content">
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 

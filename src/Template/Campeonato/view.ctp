@@ -4,7 +4,6 @@
  * @var \App\Model\Entity\Campeonato $campeonato
  */
 ?>
-<?= $this->element('menu') ?>
 <div class="campeonato view large-9 medium-8 columns content">
     <h3 class="card-title text-center">Editar Campeonato: <?= h($campeonato->nombre) ?> </h3>
     <table class="vertical-table">

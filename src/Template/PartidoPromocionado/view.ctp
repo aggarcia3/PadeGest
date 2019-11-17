@@ -4,8 +4,7 @@
  * @var \App\Model\Entity\PartidoPromocionado $partidoPromocionado
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="partidoPromocionado view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="partidoPromocionado view content">
 <h3 class="card-title text-center">Partido Promocionado: <?= h($partidoPromocionado->nombre) ?></h3>
     <table class="vertical-table">
         <tr>

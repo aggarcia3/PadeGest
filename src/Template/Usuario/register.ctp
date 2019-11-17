@@ -28,10 +28,9 @@
                                 echo $this->Form->select('genero', [
                                     'masculino' => 'Masculino',
                                     'femenino' => 'Femenino'
-                                ]); 
+                                ]);
                         ?>
                     </div>
-                    <br>
                 <?= $this->Form->button(__('Registrarse'), array('class' => 'btn btn-lg btn-primary btn-block')); ?>
                 <?= $this->Form->end() ?>
             </div>

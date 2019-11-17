@@ -4,22 +4,18 @@
  * @var \App\Model\Entity\Pista[]|\Cake\Collection\CollectionInterface $pista
  */
 
+use Cake\Routing\Router;
+
 // Page title
 $this->assign('title', __('Gestión de {0}', __('pistas')));
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('pista')),
-                ['action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-    </ul>
-</nav>
-<div class="pista index large-9 medium-8 columns content">
-    <h3><?= __('Pistas del club') ?></h3>
+<div class="pista index content">
+    <h3 class="card-title text-center">
+        <?= __('Pistas del club') ?>
+        <a href="<?= Router::url(['controller' => 'Pista', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">
+            <i class="fas fa-plus-circle"></i>
+        </a>
+    </h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>

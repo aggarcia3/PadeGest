@@ -4,8 +4,7 @@
  * @var \App\Model\Entity\PartidoPromocionado $partidoPromocionado
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="partidoPromocionado form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="partidoPromocionado form content">
     <?= $this->Form->create($partidoPromocionado) ?>
     <fieldset>
         <h3 class="card-title text-center">Crear Partido Promocionado</h3>
@@ -22,7 +21,6 @@
             ?>
 
     </fieldset>
-    <br>
     <?= $this->Form->button(__('Crear'), array('class' => 'btn btn-primary')) ?>
     <?= $this->Form->end() ?>
 

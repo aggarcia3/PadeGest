@@ -7,8 +7,7 @@
 use Cake\Routing\Router;
 
 ?>
-<?= $this->element('menu') ?>
-<div class="partidoPromocionado index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="partidoPromocionado index content">
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 

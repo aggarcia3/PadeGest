@@ -4,8 +4,7 @@
  * @var \App\Model\Entity\Campeonato $campeonato
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="campeonato form large-9 medium-8 columns content">
+<div class="campeonato form content">
 <h3 class="card-title text-center">Añadir Campeonato</h3>
     <?= $this->Form->create($campeonato) ?>
     <fieldset>
@@ -16,7 +15,6 @@
             echo $this->Form->control('fechaFinInscripciones');
         ?>
     </fieldset>
-    <br>
     <?= $this->Form->button(__('Añadir'), array('class' => 'btn btn-primary')) ?>
     <?= $this->Form->end() ?>
 </div>

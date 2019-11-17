@@ -4,8 +4,7 @@
  * @var \App\Model\Entity\Usuario $usuario
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="usuario view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="usuario view content">
 <h3 class="card-title text-center"><?= h($usuario->username) ?></h3>
     <table class="vertical-table">
         <tr>

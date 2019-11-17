@@ -4,8 +4,7 @@
  * @var \App\Model\Entity\Usuario $usuario
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="usuario form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="usuario form content">
     <?= $this->Form->create() ?>
     <fieldset>
         <h3 class="card-title text-center">Añadir Usuario</h3>
@@ -31,7 +30,6 @@
             ]);
         ?>
     </fieldset>
-    <br>
     <?= $this->Form->button(__('Añadir'), array('class' => 'btn btn-primary')) ?>
     <?= $this->Form->end() ?>
 </div>

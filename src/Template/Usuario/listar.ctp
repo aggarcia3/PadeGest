@@ -7,8 +7,7 @@
 use Cake\Routing\Router;
 
 ?>
-<?= $this->element('menu') ?>
-<div class="usuario index large-9 medium-8 columns content thead-dark" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="usuario index content thead-dark">
 <h3 class="card-title text-center">Usuarios<a href="<?= Router::url(['controller' => 'Usuario', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">Añadir Usuario</a></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
