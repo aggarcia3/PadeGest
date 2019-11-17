@@ -33,7 +33,7 @@ class ReservaController extends AppController
     {
         // Permitir el uso de todas las acciones, excepto franjasFecha, por todos los usuarios.
         // El uso de franjasFecha solo se permite si la solicitud es Ajax
-        return $this->request->getParam('action') !== 'franjasFecha' || $this->request->is('ajax');
+        return $this->getRequest()->getParam('action') !== 'franjasFecha' || $this->getRequest()->is('ajax');
     }
 
     /**
@@ -67,7 +67,7 @@ class ReservaController extends AppController
      * View method
      *
      * @param string|null $id Reserva id.
-     * @return \Cake\Http\Response|null
+     * @return void
      */
     public function view($id = null)
     {
@@ -102,8 +102,8 @@ class ReservaController extends AppController
      */
     public function add()
     {
-        if ($this->request->is('post')) {
-            $datos = $this->request->getData();
+        if ($this->getRequest()->is('post')) {
+            $datos = $this->getRequest()->getData();
 
             // Convertir timestamp de fecha y franja a objeto de tipo fecha.
             // La fecha final se calcula a partir del número de franja y la
@@ -199,7 +199,7 @@ class ReservaController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->getRequest()->allowMethod(['post', 'delete']);
 
         try {
             $reserva = $this->Reserva->get($id);
@@ -242,9 +242,9 @@ class ReservaController extends AppController
      */
     public function franjasFecha()
     {
-        $this->request->allowMethod('get');
+        $this->getRequest()->allowMethod('get');
 
-        $timestamp = $this->request->getQueryParams()['fecha'];
+        $timestamp = $this->getRequest()->getQueryParams()['fecha'];
         if (!is_numeric($timestamp)) {
             throw new BadRequestException();
         }
@@ -282,7 +282,7 @@ class ReservaController extends AppController
      */
     public function errorJs()
     {
-        $this->request->allowMethod('get');
+        $this->getRequest()->allowMethod('get');
 
         $this->Flash->error(__('Javascript no está activado en tu navegador, y es necesario para acceder a esta funcionalidad. Por favor, actívalo y vuelve a intentarlo.'));
 

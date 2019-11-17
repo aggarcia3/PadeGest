@@ -8,7 +8,9 @@
 $this->assign('title', __('Gestión de {0}', __('pistas')));
 ?>
 <div class="pista view content">
-    <h3><?= __('Detalles de la {0}', __('pista')) . ' número ' . h($pista->id) ?></h3>
+    <h3 class="card-title text-center">
+        <?= __('Detalles de la {0}', __('pista')) . ' número ' . h($pista->id) ?>
+    </h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Tipo de suelo') ?></th>
@@ -28,7 +30,7 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
         </tr>
     </table>
     <div class="related">
-        <h4><?= __('Reservas asociadas') ?></h4>
+        <h4 class="text-center"><?= __('Reservas asociadas') ?></h4>
         <?php if (!empty($pista->reserva)): ?>
         <table cellpadding="0" cellspacing="0">
             <tr>

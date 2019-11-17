@@ -11,8 +11,8 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
     <?= $this->Form->create($pista) ?>
     <fieldset>
         <h3 class="card-title text-center"><?= __('Crear {0}', __('pista')) ?></h3>
-        <?php
-            echo $this->Form->control('tipoSuelo', [
+        <?=
+            $this->Form->control('tipoSuelo', [
                 'label' => __('Tipo de suelo'),
                 'type' => 'select',
                 'options' => [
@@ -22,8 +22,10 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
                     'hormigón' => __('Hormigón'),
                     'cemento' => __('Cemento')
                 ]
-            ]);
-            echo $this->Form->control('tipoCerramiento', [
+            ])
+        ?>
+        <?=
+            $this->Form->control('tipoCerramiento', [
                 'label' => __('Tipo de cerramiento'),
                 'type' => 'select',
                 'options' => [
@@ -32,8 +34,10 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
                     'pared' => __('Pared'),
                     'cristal' => __('Cristal')
                 ]
-            ]);
-            echo $this->Form->control('localizacion', [
+            ])
+        ?>
+        <?=
+            $this->Form->control('localizacion', [
                 'label' => __('Localización'),
                 'type' => 'select',
                 'options' => [
@@ -41,14 +45,16 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
                     'exterior' => __('Exterior'),
                     'interior' => __('Interior')
                 ]
-            ]);
-            echo $this->Form->control('focos', [
+            ])
+        ?>
+        <?=
+            $this->Form->control('focos', [
                 'label' => __('Número de focos'),
                 'min' => '0',
                 'max' => '100'
-            ]);
+            ])
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Crear')) ?>
+    <?= $this->Form->button(__('Crear'), ['class' => 'btn btn-primary']) ?>
     <?= $this->Form->end() ?>
 </div>

@@ -66,12 +66,14 @@ class AppController extends Controller
             ],
             'authorize' => ['Controller'],
             'loginRedirect' => [
-                'controller' => 'Usuario',
-                'action' => 'index'
+                'controller' => 'Pages',
+                'action' => 'display',
+                'index'
             ],
             'logoutRedirect' => [
-                'controller' => 'Usuario',
-                'action' => 'login'
+                'controller' => 'Pages',
+                'action' => 'display',
+                'index'
             ],
             'storage' => 'Session'
         ]);

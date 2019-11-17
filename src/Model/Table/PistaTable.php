@@ -55,20 +55,20 @@ class PistaTable extends Table
 
         $validator
             ->inList('tipoSuelo', ['césped', 'moqueta', 'hormigón', 'cemento'], __('Una pista solo puede tener un suelo de césped, de moqueta, de hormigón o de cemento.'))
-            ->requirePresence('tipoSuelo', 'create');
+            ->requirePresence('tipoSuelo', 'create', __('Una pista debe de tener un tipo de suelo.'));
 
         $validator
             ->inList('tipoCerramiento', ['valla', 'pared', 'cristal'], __('Una pista solo puede ser tener como tipo de cerramiento una valla, una pared o cristales.'))
-            ->requirePresence('tipoCerramiento', 'create');
+            ->requirePresence('tipoCerramiento', 'create', __('Una pista debe de tener un tipo de cerramiento.'));
 
         $validator
             ->inList('localizacion', ['exterior', 'interior'], __('Una pista solo puede ser exterior o interior.'))
-            ->requirePresence('localizacion', 'create');
+            ->requirePresence('localizacion', 'create', __('Una pista debe de tener una localización.'));
 
         $validator
-            ->nonNegativeInteger('focos')
+            ->nonNegativeInteger('focos', __('El número de focos de una pista debe de ser un número positivo.'))
             ->lessThanOrEqual('focos', 100, __('Una pista puede tener hasta un máximo de 100 focos.'))
-            ->requirePresence('focos', 'create');
+            ->requirePresence('focos', 'create', __('Una pista debe de tener un número de focos.'));
 
         return $validator;
     }

@@ -42,7 +42,7 @@ use Cake\Routing\Router;
 </head>
 <body class="d-flex flex-column h-100">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="<?= Router::url(['controller' => 'Usuario']) ?>">PadeGest</a>
+        <a class="navbar-brand" href="<?= Router::url(['controller' => 'Pages', 'action' => 'display', 'index']) ?>">PadeGest</a>
         <div class="collapse navbar-collapse" id="navbarLinks">
             <ul class="navbar-nav">
                 <?= $this->element('menu') ?>
@@ -51,7 +51,7 @@ use Cake\Routing\Router;
         <div>
             <ul class="navbar-nav float-right">
 <?php if ($Auth->user() !== null): ?>
-                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'edit', $Auth->user('id')]) ?>"><i class="fas fa-user"></i> <?= $Auth->user('username') ?></a></li>
+                <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'view', $Auth->user('id')]) ?>"><i class="fas fa-user"></i> <?= $Auth->user('username') ?></a></li>
                 <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'logout']) ?>"><i class="fas fa-sign-out-alt"></i></a></li>
 <?php else: ?>
                 <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'login']) ?>"><i class="fas fa-sign-in-alt"></i></a></li>

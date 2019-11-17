@@ -14,7 +14,9 @@ $modificable = ReservaTable::esModificable($reserva);
 $esAdministrador = $Auth->user('rol') === 'administrador';
 ?>
 <div class="reserva view content">
-    <h3 class="card-title text-center"><?= __('Detalles de la {0}', __('reserva')) . ' número ' . h($reserva->id) ?></h3>
+    <h3 class="card-title text-center">
+        <?= __('Detalles de la {0}', __('reserva')) . ' número ' . h($reserva->id) ?>
+    </h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Pista') ?></th>
