@@ -44,12 +44,10 @@ use Cake\Routing\Router;
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="<?= Router::url(['controller' => 'Pages', 'action' => 'display', 'index']) ?>">PadeGest</a>
         <div class="collapse navbar-collapse" id="navbarLinks">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav mr-auto">
                 <?= $this->element('menu') ?>
             </ul>
-        </div>
-        <div>
-            <ul class="navbar-nav float-right">
+            <ul class="navbar-nav ml-auto">
 <?php if ($Auth->user() !== null): ?>
                 <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'view', $Auth->user('id')]) ?>"><i class="fas fa-user"></i> <?= $Auth->user('username') ?></a></li>
                 <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'logout']) ?>"><i class="fas fa-sign-out-alt"></i></a></li>
