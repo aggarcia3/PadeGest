@@ -370,24 +370,20 @@ class ReservaTable extends Table
      */
     public static function puedeDeportistaEfectuarReservas($deportista)
     {
-        $toret = $deportista instanceof EntityInterface || is_array($deportista);
+        $rol = is_array($deportista) ? $deportista['rol'] : $deportista->get('rol');
+        $id = is_array($deportista) ? $deportista['id'] : $deportista->get('id');
 
-        if ($toret) {
-            $rol = is_array($deportista) ? $deportista['rol'] : $deportista->get('rol');
-            $id = is_array($deportista) ? $deportista['id'] : $deportista->get('id');
+        // Los administradores siempre pueden efectuar reservas
+        $toret = $rol === 'administrador';
 
-            // Los administradores siempre pueden efectuar reservas
-            $toret = $rol === 'administrador';
-
-            if (!$toret) {
-                $toret = TableRegistry::getTableLocator()->get('Reserva')
-                    ->find()
-                    ->select('id')
-                    ->where([
-                        'usuario_id' => $id
-                    ])
-                    ->count() < self::$reservasMaximasDeportista;
-            }
+        if (!$toret) {
+            $toret = TableRegistry::getTableLocator()->get('Reserva')
+                ->find()
+                ->select('id')
+                ->where([
+                    'usuario_id' => $id
+                ])
+                ->count() < self::$reservasMaximasDeportista;
         }
 
         return $toret;
