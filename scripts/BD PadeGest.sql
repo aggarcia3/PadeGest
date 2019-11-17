@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 17 Nov 2019 21:53:08 CET
+-- Generated on 17 Nov 2019 22:00:28 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`enfrentamiento` (
   PRIMARY KEY (`id`),
   INDEX `FK_ENFRENTAMIENTO_RESERVA_idx` (`reserva_id` ASC),
   UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC),
-  INDEX `fecha_INDEX` (`fase` ASC),
+  INDEX `fecha_INDEX` (`fecha` ASC),
   CONSTRAINT `FK_ENFRENTAMIENTO_RESERVA`
     FOREIGN KEY (`reserva_id`)
     REFERENCES `PADEGEST`.`reserva` (`id`)
