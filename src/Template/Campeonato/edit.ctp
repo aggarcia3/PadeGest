@@ -5,7 +5,7 @@
  */
 ?>
 <?= $this->element('menu') ?>
-<div class="campeonato form large-9 medium-8 columns content">
+<div class="campeonato form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create($campeonato) ?>
     <fieldset>
     <h3 class="card-title text-center" style="color: black;">Editar Campeonato: <?= h($campeonato->nombre) ?> </h3>

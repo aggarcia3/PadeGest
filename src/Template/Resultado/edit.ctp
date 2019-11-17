@@ -4,19 +4,8 @@
  * @var \App\Model\Entity\Resultado $resultado
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $resultado->idEnfrentamiento],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $resultado->idEnfrentamiento)]
-            )
-        ?></li>
-        <li><?= $this->Html->link(__('List Resultado'), ['action' => 'index']) ?></li>
-    </ul>
-</nav>
-<div class="resultado form large-9 medium-8 columns content">
+<?= $this->element('menu') ?>
+<div class="resultado form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create($resultado) ?>
     <fieldset>
         <legend><?= __('Edit Resultado') ?></legend>

@@ -7,13 +7,8 @@
 // Page title
 $this->assign('title', __('Gestión de {0}', __('parejaEnfrentamiento')));
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Pareja Enfrentamiento'), ['action' => 'index']) ?></li>
-    </ul>
-</nav>
-<div class="parejaEnfrentamiento form large-9 medium-8 columns content">
+<?= $this->element('menu') ?>
+<div class="parejaEnfrentamiento form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create($parejaEnfrentamiento) ?>
     <fieldset>
         <legend><?= __('Add Pareja Enfrentamiento') ?></legend>

@@ -16,45 +16,9 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
                 ['escapeTitle' => false]
             )
         ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Reserva')),
-                ['controller' => 'Reserva', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Reserva')),
-                ['controller' => 'Reserva', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Resultado')),
-                ['controller' => 'Resultado', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Resultado')),
-                ['controller' => 'Resultado', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
     </ul>
 </nav>
-<div class="enfrentamiento index large-9 medium-8 columns content">
+<div class="enfrentamiento index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= __('Enfrentamiento') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>

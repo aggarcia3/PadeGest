@@ -17,35 +17,8 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
 
 $timestampLimiteModificable = $hoy->add(ReservaTable::getIntervaloSoloLectura())->getTimestamp() * 1000; // Conversión a ms
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <li><?=
-            $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver ' . ($esAdministrador ? '' : 'mis ') . '{0}', __('reservas')),
-                ['action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <?php if ($esAdministrador): ?>
-        <li><?=
-            $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('pistas')),
-                ['controller' => 'Pista', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?=
-            $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('pista')),
-                ['controller' => 'Pista', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <?php endif; ?>
-    </ul>
-</nav>
-<div class="reserva form large-9 medium-8 columns content">
+<?= $this->element('menu') ?>
+<div class="reserva form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create($reserva) ?>
     <fieldset>
         <legend><?= __($esAdministrador ? 'Crear {0}' : 'Reservar {0}', __($esAdministrador ? 'reserva' : 'pista')) ?></legend>

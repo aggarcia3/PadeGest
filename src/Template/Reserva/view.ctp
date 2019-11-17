@@ -13,6 +13,7 @@ $modificable = TableRegistry::getTableLocator()->get('Reserva')->esModificable($
 
 $esAdministrador = $Auth->user('rol') === 'administrador';
 ?>
+<?= $this->element('menu') ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Acciones') ?></li>
@@ -52,7 +53,7 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
         ?></li>
     </ul>
 </nav>
-<div class="reserva view large-9 medium-8 columns content">
+<div class="reserva view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= __('Detalles de la {0}', __('reserva')) . ' número ' . h($reserva->id) ?></h3>
     <table class="vertical-table">
         <tr>

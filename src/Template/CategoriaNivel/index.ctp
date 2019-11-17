@@ -7,10 +7,10 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Categoria Nivel'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('Nueva Categoria Nivel'), ['action' => 'add']) ?></li>
     </ul>
 </nav>
-<div class="categoriaNivel index large-9 medium-8 columns content">
+<div class="categoriaNivel index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= __('Categoria Nivel') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>

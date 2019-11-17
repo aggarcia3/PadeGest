@@ -5,7 +5,7 @@
  */
 ?>
 <?= $this->element('menu') ?>
-<div class="campeonato view large-9 medium-8 columns content">
+<div class="campeonato view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3 class="card-title text-center" style="color: black;">Editar Campeonato: <?= h($campeonato->nombre) ?> </h3>
     <table class="vertical-table">
         <tr>
@@ -44,7 +44,7 @@
                 <td><?= h($CategoriaNivel->categoria) ?></td>
                 <td><?= h($CategoriaNivel->nivel) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'CategoriaNivel', 'action' => 'view', $CategoriaNivel->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'CategoriaNivel', 'action' => 'view', $CategoriaNivel->id], ['escapeTitle' => false]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

@@ -15,35 +15,8 @@ FlatpickrWidget::importarDependencias($this);
 
 $timestampLimiteModificable = $hoy->add(ReservaTable::getIntervaloSoloLectura())->getTimestamp() * 1000; // Conversión a ms
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <li><?=
-            $this->Form->postLink(
-                '<i class="fas fa-calendar-minus delete-action-fa-icon"></i> ' . __('Eliminar {0}', __('reserva')),
-                ['action' => 'delete', $reserva->id],
-                ['escapeTitle' => false, 'confirm' =>
-                    __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la reserva número {0}', $reserva->id)])
-                ]
-            )
-        ?></li>
-        <li><?=
-            $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('reservas')),
-                ['action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?=
-            $this->Html->link(
-                '<i class="fas fa-calendar-plus add-action-fa-icon"></i> ' . __('Crear {0}', __('reserva')),
-                ['action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-    </ul>
-</nav>
-<div class="reserva form large-9 medium-8 columns content">
+<?= $this->element('menu') ?>
+<div class="reserva form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create($reserva) ?>
     <fieldset>
         <legend><?= __('Editar {0}', __('reserva')) ?></legend>

@@ -18,7 +18,7 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
         ?></li>
     </ul>
 </nav>
-<div class="pista index large-9 medium-8 columns content">
+<div class="pista index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= __('Pistas del club') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>

@@ -7,74 +7,8 @@
 // Page title
 $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('Enfrentamiento')),
-                ['action' => 'edit', $enfrentamiento->id],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Form->postLink(
-                '<i class="fas fa-minus-square delete-action-fa-icon"></i> ' . __('Eliminar {0}', __('Enfrentamiento')),
-                ['action' => 'delete', $enfrentamiento->id],
-                ['escapeTitle' => false, 'confirm' =>
-                    __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la Enfrentamiento número {0}', $enfrentamiento->id)])
-                ]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Enfrentamiento')),
-                ['action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Enfrentamiento')),
-                ['action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Reserva')),
-                ['controller' => 'Reserva', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Reserva')),
-                ['controller' => 'Reserva', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Resultado')),
-                ['controller' => 'Resultado', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Resultado')),
-                ['controller' => 'Resultado', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-    </ul>
-</nav>
-<div class="enfrentamiento view large-9 medium-8 columns content">
+<?= $this->element('menu') ?>
+<div class="enfrentamiento view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= __('Detalles de la {0}', __('enfrentamiento')) . ' ' . h($enfrentamiento->id) ?></h3>
     <table class="vertical-table">
         <tr>

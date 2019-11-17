@@ -8,7 +8,7 @@ use Cake\Routing\Router;
 ?>
 <?= $this->element('menu') ?>
   <!-- Page Content -->
-  <div class="container">
+  <div class="container" style="padding-bottom: 0px; margin-bottom:0px;">
 
     <!-- Jumbotron Header -->
     <div class="jumbotron my-4" style="background-image: url('/img/header-padel.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">

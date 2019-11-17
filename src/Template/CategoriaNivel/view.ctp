@@ -5,7 +5,7 @@
  */
 ?>
 <?= $this->element('menu') ?>
-<div class="categoriaNivel view large-9 medium-8 columns content">
+<div class="categoriaNivel view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= h($categoriaNivel->id) ?></h3>
     <table class="vertical-table">
         <tr>
@@ -38,7 +38,7 @@
             <tr>
                 <td><?= h($grupo->id) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Grupo', 'action' => 'view', $grupo->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Grupo', 'action' => 'view', $grupo->id], ['escapeTitle' => false]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

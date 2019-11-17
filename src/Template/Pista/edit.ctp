@@ -8,30 +8,8 @@
 $this->assign('title', __('Gestión de {0}', __('pistas')));
 
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <li><?= $this->Form->postLink(
-                '<i class="fas fa-minus-square delete-action-fa-icon"></i> ' . __('Eliminar {0}', __('pista')),
-                ['action' => 'delete', $pista->id],
-                ['escapeTitle' => false, 'confirm' =>
-                    __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la pista número {0}', $pista->id)])
-                ]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('pistas')),
-                ['action' => 'index'], ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('reservas')),
-                ['controller' => 'Reserva', 'action' => 'index'], ['escapeTitle' => false]
-            )
-        ?></li>
-    </ul>
-</nav>
-<div class="pista form large-9 medium-8 columns content">
+<?= $this->element('menu') ?>
+<div class="pista form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create($pista) ?>
     <fieldset>
         <legend><?= __('Editar {0}', __('pista')) ?></legend>

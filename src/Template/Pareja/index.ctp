@@ -7,12 +7,10 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Pareja'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Enfrentamiento'), ['controller' => 'Enfrentamiento', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Enfrentamiento'), ['controller' => 'Enfrentamiento', 'action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('Nueva Pareja'), ['action' => 'add']) ?></li>
     </ul>
 </nav>
-<div class="pareja index large-9 medium-8 columns content">
+<div class="pareja index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= __('Pareja') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>

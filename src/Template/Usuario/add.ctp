@@ -5,7 +5,7 @@
  */
 ?>
 <?= $this->element('menu') ?>
-<div class="usuario form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="usuario form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;" style="padding-bottom: 0px; margin-bottom:0px;">
     <?= $this->Form->create() ?>
     <fieldset>
         <h3 class="card-title text-center" style="color: black;">Añadir Usuario</h3>
