@@ -11,7 +11,7 @@ use Cake\ORM\TableRegistry;
  *
  * @method \App\Model\Entity\Campeonato[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-
+use Cake\Event\Event;
 class CampeonatoController extends AppController
 {
     /**
@@ -19,6 +19,14 @@ class CampeonatoController extends AppController
      *
      * @return void
      */
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $campeonato = (new CampeonatoController());
+        $partidoPromocionado = (new PartidoPromocionadoController());
+        $campeonato->agrupar();
+        $partidoPromocionado->agrupar(); 
+    }
     public function isAuthorized($user)
     {
         // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
@@ -228,14 +236,14 @@ class CampeonatoController extends AppController
                 $var5[$f] = $grupo['id'];
                 $f++;
             }
-            if(sizeof($var5) == 0){
+            if(!isset($var5)){
                 $grupo = (new GrupoController());
                 for ($t = 0; $t < $numeroGrupos; $t++) {
                     $grupoValues['categoria_nivel_id'] = $var;
                     $grupo->add2($grupoValues);
                 }
             }
-
+            
             $grupo = TableRegistry::getTableLocator()->get('Grupo');
             $resultsIteratorObject3 = $grupo->find()->where(['categoria_nivel_id' => $var])->all();
             $k = 0;

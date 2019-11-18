@@ -34,6 +34,7 @@ class UsuarioController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
+        $this->agrupar();
         $this->Auth->allow('index');
         $this->Auth->allow('register');
         $this->Auth->allow('login');
@@ -199,5 +200,14 @@ class UsuarioController extends AppController
     private function hashPassword($password)
     {
         return $this->Auth->getAuthenticate('Form')->passwordHasher()->hash($password);
+    }
+
+
+    public function agrupar()
+    {
+        $campeonato = (new CampeonatoController());
+        $partidoPromocionado = (new PartidoPromocionadoController());
+        $campeonato->agrupar();
+        $partidoPromocionado->agrupar(); 
     }
 }
