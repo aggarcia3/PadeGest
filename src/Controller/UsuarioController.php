@@ -46,7 +46,7 @@ class UsuarioController extends AppController
         // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
         // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
         // y los usuarios no se podrían desconectar
-        return in_array($this->request->getParam('action'), ['register','index', 'logout', 'edit']) ||
+        return in_array($this->request->getParam('action'), ['register','index', 'logout', 'edit', 'hacerseSocio']) ||
                $user['rol'] === 'administrador';
 
     }
@@ -200,6 +200,20 @@ class UsuarioController extends AppController
     private function hashPassword($password)
     {
         return $this->Auth->getAuthenticate('Form')->passwordHasher()->hash($password);
+    }
+
+    public function hacerseSocio($id=null)
+    {
+        $usuario=$this->Usuario->get($this->Auth->user('id')); 
+        if($this->request->is(['patch','post','put'])){
+            $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
+            if ($this->Usuario->save($usuario)) {
+                $this->Flash->success(__('Estado de socio cambiado'));
+                return $this->redirect(['action'=>'listar']);
+            }
+            $this->Flash->error(__('Ha habido un error, intentalo de nuevo'));
+        }
+        $this->set(compact('usuario'));
     }
 
 

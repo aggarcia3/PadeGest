@@ -23,8 +23,8 @@
             if($this->request->session()->read('Auth.User.rol') == "administrador"){
                 echo $this->Form->label('Socio');
                 echo $this->Form->select('esSocio', [
-                    0 => 'Si',
-                    1 => 'No'
+                    0 => 'No',
+                    1 => 'Si'
                 ]);
                 echo $this->Form->label('Rol');
                 echo $this->Form->select('rol', [
