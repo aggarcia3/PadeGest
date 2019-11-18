@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 17 Nov 2019 22:00:28 CET
+-- Generated on 18 Nov 2019 22:42:47 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`enfrentamiento` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `fecha` DATETIME NULL,
-  `fase` ENUM('liga regular', 'playoffs') NOT NULL,
+  `fase` ENUM('liga regular', 'playoffs1', 'playoffs2', 'playoffs4') NOT NULL,
   `reserva_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
   INDEX `FK_ENFRENTAMIENTO_RESERVA_idx` (`reserva_id` ASC),
@@ -312,7 +312,7 @@ BEGIN
 		WHERE
 			NOT `id` <=> idReservaIgnorada AND
 			`pista_id` = idPista AND
-			fechaFinComp >= `fechaInicio` AND
+			fechaFinComp > `fechaInicio` AND
             fechaInicioComp < `fechaFin`
 		LIMIT 1
 	);
@@ -343,7 +343,7 @@ BEGIN
 		SELECT `id` FROM `PADEGEST`.`pista` WHERE `id` NOT IN (
 			SELECT `pista_id` FROM `PADEGEST`.`reserva`
 			WHERE
-				fechaFinComp >= `fechaInicio` AND
+				fechaFinComp > `fechaInicio` AND
                 fechaInicioComp < `fechaFin`
 		)
         LIMIT 1
@@ -465,21 +465,54 @@ END$$
 
 
 USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_AFTER_UPDATE` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`reserva_AFTER_UPDATE`
+AFTER UPDATE ON `reserva` FOR EACH ROW
+BEGIN
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
+
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
+
+	SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fechaInicio`) INTO pistaDisponible;
+
+	-- Si no quedan pistas disponibles, borrar los partidos promocionados
+	-- y enfrentamientos que todavía no tengan una reserva de pista para
+	-- esa hora
+	IF pistaDisponible IS NULL THEN
+		DELETE FROM `PADEGEST`.`partido_promocionado`
+		WHERE `fecha` = NEW.`fechaInicio` AND `reserva_id` IS NULL;
+
+		DELETE FROM `PADEGEST`.`enfrentamiento`
+		WHERE `fecha` <=> NEW.`fechaInicio` AND `reserva_id` IS NULL;
+	END IF;
+END$$
+
+
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`enfrentamiento_BEFORE_INSERT` $$
 USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`enfrentamiento_BEFORE_INSERT`
 BEFORE INSERT ON `enfrentamiento` FOR EACH ROW
 BEGIN
-	DECLARE fechaReserva DATETIME;
+	DECLARE fechaReserva DATETIME DEFAULT NULL;
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
 
-	-- Ignorar reservas inexistentes
-	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
 
-	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
+	IF NEW.`fecha` IS NOT NULL THEN
+		SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF NEW.`fecha` IS NULL OR fechaReserva <> NEW.`fecha` THEN
-		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
-    END IF;
+		IF fechaReserva IS NOT NULL AND fechaReserva <> NEW.`fecha` THEN
+			SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
+		END IF;
+
+		SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fecha`) INTO pistaDisponible;
+
+		IF pistaDisponible IS NULL THEN
+			SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'No tiene sentido que un partido promocionado se celebre en una fecha que ya está ocupada';
+		END IF;
+	END IF;
 END$$
 
 
@@ -489,16 +522,24 @@ USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`enfrentamiento_BEFORE_UPDATE`
 BEFORE UPDATE ON `enfrentamiento` FOR EACH ROW
 BEGIN
-	DECLARE fechaReserva DATETIME;
+	DECLARE fechaReserva DATETIME DEFAULT NULL;
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
 
-	-- Ignorar reservas inexistentes
-	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
 
-	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
+	IF NEW.`fecha` IS NOT NULL THEN
+		SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF NEW.`fecha` IS NULL OR fechaReserva <> NEW.`fecha` THEN
-		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
-    END IF;
+		IF fechaReserva IS NOT NULL AND fechaReserva <> NEW.`fecha` THEN
+			SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
+		END IF;
+
+		SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fecha`) INTO pistaDisponible;
+
+		IF pistaDisponible IS NULL THEN
+			SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'No tiene sentido que un partido promocionado se celebre en una fecha que ya está ocupada';
+		END IF;
+	END IF;
 END$$
 
 
@@ -508,16 +549,22 @@ USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`partido_promocionado_BEFORE_INSERT`
 BEFORE INSERT ON `partido_promocionado` FOR EACH ROW
 BEGIN
-	DECLARE fechaReserva DATETIME;
+	DECLARE fechaReserva DATETIME DEFAULT NULL;
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
 
-	-- Ignorar reservas inexistentes
-	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
 
 	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF fechaReserva <> NEW.`fecha` THEN
+	IF fechaReserva IS NOT NULL AND fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
-    END IF;
+	END IF;
+
+	SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fecha`) INTO pistaDisponible;
+
+	IF pistaDisponible IS NULL THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'No tiene sentido crear un partido promocionado en una fecha que ya está ocupada';
+	END IF;
 END$$
 
 
@@ -527,16 +574,22 @@ USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`partido_promocionado_BEFORE_UPDATE`
 BEFORE UPDATE ON `partido_promocionado` FOR EACH ROW
 BEGIN
-	DECLARE fechaReserva DATETIME;
+	DECLARE fechaReserva DATETIME DEFAULT NULL;
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
 
-	-- Ignorar reservas inexistentes
-	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
 
 	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF fechaReserva <> NEW.`fecha` THEN
+	IF fechaReserva IS NOT NULL AND fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
-    END IF;
+	END IF;
+
+	SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fecha`) INTO pistaDisponible;
+
+	IF pistaDisponible IS NULL THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'No tiene sentido que un partido promocionado se celebre en una fecha que ya está ocupada';
+	END IF;
 END$$
 
 
@@ -628,7 +681,7 @@ BEGIN
 
 	IF idCategoriaNivelGrupo <> NEW.`categoria_nivel_id` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una pareja solo puede estar en grupos de su misma categoría y nivel';
-    END IF;
+	END IF;
 END$$
 
 
@@ -742,12 +795,12 @@ START TRANSACTION;
 USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (1, 'Partido 1 European Veteran Championship', '2019-11-19 18:00:00', 'liga regular', 13);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (2, 'Partido 2 European Veteran Championship', '2019-11-06 10:30:00', 'liga regular', 14);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (3, 'Partido 1 Máster de Menores 2019', '2019-11-15 18:00:00', 'playoffs', 15);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (3, 'Partido 1 Máster de Menores 2019', '2019-11-15 18:00:00', 'playoffs1', 15);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (4, 'Partido 2 Máster de Menores 2019', '2019-11-22 10:30:00', 'liga regular', 16);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (5, 'Partido 1 TyC PREMIUM 3', '2019-10-28 12:00:00', 'playoffs', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (5, 'Partido 1 TyC PREMIUM 3', '2019-10-28 12:00:00', 'playoffs1', NULL);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (6, 'Partido 3 European Veteran Championship', '2019-10-19 11:00:00', 'liga regular', NULL);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (7, 'Partido 3 Máster de Menores 2019', '2019-10-05 17:00:00', 'liga regular', NULL);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (8, 'Partido 2 TyC PREMIUM 3', '2019-10-28 18:00:00', 'playoffs', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (8, 'Partido 2 TyC PREMIUM 3', '2019-10-28 18:00:00', 'playoffs1', NULL);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (9, 'Partido 3 TyC PREMIUM 3', '2019-10-05 20:00:00', 'liga regular', NULL);
 
 COMMIT;
