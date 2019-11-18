@@ -17,18 +17,6 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
             )
         ?></li>
         <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
                 '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Reserva')),
                 ['controller' => 'Reserva', 'action' => 'index'],
                 ['escapeTitle' => false]
@@ -52,6 +40,18 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
                 ['escapeTitle' => false]
             )
         ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
+                ['controller' => 'Pareja', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
+                ['controller' => 'Pareja', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
     </ul>
 </nav>
 <div class="enfrentamiento index large-9 medium-8 columns content">
@@ -62,7 +62,6 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('fecha') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fase') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('reserva_id') ?></th>
                 <th scope="col" class="actions"></th>
             </tr>
@@ -73,7 +72,6 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
                 <td><?= $this->Number->format($enfrentamiento->id) ?></td>
                 <td><?= h($enfrentamiento->nombre) ?></td>
                 <td><?= h($enfrentamiento->fecha) ?></td>
-                <td><?= h($enfrentamiento->fase) ?></td>
                 <td><?= $enfrentamiento->has('reserva') ? $this->Html->link($enfrentamiento->reserva->id, ['controller' => 'Reserva', 'action' => 'view', $enfrentamiento->reserva->id]) : '' ?></td>
                 <td class="actions">
                     <?= $this->Html->link(

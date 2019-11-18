@@ -1,9 +1,7 @@
 <?php
 namespace App\Controller;
-
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
-
 /**
  * Grupo Controller
  *
@@ -25,15 +23,12 @@ class GrupoController extends AppController
         // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), ['register','index', 'logout', 'edit']) ||
                $user['rol'] === 'administrador';
-
     }
     public function index()
     {
         $grupo = $this->paginate($this->Grupo);
-
         $this->set(compact('grupo'));
     }
-
     /**
      * View method
      *
@@ -49,10 +44,32 @@ class GrupoController extends AppController
 
         $pareja = TableRegistry::getTableLocator()->get('Pareja');
         $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->all();
-
         $this->set(compact('grupo', 'resultsIteratorObject3'));
     }
+    public function ligaRegular($id = null)
+    {
+        $grupo = $this->Grupo->get($id, [
+            'contain' => []
+        ]);
+        $auxiliar= array();    
+        $pareja = TableRegistry::getTableLocator()->get('Pareja');
 
+        $enfrentamiento = TableRegistry::getTableLocator()->get('Enfrentamiento');
+        $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->all();
+        $iterador = $enfrentamiento->find()->join(
+            [
+            'P' => [ 'table' => 'Pareja_enfrentamiento',
+            'type' => 'INNER',
+            'conditions' => 'Enfrentamiento.id=P.enfrentamiento_id',
+            ],
+            'L' =>[
+                'table'=> 'Pareja',
+                'type'=>'INNER',
+                'conditions'=> 'L.id=P.pareja_id',
+            ]  
+        ])->where(['grupo_id'=>$id])->group('Enfrentamiento.id')->all();
+        $this->set(compact('grupo', 'resultsIteratorObject3', 'iterador'));
+    }
     /**
      * Add method
      *
@@ -65,20 +82,17 @@ class GrupoController extends AppController
             $grupo = $this->Grupo->patchEntity($grupo, $this->request->getData());
             if ($this->Grupo->save($grupo)) {
                 $this->Flash->success(__('The grupo has been saved.'));
-
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
         }
         $this->set(compact('grupo'));
     }
-
     public function add2($var)
     {
         $grupo = $this->Grupo->newEntity();
         $grupo = $this->Grupo->patchEntity($grupo, $var);
         if ($this->Grupo->save($grupo)) {
-
             return $this->redirect(['action' => 'index']);
         }else{
             $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
@@ -86,7 +100,6 @@ class GrupoController extends AppController
     
         $this->set(compact('grupo'));
     }
-
     /**
      * Edit method
      *
@@ -103,14 +116,12 @@ class GrupoController extends AppController
             $grupo = $this->Grupo->patchEntity($grupo, $this->request->getData());
             if ($this->Grupo->save($grupo)) {
                 $this->Flash->success(__('The grupo has been saved.'));
-
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
         }
         $this->set(compact('grupo'));
     }
-
     /**
      * Delete method
      *
@@ -127,7 +138,6 @@ class GrupoController extends AppController
         } else {
             $this->Flash->error(__('The grupo could not be deleted. Please, try again.'));
         }
-
         return $this->redirect(['action' => 'index']);
     }
 }

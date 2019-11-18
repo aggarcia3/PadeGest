@@ -7,7 +7,7 @@
 <?= $this->element('menu') ?>
 <div class="partidoPromocionado index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
 
-<?php if($this->request->session()->read('Auth.User.rol') == "administrador"){ ?>
+<?php if($Auth->user('rol') == "administrador"){ ?>
 
     <h3 class="card-title text-center" style="color: black;">Partidos Promocionados<a href="/partido-promocionado/add" class="btn btn-primary btn-sm float-right">Añadir Partido Promocionado</a></h3>
 

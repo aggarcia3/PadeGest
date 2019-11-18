@@ -75,11 +75,6 @@ class EnfrentamientoTable extends Table
             ->requirePresence('fecha', 'create')
             ->notEmptyDateTime('fecha');
 
-        $validator
-            ->scalar('fase')
-            ->requirePresence('fase', 'create')
-            ->notEmptyString('fase');
-
         return $validator;
     }
 
