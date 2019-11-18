@@ -38,7 +38,7 @@
             <tr>
                 <td><?= h($grupo->id) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Grupo', 'action' => 'view', $grupo->id], ['escapeTitle' => false]) ?>  
+                    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>' , ['controller' => 'Grupo', 'action' => 'LigaRegular', $grupo->id], ['escapeTitle' => false]) ?>  
                 </td>
             </tr>
             <?php endforeach; ?>
