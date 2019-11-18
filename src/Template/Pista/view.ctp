@@ -4,8 +4,11 @@
  * @var \Cake\Datasource\EntityInterface $pista
  */
 
+use App\Model\Table\ReservaTable;
+
 // Page title
 $this->assign('title', __('Gestión de {0}', __('pistas')));
+
 ?>
 <div class="pista view content">
     <h3 class="card-title text-center">
@@ -49,12 +52,7 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
                             ['escapeTitle' => false]
                         )
                     ?>
-                    <?= $this->Html->link(
-                            '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
-                            ['controller' => 'Reserva', 'action' => 'edit', $reserva->id],
-                            ['escapeTitle' => false]
-                        )
-                    ?>
+                    <?php if (ReservaTable::esModificable($reserva)): ?>
                     <?= $this->Form->postLink(
                             '<i class="fas fa-calendar-minus delete-action-fa-icon"></i>',
                             ['controller' => 'Reserva', 'action' => 'delete', $reserva->id],
@@ -63,6 +61,7 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
                             ]
                         )
                     ?>
+                    <?php endif; ?>
                 </td>
             </tr>
             <?php endforeach; ?>
