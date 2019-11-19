@@ -18,8 +18,8 @@
 
             echo $this->Form->label('Socio');
             echo $this->Form->select('esSocio', [
-                0 => 'Si',
-                1 => 'No'
+                1 => 'Si',
+                0 => 'No'
             ]);
 
         ?>

@@ -106,10 +106,6 @@ class UsuarioController extends AppController
             $data['esSocio'] = '0';
             $data['password'] = $this->hashPassword($data['password']);
             $usuario = $this->Usuario->patchEntity($usuario, $data);
-<<<<<<< HEAD
-            
-=======
->>>>>>> master
             if ($this->Usuario->save($usuario)) {
                 $this->Flash->success(__('El usuario ha sigo registrado'));
 

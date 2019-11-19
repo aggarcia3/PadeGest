@@ -3,8 +3,10 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Usuario $usuario
  */
+
+use Cake\Routing\Router;
 ?>
-<?= $this->element('menu') ?>   
+<?= $this->element('menu') ?>
   <!-- Page Content -->
   <div class="container">
 
@@ -12,10 +14,10 @@
     <div class="jumbotron my-4" style="background-image: url('/img/header-padel.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
       <h1 class="display-3">Bienvenido a PadeGest</h1>
       <p class="lead p-header">Estamos considerados el mejor club de pádel de Ourense con miles de valoraciones positivas entre los numerosos aficionados y profesionales de este deporte. ¡Te invitamos a que nos descubras en nuestra nueva página web!</p>
-      
-      <?php if(!$this->request->session()->read('Auth.User.id')){ ?>
-      
-      <a href="/usuario/register" class="btn btn-primary btn-lg">¡Regístrate Gratis!</a>
+
+      <?php if(!$Auth->user('id')){ ?>
+
+      <a href="<?= Router::url(['controller' => 'Usuario', 'action' => 'register']) ?>" class="btn btn-primary btn-lg">¡Regístrate Gratis!</a>
 
       <?php } ?>
 
@@ -68,7 +70,7 @@
     <!-- /.row -->
 
   </div>
-  
+
 
 </body>
 

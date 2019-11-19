@@ -8,7 +8,7 @@ use Cake\Validation\Validator;
 
 /**
  * Resultado Model
- *
+ * @property \App\Model\Table\ResultadoTable&\Cake\ORM\Association\HasOne $Resultado
  * @method \App\Model\Entity\Resultado get($primaryKey, $options = [])
  * @method \App\Model\Entity\Resultado newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Resultado[] newEntities(array $data, array $options = [])
@@ -44,8 +44,8 @@ class ResultadoTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->nonNegativeInteger('idEnfrentamiento')
-            ->allowEmptyString('idEnfrentamiento', null, 'create');
+            ->nonNegativeInteger('enfrentamiento_id')
+            ->allowEmptyString('enfrentamiento_id', null, 'create');
 
         $validator
             ->requirePresence('set1pareja1', 'create')

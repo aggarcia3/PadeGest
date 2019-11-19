@@ -21,7 +21,7 @@ class ResultadoFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'idEnfrentamiento' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'enfrentamiento_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'set1pareja1' => ['type' => 'tinyinteger', 'length' => 4, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'set1pareja2' => ['type' => 'tinyinteger', 'length' => 4, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'set2pareja1' => ['type' => 'tinyinteger', 'length' => 4, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
@@ -29,12 +29,12 @@ class ResultadoFixture extends TestFixture
         'set3pareja1' => ['type' => 'tinyinteger', 'length' => 4, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'set3pareja2' => ['type' => 'tinyinteger', 'length' => 4, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['idEnfrentamiento'], 'length' => []],
-            'FK_RESULTADO_ENFRENTAMIENTO' => ['type' => 'foreign', 'columns' => ['idEnfrentamiento'], 'references' => ['enfrentamiento', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'primary' => ['type' => 'primary', 'columns' => ['enfrentamiento_id'], 'length' => []],
+            'FK_RESULTADO_ENFRENTAMIENTO' => ['type' => 'foreign', 'columns' => ['enfrentamiento_id'], 'references' => ['enfrentamiento', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_bin'
+            'collation' => 'utf8mb4_bin'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -47,7 +47,7 @@ class ResultadoFixture extends TestFixture
     {
         $this->records = [
             [
-                'idEnfrentamiento' => 1,
+                'enfrentamiento_id' => 1,
                 'set1pareja1' => 1,
                 'set1pareja2' => 1,
                 'set2pareja1' => 1,

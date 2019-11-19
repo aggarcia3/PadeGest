@@ -37,18 +37,6 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
             )
         ?></li>
         <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
                 '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Reserva')),
                 ['controller' => 'Reserva', 'action' => 'index'],
                 ['escapeTitle' => false]
@@ -72,6 +60,18 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
                 ['escapeTitle' => false]
             )
         ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
+                ['controller' => 'Pareja', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
+                ['controller' => 'Pareja', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
     </ul>
 </nav>
 <div class="enfrentamiento view large-9 medium-8 columns content">
@@ -80,10 +80,6 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
         <tr>
             <th scope="row"><?= __('Nombre') ?></th>
             <td><?= h($enfrentamiento->nombre) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Fase') ?></th>
-            <td><?= h($enfrentamiento->fase) ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Reserva') ?></th>
@@ -98,6 +94,52 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
             <td><?= h($enfrentamiento->fecha) ?></td>
         </tr>
     </table>
+    <div class="related">
+        <h4><?= __('Pareja relacionadas') ?></h4>
+        <?php if (!empty($enfrentamiento->pareja)): ?>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th scope="col"><?= __('Id') ?></th>
+                <th scope="col"><?= __('IdCapitan') ?></th>
+                <th scope="col"><?= __('IdCompanero') ?></th>
+                <th scope="col"><?= __('Categoria Nivel Id') ?></th>
+                <th scope="col"><?= __('Grupo Id') ?></th>
+                <th scope="col" class="actions"></th>
+            </tr>
+            <?php foreach ($enfrentamiento->pareja as $pareja): ?>
+            <tr>
+                <td><?= h($pareja->id) ?></td>
+                <td><?= h($pareja->idCapitan) ?></td>
+                <td><?= h($pareja->idCompanero) ?></td>
+                <td><?= h($pareja->categoria_nivel_id) ?></td>
+                <td><?= h($pareja->grupo_id) ?></td>
+                <td class="actions">
+                    <?= $this->Html->link(
+                            '<i class="fas fa-eye view-action-fa-icon"></i>',
+                            ['controller' => 'Pareja', 'action' => 'view', $pareja->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Html->link(
+                            '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
+                            ['controller' => 'Pareja', 'action' => 'edit', $pareja->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Form->postLink(
+                            '<i class="fas fa-minus-square delete-action-fa-icon"></i>',
+                            ['controller' => 'Pareja', 'action' => 'delete', $pareja->id],
+                            ['escapeTitle' => false, 'confirm' =>
+                                __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la pareja número {0}', $pareja->id)])
+                            ]
+                        )
+                    ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        <?php endif; ?>
+    </div>
     <div class="related">
         <h4><?= __('Resultado relacionadas') ?></h4>
         <?php if (!empty($enfrentamiento->resultado)): ?>

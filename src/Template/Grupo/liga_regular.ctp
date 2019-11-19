@@ -63,4 +63,52 @@
         </table>
         <?php endif; ?>
     </div>
+    <div class="related">
+        <h4><?= __('Enfrentamientos relacionados') ?></h4>
+        <?php if (!empty($iterador)): ?>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th scope="col"><?= __('Id') ?></th>
+                <th scope="col"><?= __('Nombre') ?></th>
+                <th scope="col"><?= __('Fecha') ?></th>
+                <th scope="col"><?= __('Reserva_id') ?></th>
+                <th scope="col"><?= __('fase') ?></th>
+                <th scope="col"><?=__('nombrecapitan')?></th>
+                <th scope="col" class="actions"></th>
+            </tr>
+            <?php foreach ($iterador as $enfrentamiento): ?>
+            <tr>
+                
+                <td><?= h($enfrentamiento->id) ?></td>
+                <td><?= h($enfrentamiento->nombre) ?></td>
+                <td><?= h($enfrentamiento->fecha) ?></td>
+                <td><?= h($enfrentamiento->reserva_id) ?></td>
+                <td><?= h($enfrentamiento->fase) ?></td>
+                <td class="actions">
+                    <?= $this->Html->link(
+                            '<i class="fas fa-eye view-action-fa-icon"></i>',
+                            ['controller' => 'enfrentamiento', 'action' => 'view', $enfrentamiento->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Html->link(
+                            '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
+                            ['controller' => 'enfrentamiento', 'action' => 'edit', $enfrentamiento->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?= $this->Form->postLink(
+                            '<i class="fas fa-minus-square delete-action-fa-icon"></i>',
+                            ['controller' => 'enfrentamiento', 'action' => 'delete', $enfrentamiento->id],
+                            ['escapeTitle' => false, 'confirm' =>
+                                __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la pareja número {0}', $pareja->id)])
+                            ]
+                        )
+                    ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        <?php endif; ?>
+    </div>
 </div>

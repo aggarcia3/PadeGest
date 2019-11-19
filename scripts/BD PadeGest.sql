@@ -1,7 +1,8 @@
+
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 16 Nov 2019 12:38:06 CET
+-- Generated on 19 Nov 2019 16:21:21 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -89,11 +90,12 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`enfrentamiento` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `fecha` DATETIME NULL,
-  `fase` ENUM('liga regular', 'playoffs') NOT NULL,
+  `fase` ENUM('liga regular', 'playoffs1', 'playoffs2', 'playoffs4') NOT NULL,
   `reserva_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
   INDEX `FK_ENFRENTAMIENTO_RESERVA_idx` (`reserva_id` ASC),
   UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC),
+  INDEX `fecha_INDEX` (`fecha` ASC),
   CONSTRAINT `FK_ENFRENTAMIENTO_RESERVA`
     FOREIGN KEY (`reserva_id`)
     REFERENCES `PADEGEST`.`reserva` (`id`)
@@ -114,6 +116,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`partido_promocionado` (
   `reserva_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC),
+  INDEX `fecha_INDEX` (`fecha` ASC),
   CONSTRAINT `FK_PARTIDO_PROMOCIONADO_RESERVA`
     FOREIGN KEY (`reserva_id`)
     REFERENCES `PADEGEST`.`reserva` (`id`)
@@ -233,6 +236,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`pareja` (
   `idCompanero` INT UNSIGNED NOT NULL,
   `categoria_nivel_id` INT UNSIGNED NOT NULL,
   `grupo_id` INT UNSIGNED NULL,
+  `puntuacion` INT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `FK_PAREJA_GRUPO_idx` (`grupo_id` ASC),
   INDEX `FK_PAREJA_CATEGORIA_NIVEL_idx` (`categoria_nivel_id` ASC),
@@ -310,8 +314,8 @@ BEGIN
 		WHERE
 			NOT `id` <=> idReservaIgnorada AND
 			`pista_id` = idPista AND
-			fechaFinComp >= `fechaInicio` AND
-            fechaInicioComp <= `fechaFin`
+			fechaFinComp > `fechaInicio` AND
+            fechaInicioComp < `fechaFin`
 		LIMIT 1
 	);
 END$$
@@ -341,8 +345,8 @@ BEGIN
 		SELECT `id` FROM `PADEGEST`.`pista` WHERE `id` NOT IN (
 			SELECT `pista_id` FROM `PADEGEST`.`reserva`
 			WHERE
-				fechaFinComp >= `fechaInicio` AND
-                fechaInicioComp <= `fechaFin`
+				fechaFinComp > `fechaInicio` AND
+                fechaInicioComp < `fechaFin`
 		)
         LIMIT 1
 	);
@@ -408,6 +412,31 @@ END$$
 
 
 USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_AFTER_INSERT` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`reserva_AFTER_INSERT`
+AFTER INSERT ON `reserva` FOR EACH ROW
+BEGIN
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
+
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
+
+	SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fechaInicio`) INTO pistaDisponible;
+
+	-- Si no quedan pistas disponibles, borrar los partidos promocionados
+    -- y enfrentamientos que todavía no tengan una reserva de pista para
+    -- esa hora
+	IF pistaDisponible IS NULL THEN
+		DELETE FROM `PADEGEST`.`partido_promocionado`
+        WHERE `fecha` = NEW.`fechaInicio` AND `reserva_id` IS NULL;
+
+		DELETE FROM `PADEGEST`.`enfrentamiento`
+        WHERE `fecha` <=> NEW.`fechaInicio` AND `reserva_id` IS NULL;
+    END IF;
+END$$
+
+
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_BEFORE_UPDATE` $$
 USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`reserva_BEFORE_UPDATE`
@@ -438,21 +467,54 @@ END$$
 
 
 USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_AFTER_UPDATE` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`reserva_AFTER_UPDATE`
+AFTER UPDATE ON `reserva` FOR EACH ROW
+BEGIN
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
+
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
+
+	SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fechaInicio`) INTO pistaDisponible;
+
+	-- Si no quedan pistas disponibles, borrar los partidos promocionados
+	-- y enfrentamientos que todavía no tengan una reserva de pista para
+	-- esa hora
+	IF pistaDisponible IS NULL THEN
+		DELETE FROM `PADEGEST`.`partido_promocionado`
+		WHERE `fecha` = NEW.`fechaInicio` AND `reserva_id` IS NULL;
+
+		DELETE FROM `PADEGEST`.`enfrentamiento`
+		WHERE `fecha` <=> NEW.`fechaInicio` AND `reserva_id` IS NULL;
+	END IF;
+END$$
+
+
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`enfrentamiento_BEFORE_INSERT` $$
 USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`enfrentamiento_BEFORE_INSERT`
 BEFORE INSERT ON `enfrentamiento` FOR EACH ROW
 BEGIN
-	DECLARE fechaReserva DATETIME;
+	DECLARE fechaReserva DATETIME DEFAULT NULL;
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
 
-	-- Ignorar reservas inexistentes
-	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
 
-	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
+	IF NEW.`fecha` IS NOT NULL THEN
+		SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF NEW.`fecha` IS NULL OR fechaReserva <> NEW.`fecha` THEN
-		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
-    END IF;
+		IF fechaReserva IS NOT NULL AND fechaReserva <> NEW.`fecha` THEN
+			SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
+		END IF;
+
+		SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fecha`) INTO pistaDisponible;
+
+		IF pistaDisponible IS NULL THEN
+			SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'No tiene sentido que un partido promocionado se celebre en una fecha que ya está ocupada';
+		END IF;
+	END IF;
 END$$
 
 
@@ -462,16 +524,24 @@ USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`enfrentamiento_BEFORE_UPDATE`
 BEFORE UPDATE ON `enfrentamiento` FOR EACH ROW
 BEGIN
-	DECLARE fechaReserva DATETIME;
+	DECLARE fechaReserva DATETIME DEFAULT NULL;
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
 
-	-- Ignorar reservas inexistentes
-	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
 
-	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
+	IF NEW.`fecha` IS NOT NULL THEN
+		SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF NEW.`fecha` IS NULL OR fechaReserva <> NEW.`fecha` THEN
-		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
-    END IF;
+		IF fechaReserva IS NOT NULL AND fechaReserva <> NEW.`fecha` THEN
+			SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
+		END IF;
+
+		SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fecha`) INTO pistaDisponible;
+
+		IF pistaDisponible IS NULL THEN
+			SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'No tiene sentido que un partido promocionado se celebre en una fecha que ya está ocupada';
+		END IF;
+	END IF;
 END$$
 
 
@@ -481,16 +551,22 @@ USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`partido_promocionado_BEFORE_INSERT`
 BEFORE INSERT ON `partido_promocionado` FOR EACH ROW
 BEGIN
-	DECLARE fechaReserva DATETIME;
+	DECLARE fechaReserva DATETIME DEFAULT NULL;
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
 
-	-- Ignorar reservas inexistentes
-	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
 
 	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF fechaReserva <> NEW.`fecha` THEN
+	IF fechaReserva IS NOT NULL AND fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
-    END IF;
+	END IF;
+
+	SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fecha`) INTO pistaDisponible;
+
+	IF pistaDisponible IS NULL THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'No tiene sentido crear un partido promocionado en una fecha que ya está ocupada';
+	END IF;
 END$$
 
 
@@ -500,16 +576,22 @@ USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`partido_promocionado_BEFORE_UPDATE`
 BEFORE UPDATE ON `partido_promocionado` FOR EACH ROW
 BEGIN
-	DECLARE fechaReserva DATETIME;
+	DECLARE fechaReserva DATETIME DEFAULT NULL;
+	DECLARE pistaDisponible INT UNSIGNED DEFAULT NULL;
 
-	-- Ignorar reservas inexistentes
-	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND BEGIN END;
 
 	SELECT fechaInicio FROM `PADEGEST`.`reserva` WHERE id = NEW.`reserva_id` INTO fechaReserva;
 
-	IF fechaReserva <> NEW.`fecha` THEN
+	IF fechaReserva IS NOT NULL AND fechaReserva <> NEW.`fecha` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de la reserva asociada a un partido debe de coincidir con la del partido';
-    END IF;
+	END IF;
+
+	SELECT `PADEGEST`.`pistaDisponibleEnFecha`(NEW.`fecha`) INTO pistaDisponible;
+
+	IF pistaDisponible IS NULL THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'No tiene sentido que un partido promocionado se celebre en una fecha que ya está ocupada';
+	END IF;
 END$$
 
 
@@ -601,7 +683,7 @@ BEGIN
 
 	IF idCategoriaNivelGrupo <> NEW.`categoria_nivel_id` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una pareja solo puede estar en grupos de su misma categoría y nivel';
-    END IF;
+	END IF;
 END$$
 
 
@@ -611,7 +693,7 @@ DELIMITER ;
 -- User PadeGestApp
 -- -----------------------------------------------------
 DROP USER IF EXISTS 'PadeGestApp';
-CREATE USER 'PadeGestApp' IDENTIFIED WITH mysql_native_password BY 'PadeGestApp';
+CREATE USER 'PadeGestApp' IDENTIFIED BY 'PadeGestApp';
 GRANT TRIGGER, UPDATE, SELECT, INSERT, INDEX, DELETE, ALTER, REFERENCES, DROP, CREATE ON TABLE PADEGEST.* TO 'PadeGestApp';
 GRANT EXECUTE ON FUNCTION PADEGEST.reservaQueOcupaPista TO 'PadeGestApp';
 GRANT EXECUTE ON function `PADEGEST`.`pistaDisponibleEnFecha` TO 'PadeGestApp';
@@ -688,22 +770,22 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (1, '2019-11-21 22:00:00', DEFAULT, 10, 20);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (2, '2019-11-25 20:00:00', DEFAULT, 4, 8);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (3, '2019-11-24 08:00:00', DEFAULT, 14, 18);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (4, '2019-11-22 11:00:00', DEFAULT, 13, 12);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (5, '2019-11-23 21:00:00', DEFAULT, 10, 24);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (6, '2019-11-22 16:00:00', DEFAULT, 4, 24);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (7, '2019-11-25 10:00:00', DEFAULT, 2, 9);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (1, '2019-11-21 19:30:00', DEFAULT, 10, 20);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (2, '2019-11-25 19:30:00', DEFAULT, 4, 8);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (3, '2019-11-24 09:00:00', DEFAULT, 14, 18);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (4, '2019-11-22 10:30:00', DEFAULT, 13, 12);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (5, '2019-11-23 19:30:00', DEFAULT, 10, 24);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (6, '2019-11-22 16:30:00', DEFAULT, 4, 24);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (7, '2019-11-25 10:30:00', DEFAULT, 2, 9);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (8, '2019-11-21 15:00:00', DEFAULT, 4, 26);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (9, '2019-11-20 16:00:00', DEFAULT, 5, 11);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (10, '2019-11-23 22:00:00', DEFAULT, 14, 26);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (11, '2019-11-16 22:00:00', DEFAULT, 12, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (12, '2019-11-23 14:00:00', DEFAULT, 12, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (13, '2019-11-19 17:00:00', DEFAULT, 13, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (14, '2019-11-06 10:00:00', DEFAULT, 3, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (9, '2019-11-20 16:30:00', DEFAULT, 5, 11);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (10, '2019-11-23 19:30:00', DEFAULT, 14, 26);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (11, '2019-11-16 19:30:00', DEFAULT, 12, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (12, '2019-11-23 13:30:00', DEFAULT, 12, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (13, '2019-11-19 18:00:00', DEFAULT, 13, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (14, '2019-11-06 10:30:00', DEFAULT, 3, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (15, '2019-11-15 18:00:00', DEFAULT, 6, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (16, '2019-11-22 10:00:00', DEFAULT, 7, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (16, '2019-11-22 10:30:00', DEFAULT, 7, NULL);
 
 COMMIT;
 
@@ -713,14 +795,14 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (1, 'Partido 1 European Veteran Championship', '2019-11-19 17:00:00', 'liga regular', 13);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (2, 'Partido 2 European Veteran Championship', '2019-11-06 10:00:00', 'liga regular', 14);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (3, 'Partido 1 Máster de Menores 2019', '2019-11-15 18:00:00', 'playoffs', 15);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (4, 'Partido 2 Máster de Menores 2019', '2019-11-22 10:00:00', 'liga regular', 16);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (5, 'Partido 1 TyC PREMIUM 3', '2019-10-28 12:00:00', 'playoffs', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (1, 'Partido 1 European Veteran Championship', '2019-11-19 18:00:00', 'liga regular', 13);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (2, 'Partido 2 European Veteran Championship', '2019-11-06 10:30:00', 'liga regular', 14);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (3, 'Partido 1 Máster de Menores 2019', '2019-11-15 18:00:00', 'playoffs1', 15);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (4, 'Partido 2 Máster de Menores 2019', '2019-11-22 10:30:00', 'liga regular', 16);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (5, 'Partido 1 TyC PREMIUM 3', '2019-10-28 12:00:00', 'playoffs1', NULL);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (6, 'Partido 3 European Veteran Championship', '2019-10-19 11:00:00', 'liga regular', NULL);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (7, 'Partido 3 Máster de Menores 2019', '2019-10-05 17:00:00', 'liga regular', NULL);
-INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (8, 'Partido 2 TyC PREMIUM 3', '2019-10-28 18:00:00', 'playoffs', NULL);
+INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (8, 'Partido 2 TyC PREMIUM 3', '2019-10-28 18:00:00', 'playoffs1', NULL);
 INSERT INTO `PADEGEST`.`enfrentamiento` (`id`, `nombre`, `fecha`, `fase`, `reserva_id`) VALUES (9, 'Partido 3 TyC PREMIUM 3', '2019-10-05 20:00:00', 'liga regular', NULL);
 
 COMMIT;
@@ -731,9 +813,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (1, 'Partido amistoso de PadeClub', '2019-11-16 22:00:00', 11);
+INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (1, 'Partido amistoso de PadeClub', '2019-11-16 19:30:00', 11);
 INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (2, 'Partido entrenamiento Copa Pádel', '2019-10-26 18:00:00', NULL);
-INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (3, 'Primer partido solidario', '2019-11-23 14:00:00', 12);
+INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (3, 'Primer partido solidario', '2019-11-23 13:30:00', 12);
 
 COMMIT;
 
@@ -830,70 +912,70 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (1, 30, 18, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (2, 27, 2, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (3, 5, 6, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (4, 11, 19, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (5, 3, 20, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (6, 19, 16, 23, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (7, 8, 25, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (8, 26, 8, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (9, 10, 11, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (10, 29, 22, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (11, 19, 20, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (12, 21, 6, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (13, 16, 23, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (14, 11, 4, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (15, 28, 26, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (16, 19, 25, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (17, 24, 5, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (18, 12, 5, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (19, 28, 12, 21, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (20, 13, 3, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (21, 15, 19, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (22, 5, 30, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (23, 17, 6, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (24, 19, 27, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (25, 15, 17, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (26, 9, 29, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (27, 15, 18, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (28, 17, 30, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (29, 20, 18, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (30, 15, 21, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (31, 3, 2, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (32, 15, 24, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (33, 13, 11, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (34, 13, 10, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (35, 16, 7, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (36, 10, 7, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (37, 26, 2, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (38, 16, 18, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (39, 10, 21, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (40, 2, 7, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (41, 25, 17, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (42, 11, 24, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (43, 19, 29, 3, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (44, 23, 8, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (45, 20, 11, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (46, 12, 8, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (47, 30, 30, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (48, 29, 30, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (49, 24, 4, 24, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (50, 8, 11, 11, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (51, 22, 5, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (52, 6, 17, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (53, 19, 25, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (54, 12, 28, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (55, 15, 2, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (56, 22, 16, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (57, 28, 2, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (58, 13, 19, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (59, 22, 28, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (60, 9, 25, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (61, 26, 16, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (62, 4, 26, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (63, 26, 7, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (64, 4, 2, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (1, 30, 18, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (2, 27, 2, 7, 1, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (3, 5, 6, 7, 1, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (4, 11, 19, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (5, 3, 20, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (6, 19, 16, 23, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (7, 8, 25, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (8, 26, 8, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (9, 10, 11, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (10, 29, 22, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (11, 19, 20, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (12, 21, 6, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (13, 16, 23, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (14, 11, 4, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (15, 28, 26, 7, 1, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (16, 19, 25, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (17, 24, 5, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (18, 12, 5, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (19, 28, 12, 21, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (20, 13, 3, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (21, 15, 19, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (22, 5, 30, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (23, 17, 6, 7, 1, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (24, 19, 27, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (25, 15, 17, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (26, 9, 29, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (27, 15, 18, 7, 1, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (28, 17, 30, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (29, 20, 18, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (30, 15, 21, 7, 1, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (31, 3, 2, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (32, 15, 24, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (33, 13, 11, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (34, 13, 10, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (35, 16, 7, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (36, 10, 7, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (37, 26, 2, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (38, 16, 18, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (39, 10, 21, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (40, 2, 7, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (41, 25, 17, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (42, 11, 24, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (43, 19, 29, 3, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (44, 23, 8, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (45, 20, 11, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (46, 12, 8, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (47, 30, 30, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (48, 29, 30, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (49, 24, 4, 24, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (50, 8, 11, 11, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (51, 22, 5, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (52, 6, 17, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (53, 19, 25, 7, 1, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (54, 12, 28, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (55, 15, 2, 9, 3, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (56, 22, 16, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (57, 28, 2, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (58, 13, 19, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (59, 22, 28, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (60, 9, 25, 17, 2, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (61, 26, 16, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (62, 4, 26, 10, NULL, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (63, 26, 7, 7, 1, DEFAULT);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`, `puntuacion`) VALUES (64, 4, 2, 17, 2, DEFAULT);
 
 COMMIT;
 

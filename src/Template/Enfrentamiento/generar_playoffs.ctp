@@ -22,14 +22,16 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
 <div class="enfrentamiento form large-9 medium-8 columns content">
     <?= $this->Form->create($enfrentamiento) ?>
     <fieldset>
+
         <legend><?= __('Add Enfrentamiento') ?></legend>
         <?php
-            echo $this->Form->control('nombre');
+            echo  $this->Form->control('nombre');
             echo $this->Form->control('fecha');
             echo $this->Form->control('reserva_id', ['options' => $reserva, 'empty' => true]);
-            echo $this->Form->control('pareja._ids', ['options' => $pareja]);
+            echo $this->Form->$resultsIteratorObject3->$pareja->id;
         ?>
     </fieldset>
+   
     <?= $this->Form->button(__('Submit')) ?>
     <?= $this->Form->end() ?>
 </div>
