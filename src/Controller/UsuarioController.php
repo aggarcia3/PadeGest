@@ -283,4 +283,27 @@ class UsuarioController extends AppController
     {
         return $this->Auth->getAuthenticate('Form')->passwordHasher()->hash($password);
     }
+
+    public function hacerseSocio($id=null)
+    {
+        $usuario=$this->Usuario->get($this->Auth->user('id')); 
+        if($this->request->is(['patch','post','put'])){
+            $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
+            if ($this->Usuario->save($usuario)) {
+                $this->Flash->success(__('Estado de socio cambiado'));
+                return $this->redirect(['action'=>'listar']);
+            }
+            $this->Flash->error(__('Ha habido un error, intentalo de nuevo'));
+        }
+        $this->set(compact('usuario'));
+    }
+
+
+    public function agrupar()
+    {
+        $campeonato = (new CampeonatoController());
+        $partidoPromocionado = (new PartidoPromocionadoController());
+        $campeonato->agrupar();
+        $partidoPromocionado->agrupar(); 
+    }
 }

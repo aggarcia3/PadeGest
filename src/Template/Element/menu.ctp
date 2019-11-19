@@ -14,4 +14,8 @@ if ($Auth->user('id')): ?>
     <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'index']) ?>"><?= __('Usuarios') ?></a></li>
 
     <?php endif; ?>
+    <?php if ($Auth->user('rol') === "deportista"): ?>
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'hacerseSocio']) ?>"><?= __('Hacerse Socio') ?></a></li>
+    <?php endif; ?>
 <?php endif; ?>
+

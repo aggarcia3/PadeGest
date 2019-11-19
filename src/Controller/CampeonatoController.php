@@ -11,7 +11,7 @@ use Cake\ORM\TableRegistry;
  *
  * @method \App\Model\Entity\Campeonato[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-
+use Cake\Event\Event;
 class CampeonatoController extends AppController
 {
     /**
@@ -19,6 +19,14 @@ class CampeonatoController extends AppController
      *
      * @return void
      */
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $campeonato = (new CampeonatoController());
+        $partidoPromocionado = (new PartidoPromocionadoController());
+        $campeonato->agrupar();
+        $partidoPromocionado->agrupar(); 
+    }
     public function isAuthorized($user)
     {
         // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
@@ -31,18 +39,39 @@ class CampeonatoController extends AppController
 
     public function inscribirse($id = null)
     {
+        $fecha_actual = FrozenTime::now();    
         $campeonato = $this->Campeonato->get($id, [
             'contain' => []
         ]);
 
+        if($campeonato['fechaFinInscripciones'] <  $fecha_actual){
+            $this->Flash->error(__('No puedes acceder a esta URL, se notificará al administrador'));
+            return $this->redirect(['action' => 'index']);
+        }
         $this->set('campeonato', $campeonato);
     }
 
+
     public function index()
     {
-        $campeonato = $this->paginate($this->Campeonato);
+        $fecha_actual = FrozenTime::now();
+        $campeonatos = $this->paginate($this->Campeonato);
+        if($this->Auth->user('rol') != "administrador"){
+            foreach($campeonatos as $campeonato){
+                if($campeonato['fechaFinInscripciones'] <  $fecha_actual){
+                   unset($campeonato['fechaFinInscripciones']);
+                   unset($campeonato['nombre']);
+                   unset($campeonato['id']);
+                   unset($campeonato['bases']);
+                   unset($campeonato['fechaInicioInscripciones']);
+                }
+            }
+        }
+        if(!isset($campeonatos)){
+            $campeonato = [];
+        }
 
-        $this->set(compact('campeonato'));
+        $this->set(compact('campeonatos'));
     }
 
     /**
@@ -76,7 +105,10 @@ class CampeonatoController extends AppController
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             $var = $data['nombre'];
-            $campeonato = $this->Campeonato->patchEntity($campeonato, $this->request->getData());
+
+            $data['fechaInicioInscripciones'] =  $data['fechaInicioInscripciones'].' 00:00:00';
+            $data['fechaFinInscripciones'] =  $data['fechaFinInscripciones'].' 00:00:00';
+            $campeonato = $this->Campeonato->patchEntity($campeonato, $data);
             if ($this->Campeonato->save($campeonato)) {
                 $this->Flash->success(__('The campeonato has been saved.'));
 
@@ -228,14 +260,14 @@ class CampeonatoController extends AppController
                 $var5[$f] = $grupo['id'];
                 $f++;
             }
-            if(sizeof($var5) == 0){
+            if(!isset($var5)){
                 $grupo = (new GrupoController());
                 for ($t = 0; $t < $numeroGrupos; $t++) {
                     $grupoValues['categoria_nivel_id'] = $var;
                     $grupo->add2($grupoValues);
                 }
             }
-
+            
             $grupo = TableRegistry::getTableLocator()->get('Grupo');
             $resultsIteratorObject3 = $grupo->find()->where(['categoria_nivel_id' => $var])->all();
             $k = 0;

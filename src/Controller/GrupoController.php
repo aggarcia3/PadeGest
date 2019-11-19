@@ -53,6 +53,31 @@ class GrupoController extends AppController
         $this->set(compact('grupo', 'resultsIteratorObject3'));
     }
 
+
+    public function ligaRegular($id = null)
+    {
+        $grupo = $this->Grupo->get($id, [
+            'contain' => []
+        ]);
+        $auxiliar= array();    
+        $pareja = TableRegistry::getTableLocator()->get('Pareja');
+        $enfrentamiento = TableRegistry::getTableLocator()->get('Enfrentamiento');
+        $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->all();
+        $iterador = $enfrentamiento->find()->join(
+            [
+            'P' => [ 'table' => 'Pareja_enfrentamiento',
+            'type' => 'INNER',
+            'conditions' => 'Enfrentamiento.id=P.enfrentamiento_id',
+            ],
+            'L' =>[
+                'table'=> 'Pareja',
+                'type'=>'INNER',
+                'conditions'=> 'L.id=P.pareja_id',
+            ]  
+        ])->where(['grupo_id'=>$id])->group('Enfrentamiento.id')->all();
+        $this->set(compact('grupo', 'resultsIteratorObject3', 'iterador'));
+    }
+
     /**
      * Add method
      *

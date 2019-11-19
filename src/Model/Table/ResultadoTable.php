@@ -36,6 +36,7 @@ class ResultadoTable extends Table
         $this->hasOne('enfrentamiento', [
             'foreignKey' => 'id'
         ]);
+
     }
 
     /**
