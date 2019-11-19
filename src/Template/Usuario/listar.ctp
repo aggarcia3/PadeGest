@@ -14,9 +14,9 @@
                 <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('apellidos') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('genero') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('esSocio') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('esSocio', 'Es Socio') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('rol') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
+                <th scope="col" class="actions"><?= __('Acciones') ?></th>
             </tr>
         </thead>
         <tbody>

@@ -76,7 +76,7 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
     </ul>
 </nav>
 <div class="enfrentamiento view large-9 medium-8 columns content">
-    <h3 class="card-title text-center" style="color: black;"><?= __('Detalles de la {0}', __('enfrentamiento')) . ' ' . h($enfrentamiento->id) ?></h3>
+    <h3 class="card-title text-center" style="color: black;"><?= __('Detalles del {0}', __('enfrentamiento')) . ' ' . h($enfrentamiento->id) ?></h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Nombre') ?></th>
@@ -84,7 +84,7 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
         </tr>
         <tr>
             <th scope="row"><?= __('Reserva') ?></th>
-            <td><?= $enfrentamiento->has('reserva') ? $this->Html->link($enfrentamiento->reserva->id, ['controller' => 'Reserva', 'action' => 'view', $enfrentamiento->reserva->id]) : '' ?></td>
+            <td><?= $enfrentamiento->has('reserva') ? $this->Html->link($enfrentamiento->reserva->id, ['controller' => 'Reserva', 'action' => 'view', $enfrentamiento->reserva->id]) : 'No hay Reserva' ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Id') ?></th>
@@ -96,7 +96,7 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
         </tr>
     </table>
     <div class="related">
-        <h3 class="card-title text-center" style="color: black;"><?= __('Pareja relacionadas') ?></h3>
+        <h3 class="card-title text-center" style="color: black;"><?= __('Parejas relacionadas') ?></h3>
         <?php if (!empty($enfrentamiento->pareja)): ?>
         <table cellpadding="0" cellspacing="0">
             <tr>
@@ -151,7 +151,7 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
         <?php endif; ?>
     </div>
     <div class="related">
-        <h3 class="card-title text-center" style="color: black;"><?= __('Resultado relacionadas') ?></h3>
+        <h3 class="card-title text-center" style="color: black;"><?= __('Resultado del enfrentamiento') ?></h3>
         <?php if (!empty($enfrentamiento->resultado)): ?>
         <table cellpadding="0" cellspacing="0">
             <tr>
@@ -170,19 +170,19 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
                 <td class="actions">
                     <?= $this->Html->link(
                             '<i class="fas fa-eye view-action-fa-icon"></i>',
-                            ['controller' => 'Resultado', 'action' => 'view', $resultado->idEnfrentamiento],
+                            ['controller' => 'Resultado', 'action' => 'view', $resultado->enfrentamiento_id],
                             ['escapeTitle' => false]
                         )
                     ?>
                     <?= $this->Html->link(
                             '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
-                            ['controller' => 'Resultado', 'action' => 'edit', $resultado->idEnfrentamiento],
+                            ['controller' => 'Resultado', 'action' => 'edit', $resultado->enfrentamiento_id],
                             ['escapeTitle' => false]
                         )
                     ?>
                     <?= $this->Form->postLink(
                             '<i class="fas fa-minus-square delete-action-fa-icon"></i>',
-                            ['controller' => 'Resultado', 'action' => 'delete', $resultado->idEnfrentamiento],
+                            ['controller' => 'Resultado', 'action' => 'delete', $resultado->enfrentamiento_id],
                             ['escapeTitle' => false, 'confirm' =>
                                 __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la resultado número {0}', $resultado->idEnfrentamiento)])
                             ]
@@ -198,19 +198,19 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
                 <td class="actions">
                     <?= $this->Html->link(
                             '<i class="fas fa-eye view-action-fa-icon"></i>',
-                            ['controller' => 'Resultado', 'action' => 'view', $resultado->idEnfrentamiento],
+                            ['controller' => 'Resultado', 'action' => 'view', $resultado->enfrentamiento_id],
                             ['escapeTitle' => false]
                         )
                     ?>
                     <?= $this->Html->link(
                             '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
-                            ['controller' => 'Resultado', 'action' => 'edit', $resultado->idEnfrentamiento],
+                            ['controller' => 'Resultado', 'action' => 'edit', $resultado->enfrentamiento_id],
                             ['escapeTitle' => false]
                         )
                     ?>
                     <?= $this->Form->postLink(
                             '<i class="fas fa-minus-square delete-action-fa-icon"></i>',
-                            ['controller' => 'Resultado', 'action' => 'delete', $resultado->idEnfrentamiento],
+                            ['controller' => 'Resultado', 'action' => 'delete', $resultado->enfrentamiento_id],
                             ['escapeTitle' => false, 'confirm' =>
                                 __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la resultado número {0}', $resultado->idEnfrentamiento)])
                             ]
@@ -220,6 +220,9 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
             </tr>
             <?php endforeach; ?>
         </table>
+        <?php endif; ?>
+        <?php if (empty($enfrentamiento->resultado)): ?>
+            <?= $this->Html->link(__('Añadir Resultado'), ['controller' => 'Resultado', 'action' => 'add', $enfrentamiento->id], array('class' => 'btn btn-primary center text-center')) ?>
         <?php endif; ?>
     </div>
 </div>

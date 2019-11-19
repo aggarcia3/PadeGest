@@ -5,7 +5,7 @@
  */
 ?>
 <?= $this->element('menu') ?>
-<div class="campeonato index large-9 medium-8 columns content">
+<div class="campeonato index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
@@ -22,17 +22,18 @@
             <tr>
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('id', 'Id del Campeonato') ?></th>
 <?php } ?>
 
-                <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fechaInicioInscripciones') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fechaFinInscripciones') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('nombre', 'Nombre del campeonato') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fechaInicioInscripciones', 'Fecha Inicio Inscripciones') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fechaFinInscripciones', 'Fecha Fin Inscripciones') ?></th>
+                <th scope="col" class="actions"><?= __('Acciones') ?></th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($campeonato as $campeonato): ?>
+            <?php foreach ($campeonatos as $campeonato):
+                if($campeonato['id'] != ""): ?>
             <tr>
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
@@ -58,6 +59,7 @@
 <?php }  ?>
 
             </tr>
+                <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
     </table>

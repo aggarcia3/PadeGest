@@ -31,8 +31,8 @@ class ResultadoTable extends Table
         parent::initialize($config);
 
         $this->setTable('resultado');
-        $this->setDisplayField('idEnfrentamiento');
-        $this->setPrimaryKey('idEnfrentamiento');
+        $this->setDisplayField('enfrentamiento_id');
+        $this->setPrimaryKey('enfrentamiento_id');
     }
 
     /**
@@ -44,8 +44,8 @@ class ResultadoTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->nonNegativeInteger('idEnfrentamiento')
-            ->allowEmptyString('idEnfrentamiento', null, 'create');
+            ->nonNegativeInteger('enfrentamiento_id')
+            ->allowEmptyString('enfrentamiento_id', null, 'create');
 
         $validator
             ->requirePresence('set1pareja1', 'create')

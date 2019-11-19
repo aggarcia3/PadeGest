@@ -39,18 +39,39 @@ class CampeonatoController extends AppController
 
     public function inscribirse($id = null)
     {
+        $fecha_actual = FrozenTime::now();    
         $campeonato = $this->Campeonato->get($id, [
             'contain' => []
         ]);
 
+        if($campeonato['fechaFinInscripciones'] <  $fecha_actual){
+            $this->Flash->error(__('No puedes acceder a esta URL, se notificará al administrador'));
+            return $this->redirect(['action' => 'index']);
+        }
         $this->set('campeonato', $campeonato);
     }
 
+
     public function index()
     {
-        $campeonato = $this->paginate($this->Campeonato);
+        $fecha_actual = FrozenTime::now();
+        $campeonatos = $this->paginate($this->Campeonato);
+        if($this->Auth->user('rol') != "administrador"){
+            foreach($campeonatos as $campeonato){
+                if($campeonato['fechaFinInscripciones'] <  $fecha_actual){
+                   unset($campeonato['fechaFinInscripciones']);
+                   unset($campeonato['nombre']);
+                   unset($campeonato['id']);
+                   unset($campeonato['bases']);
+                   unset($campeonato['fechaInicioInscripciones']);
+                }
+            }
+        }
+        if(!isset($campeonatos)){
+            $campeonato = [];
+        }
 
-        $this->set(compact('campeonato'));
+        $this->set(compact('campeonatos'));
     }
 
     /**

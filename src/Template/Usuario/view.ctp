@@ -29,7 +29,7 @@
             <td><?= h($usuario->rol) ?></td>
         </tr>
         <tr>
-            <th scope="row"><?= __('EsSocio') ?></th>
+            <th scope="row"><?= __('Es Socio') ?></th>
             <td><?php echo ((h($usuario->esSocio) == 1 ) ? "Si" :  "No"); ?></td>
         </tr>
         

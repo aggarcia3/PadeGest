@@ -69,15 +69,32 @@ class ParejaController extends AppController
 
         foreach ($resultsIteratorObject as $usuario) {
             $var = $usuario->id;
+            $genero1 = $usuario->genero;
         }
 
         foreach ($resultsIteratorObject2 as $usuario) {
             $var2 = $usuario->id;
+            $genero2 = $usuario->genero;
         }
         foreach ($resultsIteratorObject3 as $categoriaNivel) {
             if($data['categoria'] == $categoriaNivel['categoria'] && $data['nivel'] == $categoriaNivel['nivel']){
                 $var3 = $categoriaNivel['id'];
             }
+        }
+        debug($genero1);
+        debug($genero2);
+        debug($data['categoria']);
+        if($data['categoria'] == "masculina" && ($genero1 != "masculino" || $genero2 != "masculino") ){
+            $this->Flash->error(__('No te has inscrito en la categoria y nivel correcto'));
+            return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
+        }
+        else if($data['categoria'] == "femenina" && ($genero1 != "femenino" || $genero2 != "femenino") ){
+            $this->Flash->error(__('No te has inscrito en la categoria y nivel correcto'));
+            return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
+        }
+        else if($data['categoria'] == "mixta" &&  (($genero1 == "masculino" && $genero2 == "masculino") || ($genero1 == "femenino" && $genero2 == "femenino"))){
+            $this->Flash->error(__('No te has inscrito en la categoria y nivel correcto'));
+            return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
         }
 
         $pareja = $this->Pareja->newEntity();
@@ -94,14 +111,16 @@ class ParejaController extends AppController
         unset($data['nivel']); 
         unset($data['campeonatoId']); 
 
+
+
         if ($this->request->is('post')) {
             $pareja = $this->Pareja->patchEntity($pareja, $data);
             if ($this->Pareja->save($pareja)) {
-                $this->Flash->success(__('The pareja has been saved.'));
+                $this->Flash->success(__('Te has inscrito correctamente'));
 
                 return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
             }
-            $this->Flash->error(__('The pareja could not be saved. Please, try again.'));
+            $this->Flash->error(__('No se pudo realizar la inscripcion, inténtalo más tarde'));
             return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
         }
         $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);

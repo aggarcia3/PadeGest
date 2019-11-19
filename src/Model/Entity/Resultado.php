@@ -25,7 +25,7 @@ class Resultado extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected $_accessible = [     
         'set1pareja1' => true,
         'set1pareja2' => true,
         'set2pareja1' => true,

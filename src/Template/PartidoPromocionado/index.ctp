@@ -25,23 +25,24 @@
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('idReserva') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('id', 'Id del Partido') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('idReserva', 'Id de la Reserva') ?></th>
 
 <?php } ?>
                 <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fecha') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fecha', 'Fecha del partido') ?></th>
+                <th scope="col" class="actions"><?= __('Acciones') ?></th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($partidoPromocionado as $partidoPromocionado): ?>
+            <?php foreach ($partidoPromocionado as $partidoPromocionado):
+                if ($partidoPromocionado->id != ""): ?>
             <tr>
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
                     <td><?= $this->Number->format($partidoPromocionado->id) ?></td>
-                    <td><?php if($this->Number->format($partidoPromocionado->idReserva)== 0){ echo "No hay reserva de Pista"; }else{ echo $this->Number->format($partidoPromocionado->idReserva); } ?></td>
+                    <td><?php echo (h($partidoPromocionado->reserva_id) == "") ? "No hay reserva de pista" : h($partidoPromocionado->reserva_id); ?></td>
 
 <?php } ?>
 
@@ -62,6 +63,7 @@
 
                 </td>
             </tr>
+                <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
     </table>

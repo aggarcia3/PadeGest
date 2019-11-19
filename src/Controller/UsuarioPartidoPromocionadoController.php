@@ -2,6 +2,10 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
+
+use Cake\I18n\FrozenTime;
+FrozenTime::setJsonEncodeFormat('yyyy-MM-dd HH:mm:ss');
 
 /**
  * UsuarioPartidoPromocionado Controller
@@ -94,14 +98,17 @@ class UsuarioPartidoPromocionadoController extends AppController
                 if ($reservas == 4) {
                     //Borrar esta línea de código cuande se cree la reserva
 
-                    $this->Flash->error(__('Se crea reserva'));
+                    FrozenTime::setToStringFormat('yyyy-MM-dd HH:mm:ss');
 
-                    /*
-
-                    LLAMAR A FUNCIÓN CREAR RESERVA
-                    LLAMAR A LA FUNCIÓN DE NOTIFICACIÓN A LOS USUARIOS QUEE ESTÉN INSCRITOS
-                    
-                    */
+                    $partidos = TableRegistry::getTableLocator()->get('PartidoPromocionado');
+                    $resultsIteratorObject4 = $partidos->find()->where(['id' => $data['partido_promocionado_id']])->all();
+                    foreach($resultsIteratorObject4 as $partidoPromocionado){
+                        $var['fechaInicio'] = $partidoPromocionado['fecha'];
+                    }
+                    $var['fechaInicio'] = $var['fechaInicio']->format('Y-m-d H:i:s');
+                    $var['pista_id'] = 1;
+                    $reserva = (new ReservaController());
+                    $reserva->add2($var);
                 }
 
                 return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);

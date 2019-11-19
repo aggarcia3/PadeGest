@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\I18n\FrozenTime;
+use Cake\ORM\TableRegistry;
 
 /**
  * PartidoPromocionado Controller
@@ -39,8 +40,27 @@ class PartidoPromocionadoController extends AppController
     }
     public function index()
     {
+        $usuariosPartidosPromocionados = TableRegistry::getTableLocator()->get('UsuarioPartidoPromocionado');
         $partidoPromocionado = $this->paginate($this->PartidoPromocionado);
-
+        if($this->Auth->user('rol') != "administrador"){
+            foreach($partidoPromocionado as $partidoPromocionados){
+                $resultsIteratorObject = $usuariosPartidosPromocionados->find()->where(['partido_promocionado_id' => $partidoPromocionados['id']])->all();
+                $var = 0;
+                
+                foreach($resultsIteratorObject as $inscripciones){
+                    $var++;
+                }
+                if($var == 4){
+                    unset($partidoPromocionados['id']);
+                    unset($partidoPromocionados['nombre']);
+                    unset($partidoPromocionados['fecha']);
+                    unset($partidoPromocionados['reserva_id']);
+                }
+            }
+        }
+        if(!isset($partidoPromocionado)){
+            $partidoPromocionado = [];
+        }
         $this->set(compact('partidoPromocionado'));
     }
 
@@ -68,9 +88,30 @@ class PartidoPromocionadoController extends AppController
      */
     public function inscribirse($id = null)
     {
+        $usuariosPartidosPromocionados = TableRegistry::getTableLocator()->get('UsuarioPartidoPromocionado');
+        $fecha_actual = FrozenTime::now(); 
+
         $partidoPromocionado = $this->PartidoPromocionado->get($id, [
             'contain' => ['Usuario']
         ]);
+
+        $resultsIteratorObject = $usuariosPartidosPromocionados->find()->where(['partido_promocionado_id' => $partidoPromocionado['id']])->all();
+        $var = 0;
+        
+        foreach($resultsIteratorObject as $inscripciones){
+            $var++;
+        }
+        if($var == 4){
+            $this->Flash->error(__('No puedes acceder a esta URL, se notificará al administrador'));
+            return $this->redirect(['action' => 'index']);
+        }
+
+        if($partidoPromocionado['fecha']->subDays(2) <  $fecha_actual){
+            
+            $this->Flash->error(__('No puedes acceder a esta URL, se notificará al administrador'));
+            return $this->redirect(['action' => 'index']);
+        }
+
         $this->set('partidoPromocionado', $partidoPromocionado);
     }
 
