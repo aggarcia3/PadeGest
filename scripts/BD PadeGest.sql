@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 19 Nov 2019 16:21:21 CET
+-- Generated on 19 Nov 2019 19:23:11 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -785,6 +785,21 @@ INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (14, '2019-11-06 10:30:00', DEFAULT, 3, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (15, '2019-11-15 18:00:00', DEFAULT, 6, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (16, '2019-11-22 10:30:00', DEFAULT, 7, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (17, '2019-11-28 12:00:00', DEFAULT, 1, 6);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (18, '2019-11-28 12:00:00', DEFAULT, 2, 14);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (19, '2019-11-28 12:00:00', DEFAULT, 3, 26);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (20, '2019-11-28 12:00:00', DEFAULT, 4, 3);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (21, '2019-11-28 12:00:00', DEFAULT, 5, 19);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (22, '2019-11-28 12:00:00', DEFAULT, 6, 28);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (23, '2019-11-28 12:00:00', DEFAULT, 7, 3);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (24, '2019-11-28 12:00:00', DEFAULT, 8, 9);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (25, '2019-11-28 12:00:00', DEFAULT, 9, 6);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (26, '2019-11-28 12:00:00', DEFAULT, 10, 25);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (27, '2019-11-28 12:00:00', DEFAULT, 11, 20);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (28, '2019-11-28 12:00:00', DEFAULT, 12, 21);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (29, '2019-11-28 12:00:00', DEFAULT, 13, 8);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (30, '2019-11-28 12:00:00', DEFAULT, 14, 23);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (31, '2019-11-28 12:00:00', DEFAULT, 15, 24);
 
 COMMIT;
 
@@ -842,6 +857,7 @@ INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_pr
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (15, 2);
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (14, 2);
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (25, 2);
+INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (6, 3);
 
 COMMIT;
 
@@ -852,7 +868,7 @@ COMMIT;
 START TRANSACTION;
 USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (1, 'European Veteran Championship', 'Bases de campeonato de ejemplo', '2019-07-31 00:00:00', '2019-11-16 00:00:00');
-INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (2, 'Máster de Menores 2019', 'Bases de campeonato de ejemplo', '2019-06-10 00:00:00', '2019-06-29 00:00:00');
+INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (2, 'Máster de Menores 2019', 'Bases de campeonato de ejemplo', '2019-06-10 00:00:00', '2019-12-29 00:00:00');
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (3, 'TyC PREMIUM 3', 'Bases de campeonato de ejemplo', '2019-09-29 00:00:00', '2019-12-05 00:00:00');
 
 COMMIT;
