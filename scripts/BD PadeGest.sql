@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 18 Nov 2019 22:42:47 CET
+-- Generated on 19 Nov 2019 14:40:44 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -280,6 +280,25 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`pareja_enfrentamiento` (
   CONSTRAINT `FK_PAREJA_ENFRENTAMIENTO_ENFRENTAMIENTO`
     FOREIGN KEY (`enfrentamiento_id`)
     REFERENCES `PADEGEST`.`enfrentamiento` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `PADEGEST`.`ranking`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `PADEGEST`.`ranking` ;
+
+CREATE TABLE IF NOT EXISTS `PADEGEST`.`ranking` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `puntuacion` TINYINT UNSIGNED NOT NULL,
+  `pareja_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK_RANKING_PAREJA_idx` (`pareja_id` ASC),
+  CONSTRAINT `FK_RANKING_PAREJA`
+    FOREIGN KEY (`pareja_id`)
+    REFERENCES `PADEGEST`.`pareja` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
