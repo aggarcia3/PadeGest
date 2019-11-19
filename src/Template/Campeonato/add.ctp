@@ -12,9 +12,11 @@
         <?php
             echo $this->Form->control('nombre');
             echo $this->Form->control('bases');
-            echo $this->Form->control('fechaInicioInscripciones');
-            echo $this->Form->control('fechaFinInscripciones');
-        ?>
+            ?>
+            <label for="fecha">Fecha de Inicio de Inscripciones</label>
+            <input type="date" name="fechaInicioInscripciones">
+            <label for="fecha">Fecha de Fin de Inscripciones</label>
+            <input type="date" name="fechaFinInscripciones">
     </fieldset>
     <br>
     <?= $this->Form->button(__('Añadir'), array('class' => 'btn btn-primary')) ?>

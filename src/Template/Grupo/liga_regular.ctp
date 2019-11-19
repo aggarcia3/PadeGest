@@ -35,11 +35,11 @@ foreach($CategoriaNivelFiltrado as $iterador2){
         <table cellpadding="0" cellspacing="0">
             <tr>
                 <th scope="col"><?= __('Id') ?></th>
-                <th scope="col"><?= __('Usuario Capitan') ?></th>
-                <th scope="col"><?= __('Usuario Compañero') ?></th>
+                <th scope="col"><?= __('Capitan') ?></th>
+                <th scope="col"><?= __('Compañero') ?></th>
                 <th scope="col"><?= __('Categoria Nivel Id') ?></th>
                 <th scope="col"><?= __('Grupo Id') ?></th>
-                <th scope="col" class="actions">Actions</th>
+                <th scope="col" class="actions">Acciones</th>
             </tr>
             <?php
             foreach ($resultsIteratorObject3 as $pareja): 
@@ -93,9 +93,9 @@ foreach($CategoriaNivelFiltrado as $iterador2){
                 <th scope="col"><?= __('Id') ?></th>
                 <th scope="col"><?= __('Nombre') ?></th>
                 <th scope="col"><?= __('Fecha') ?></th>
-                <th scope="col"><?= __('Reserva_id') ?></th>
-                <th scope="col"><?= __('fase') ?></th>
-                <th scope="col" class="actions">Actions</th>
+                <th scope="col"><?= __('Id de reserva de pista') ?></th>
+                <th scope="col"><?= __('fase del campeonato') ?></th>
+                <th scope="col" class="actions">Acciones</th>
             </tr>
             <?php foreach ($iterador as $enfrentamiento): 
                 if($enfrentamiento['fase'] == "liga regular"):
@@ -141,9 +141,9 @@ foreach($CategoriaNivelFiltrado as $iterador2){
                 <th scope="col"><?= __('Id') ?></th>
                 <th scope="col"><?= __('Nombre') ?></th>
                 <th scope="col"><?= __('Fecha') ?></th>
-                <th scope="col"><?= __('Reserva_id') ?></th>
-                <th scope="col"><?= __('fase') ?></th>
-                <th scope="col" class="actions">Actions</th>
+                <th scope="col"><?= __('Id de reserva de pista') ?></th>
+                <th scope="col"><?= __('Fase del Campeonato') ?></th>
+                <th scope="col" class="actions">Acciones</th>
             </tr>
             <?php foreach ($iterador as $enfrentamiento): 
                 if($enfrentamiento['fase'] == "playoffs4" || $enfrentamiento['fase'] == "playoffs2" || $enfrentamiento['fase'] == "playoffs1" || $enfrentamiento['fase'] == "playoffse"):

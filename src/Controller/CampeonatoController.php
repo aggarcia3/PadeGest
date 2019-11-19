@@ -105,7 +105,10 @@ class CampeonatoController extends AppController
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             $var = $data['nombre'];
-            $campeonato = $this->Campeonato->patchEntity($campeonato, $this->request->getData());
+
+            $data['fechaInicioInscripciones'] =  $data['fechaInicioInscripciones'].' 00:00:00';
+            $data['fechaFinInscripciones'] =  $data['fechaFinInscripciones'].' 00:00:00';
+            $campeonato = $this->Campeonato->patchEntity($campeonato, $data);
             if ($this->Campeonato->save($campeonato)) {
                 $this->Flash->success(__('The campeonato has been saved.'));
 

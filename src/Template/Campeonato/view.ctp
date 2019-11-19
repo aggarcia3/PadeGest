@@ -5,7 +5,7 @@
  */
 ?>
 <?= $this->element('menu') ?>
-<div class="campeonato view large-9 medium-8 columns content">
+<div class="campeonato view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3 class="card-title text-center" style="color: black;">Campeonato: <?= h($campeonato->nombre) ?> </h3>
     <table class="vertical-table">
         <tr>
