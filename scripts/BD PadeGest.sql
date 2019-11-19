@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 19 Nov 2019 16:21:21 CET
+-- Generated on 19 Nov 2019 18:50:21 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -842,6 +842,7 @@ INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_pr
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (15, 2);
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (14, 2);
 INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (25, 2);
+INSERT INTO `PADEGEST`.`usuario_partido_promocionado` (`usuario_id`, `partido_promocionado_id`) VALUES (6, 3);
 
 COMMIT;
 
@@ -852,7 +853,7 @@ COMMIT;
 START TRANSACTION;
 USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (1, 'European Veteran Championship', 'Bases de campeonato de ejemplo', '2019-07-31 00:00:00', '2019-11-16 00:00:00');
-INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (2, 'Máster de Menores 2019', 'Bases de campeonato de ejemplo', '2019-06-10 00:00:00', '2019-06-29 00:00:00');
+INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (2, 'Máster de Menores 2019', 'Bases de campeonato de ejemplo', '2019-06-10 00:00:00', '2019-12-29 00:00:00');
 INSERT INTO `PADEGEST`.`campeonato` (`id`, `nombre`, `bases`, `fechaInicioInscripciones`, `fechaFinInscripciones`) VALUES (3, 'TyC PREMIUM 3', 'Bases de campeonato de ejemplo', '2019-09-29 00:00:00', '2019-12-05 00:00:00');
 
 COMMIT;
