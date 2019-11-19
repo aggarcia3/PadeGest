@@ -6,7 +6,7 @@ use Cake\ORM\Entity;
 /**
  * Resultado Entity
  *
- * @property int $idEnfrentamiento
+ * @property int $enfrentamiento_id
  * @property int $set1pareja1
  * @property int $set1pareja2
  * @property int $set2pareja1

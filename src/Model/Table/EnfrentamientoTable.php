@@ -10,7 +10,7 @@ use Cake\Validation\Validator;
  * Enfrentamiento Model
  *
  * @property \App\Model\Table\ReservaTable&\Cake\ORM\Association\BelongsTo $Reserva
- * @property \App\Model\Table\ResultadoTable&\Cake\ORM\Association\HasMany $Resultado
+ * @property \App\Model\Table\ResultadoTable&\Cake\ORM\Association\HasOne $Resultado
  * @property \App\Model\Table\ParejaTable&\Cake\ORM\Association\BelongsToMany $Pareja
  *
  * @method \App\Model\Entity\Enfrentamiento get($primaryKey, $options = [])
@@ -41,7 +41,7 @@ class EnfrentamientoTable extends Table
         $this->belongsTo('Reserva', [
             'foreignKey' => 'reserva_id'
         ]);
-        $this->hasMany('Resultado', [
+        $this->hasOne('Resultado', [
             'foreignKey' => 'enfrentamiento_id'
         ]);
         $this->belongsToMany('Pareja', [
