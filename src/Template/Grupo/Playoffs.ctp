@@ -9,10 +9,6 @@
     <h3><?= __('Detalles de la {0}', __('grupo')) . ' ' . h($grupo->id) ?></h3>
     <table class="vertical-table">
         <tr>
-            <th scope="row"><?= __('Categoria Nivel') ?></th>
-            <td><?= $grupo->has('categoria_nivel') ? $this->Html->link($grupo->categoria_nivel->id, ['controller' => 'CategoriaNivel', 'action' => 'view', $grupo->categoria_nivel->id]) : '' ?></td>
-        </tr>
-        <tr>
             <th scope="row"><?= __('Id') ?></th>
             <td><?= $this->Number->format($grupo->id) ?></td>
         </tr>
@@ -213,5 +209,5 @@
         </table>
         <?php endif; ?>
     </div>
-    <?= $this->Html->link('Generar Playoffs',['controller'=>'Grupo','action'=>'generarPlayoffs',$grupo->id],['escapeTitle'=>false]);?>
+    <?= $this->Html->link('Generar Playoffs', array('class' => 'btn btn-primary','controller'=>'Grupo','action'=>'generarPlayoffs',$grupo->id),['escapeTitle'=>false]);?>
 </div>
