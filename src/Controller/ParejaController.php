@@ -96,6 +96,10 @@ class ParejaController extends AppController
             $this->Flash->error(__('No te has inscrito en la categoria y nivel correcto'));
             return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
         }
+        else if($data['usernameCapitan'] == $data['usernamePareja']){
+            $this->Flash->error(__('No te puedes inscribir a ti mismo'));
+            return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
+        }
 
         $pareja = $this->Pareja->newEntity();
 

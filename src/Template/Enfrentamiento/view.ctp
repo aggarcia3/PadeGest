@@ -8,74 +8,7 @@
 use Cake\ORM\TableRegistry;
 $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('Enfrentamiento')),
-                ['action' => 'edit', $enfrentamiento->id],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Form->postLink(
-                '<i class="fas fa-minus-square delete-action-fa-icon"></i> ' . __('Eliminar {0}', __('Enfrentamiento')),
-                ['action' => 'delete', $enfrentamiento->id],
-                ['escapeTitle' => false, 'confirm' =>
-                    __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la Enfrentamiento número {0}', $enfrentamiento->id)])
-                ]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Enfrentamiento')),
-                ['action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Enfrentamiento')),
-                ['action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Reserva')),
-                ['controller' => 'Reserva', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Reserva')),
-                ['controller' => 'Reserva', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Resultado')),
-                ['controller' => 'Resultado', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Resultado')),
-                ['controller' => 'Resultado', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
-                ['controller' => 'Pareja', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-    </ul>
-</nav>
-<div class="enfrentamiento view large-9 medium-8 columns content">
+<div class="enfrentamiento view content">
     <h3 class="card-title text-center" style="color: black;"><?= __('Detalles del {0}', __('enfrentamiento')) . ' ' . h($enfrentamiento->id) ?></h3>
     <table class="vertical-table">
         <tr>
@@ -161,7 +94,7 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
                 <th scope="col">Set 3</th>
                 <th scope="col" class="actions"></th>
             </tr>
-            <?php foreach ($enfrentamiento->resultado as $resultado): ?>
+            <?php foreach ($resultado as $resultado): ?>
             <tr>
                 <td>Pareja1</td>
                 <td><?= h($resultado->set1pareja1) ?></td>

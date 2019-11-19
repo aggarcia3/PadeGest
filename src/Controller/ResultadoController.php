@@ -57,13 +57,20 @@ class ResultadoController extends AppController
      */
     public function add()
     {
+        $var = $this->request->getData();
+        if($this->request->is('post')){
+            $data = $var['enfrentamientoId'];
+            unset($var['enfrentamientoId']);
+            $var['enfrentamiento_id'] = $data;
+        }
+       
         $resultado = $this->Resultado->newEntity();
         if ($this->request->is('post')) {
-            $resultado = $this->Resultado->patchEntity($resultado, $this->request->getData());
+            $resultado = $this->Resultado->patchEntity($resultado, $var);
             if ($this->Resultado->save($resultado)) {
-                $this->Flash->success(__('The resultado has been saved.'));
+                $this->Flash->success(__('Has introducido bien el resultado'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['controller' => 'Campeonato', 'action' => 'index']);
             }
             $this->Flash->error(__('The resultado could not be saved. Please, try again.'));
         }

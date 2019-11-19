@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Enfrentamiento Controller
@@ -50,7 +51,10 @@ class EnfrentamientoController extends AppController
             'contain' => ['Pareja', 'Reserva', 'Resultado']
         ]);
 
-        $this->set('enfrentamiento', $enfrentamiento);
+        $resultados = TableRegistry::getTableLocator()->get('Resultado');
+        $resultado = $resultados->find()->where(['enfrentamiento_id' => $id])->all();
+    
+        $this->set(compact('enfrentamiento', 'resultado'));
     }
 
     /**

@@ -4,8 +4,7 @@
  * @var \App\Model\Entity\Usuario $usuario
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="usuario form large-9 medium-8 columns content">
+<div class="usuario form content">
     <?= $this->Form->create($usuario) ?>
     <fieldset>
         <h3 class="card-title text-center" style="color: black;">Hacerse Socio</h3>

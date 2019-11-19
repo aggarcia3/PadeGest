@@ -4,8 +4,8 @@
  * @var \App\Model\Entity\CategoriaNivel $categoriaNivel
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="categoriaNivel view large-9 medium-8 columns content">
+
+<div class="categoriaNivel view content">
     <h3 class="card-title text-center" style="color: black;">Nivel y Categoría: <?= h($categoriaNivel->nivel) ?> <?= h($categoriaNivel->categoria) ?></h3>
     <table class="vertical-table">
         <tr>

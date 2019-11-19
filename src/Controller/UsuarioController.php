@@ -20,7 +20,7 @@ class UsuarioController extends AppController
     {
         parent::initialize();
 
-        $this->Auth->allow(['register', 'login']);
+        $this->Auth->allow(['register', 'login', 'hacerseSocio']);
     }
 
     /**
@@ -291,7 +291,9 @@ class UsuarioController extends AppController
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
             if ($this->Usuario->save($usuario)) {
                 $this->Flash->success(__('Estado de socio cambiado'));
-                return $this->redirect(['action'=>'listar']);
+                return $this->redirect(['controller' => 'Pages',
+                'action' => 'display',
+                'index']);
             }
             $this->Flash->error(__('Ha habido un error, intentalo de nuevo'));
         }
