@@ -33,15 +33,7 @@ class ResultadoController extends AppController
 
         $this->set(compact('resultado'));
     }
-    public function isAuthorized($user)
-    {
-        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
-        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
-        // y los usuarios no se podrían desconectar
-        return in_array($this->request->getParam('action'), ['register','index', 'logout', 'edit']) ||
-               $user['rol'] === 'administrador';
 
-    }
     /**
      * View method
      *
