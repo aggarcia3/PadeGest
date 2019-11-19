@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 19 Nov 2019 18:50:21 CET
+-- Generated on 19 Nov 2019 19:18:13 CET
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -785,6 +785,21 @@ INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (14, '2019-11-06 10:30:00', DEFAULT, 3, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (15, '2019-11-15 18:00:00', DEFAULT, 6, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (16, '2019-11-22 10:30:00', DEFAULT, 7, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (17, '2019-11-28 12:00:00', '1', 6, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (18, '2019-11-29 12:00:00', '2', 14, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (19, '2019-11-30 12:00:00', '3', 26, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (20, '2019-12-01 12:00:00', '4', 3, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (21, '2019-12-02 12:00:00', '5', 19, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (22, '2019-12-03 12:00:00', '6', 28, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (23, '2019-12-04 12:00:00', '7', 3, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (24, '2019-12-05 12:00:00', '8', 9, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (25, '2019-12-06 12:00:00', '9', 6, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (26, '2019-12-07 12:00:00', '10', 25, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (27, '2019-12-08 12:00:00', '11', 20, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (28, '2019-12-09 12:00:00', '12', 21, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (29, '2019-12-10 12:00:00', '13', 8, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (30, '2019-12-11 12:00:00', '14', 23, );
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`) VALUES (31, '2019-12-12 12:00:00', '15', 24, );
 
 COMMIT;
 
