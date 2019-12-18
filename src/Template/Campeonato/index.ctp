@@ -3,17 +3,19 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Campeonato[]|\Cake\Collection\CollectionInterface $campeonato
  */
+
+use Cake\Routing\Router;
+
 ?>
-<?= $this->element('menu') ?>
-<div class="campeonato index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="campeonato index content">
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
-    <h3 class="card-title text-center" style="color: black;">Campeonatos<a href="/campeonato/add" class="btn btn-primary btn-sm float-right">Añadir campeonato</a></h3>
+    <h3 class="card-title text-center">Campeonatos<a href="<?= Router::url(['controller' => 'Campeonato', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">Añadir campeonato</a></h3>
 
 <?php }else{ ?>
 
-    <h3 class="card-title text-center" style="color: black;">Campeonatos</h3>
+    <h3 class="card-title text-center">Campeonatos</h3>
 
 <?php }?>
 
@@ -22,17 +24,18 @@
             <tr>
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('id', 'Id del Campeonato') ?></th>
 <?php } ?>
 
-                <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fechaInicioInscripciones') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fechaFinInscripciones') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('nombre', 'Nombre del campeonato') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fechaInicioInscripciones', 'Fecha Inicio Inscripciones') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fechaFinInscripciones', 'Fecha Fin Inscripciones') ?></th>
+                <th scope="col" class="actions"><?= __('Acciones') ?></th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($campeonato as $campeonato): ?>
+            <?php foreach ($campeonatos as $campeonato):
+                if($campeonato['id'] != ""): ?>
             <tr>
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
@@ -58,6 +61,7 @@
 <?php }  ?>
 
             </tr>
+                <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
     </table>

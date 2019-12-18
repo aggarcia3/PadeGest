@@ -5,7 +5,8 @@
  * @var \App\Model\Entity\Reserva[]|\Cake\Collection\CollectionInterface $reserva
  */
 
-use Cake\ORM\TableRegistry;
+use App\Model\Table\ReservaTable;
+use Cake\Routing\Router;
 
 // Page title
 $this->assign('title', __('Gestión de {0}', __('reservas')));
@@ -16,7 +17,7 @@ $necesarioGenerarColumnaAcciones = $esAdministrador;
 $htmlFilasReservas = '';
 
 foreach ($reserva as $reservaAct) {
-    $modificable = TableRegistry::getTableLocator()->get('Reserva')->esModificable($reservaAct);
+    $modificable = ReservaTable::esModificable($reservaAct);
 
     ob_start();
 
@@ -75,15 +76,6 @@ foreach ($reserva as $reservaAct) {
                     )
                 ?>
                 <?php endif; ?>
-                <?php if ($esAdministrador && $modificable): ?>
-                <?=
-                    $this->Html->link(
-                        '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
-                        ['action' => 'edit', $reservaAct->id],
-                        ['escapeTitle' => false]
-                    )
-                ?>
-                <?php endif; ?>
                 <?php if ($modificable): ?>
                 <?=
                     $this->Form->postLink(
@@ -104,19 +96,15 @@ foreach ($reserva as $reservaAct) {
     $necesarioGenerarColumnaAcciones = $necesarioGenerarColumnaAcciones || $modificable;
 }
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-calendar-plus add-action-fa-icon"></i> ' . __($esAdministrador ? 'Crear {0}' : 'Reservar {0}', __($esAdministrador ? 'reserva' : 'pista')),
-                ['action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-    </ul>
-</nav>
-<div class="reserva index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
-    <h3><?= __($esAdministrador ? 'Reservas en el sistema' : 'Mis reservas') ?></h3>
+<div class="reserva index content">
+    <h3 class="card-title text-center">
+        <?= __($esAdministrador ? 'Reservas en el sistema' : 'Mis reservas') ?>
+        <?php if (ReservaTable::puedeDeportistaEfectuarReservas($Auth->user())): ?>
+        <a href="<?= Router::url(['controller' => 'Reserva', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">
+            <i class="fas fa-calendar-plus"></i>
+        </a>
+        <?php endif; ?>
+    </h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>

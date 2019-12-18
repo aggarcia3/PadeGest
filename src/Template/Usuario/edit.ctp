@@ -3,38 +3,53 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Usuario $usuario
  */
+
+// Page title
+$this->assign('title', $Auth->user('id') == $usuario->id ? __('Mi perfil') : __('Gestión de {0}', 'usuarios'));
+
 ?>
-<?= $this->element('menu') ?>
-<div class="usuario form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="usuario form content">
     <?= $this->Form->create($usuario) ?>
     <fieldset>
-        <h3 class="card-title text-center" style="color: black;">Editar Usuario</h3>
-        <?php
-            echo $this->Form->control('username');
-            echo $this->Form->control('password', array('required' => false));
-            echo $this->Form->label('Dejar la contraseña en blanco para no cambiar');
-            echo $this->Form->control('nombre');
-            echo $this->Form->control('apellidos');
-            echo $this->Form->label('Genero');
-            echo $this->Form->select('genero', [
-                'masculino' => 'Masculino',
-                'femenino' => 'Femenino'
-            ]);
-            if($this->request->session()->read('Auth.User.rol') == "administrador"){
-                echo $this->Form->label('Socio');
-                echo $this->Form->select('esSocio', [
-                    0 => 'Si',
-                    1 => 'No'
-                ]);
-                echo $this->Form->label('Rol');
-                echo $this->Form->select('rol', [
-                    'administrador' => 'Administrador',
-                    'deportista' => 'Deportista'
-                ]);
-            }
+        <h3 class="card-title text-center"><?= $Auth->user('rol') === 'administrador' ? __('Editar usuario') : __('Mi perfil') ?></h3>
+        <?= $this->Form->control('username', ['label' => __('Nombre de usuario')]) ?>
+        <?= $this->Form->control('password', ['label' => __('Contraseña (déjala en blanco para no cambiar)'), 'value' => '', 'required' => false]) ?>
+        <?= $this->Form->control('nombre', ['label' => __('Nombre')]) ?>
+        <?= $this->Form->control('apellidos', ['label' => __('Apellidos')]) ?>
+        <?=
+            $this->Form->control('genero', [
+                'label' => __('Género'),
+                'type' => 'select',
+                'options' => [
+                    '' => __('Escoge uno'),
+                    'masculino' => __('Masculino'),
+                    'femenino' => __('Femenino')
+                ]
+            ])
         ?>
+        <?php if ($Auth->user('rol') === 'administrador'): ?>
+        <?=
+            $this->Form->control('esSocio', [
+                'label' => __('Es socio'),
+                'type' => 'select',
+                'options' => [
+                    0 => __('No'),
+                    1 => __('Sí')
+                ]
+            ])
+        ?>
+        <?=
+            $this->Form->control('rol', [
+                'label' => __('Rol'),
+                'type' => 'select',
+                'options' => [
+                    'deportista' => __('Deportista'),
+                    'administrador' => __('Administrador')
+                ]
+            ])
+        ?>
+        <?php endif; ?>
     </fieldset>
-    <br>
-    <?= $this->Form->button(__('Editar'), array('class' => 'btn btn-primary')) ?>
+    <?= $this->Form->button(__('Editar'), ['class' => 'btn btn-primary']) ?>
     <?= $this->Form->end() ?>
 </div>

@@ -4,7 +4,6 @@
  * @var \App\Model\Entity\Pareja $pareja
  */
 ?>
-<?= $this->element('menu') ?>
 <div class="pareja view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
     <h3><?= h($pareja->id) ?></h3>
     <table class="vertical-table">

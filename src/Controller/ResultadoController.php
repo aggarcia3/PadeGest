@@ -15,8 +15,18 @@ class ResultadoController extends AppController
     /**
      * Index method
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
+    public function isAuthorized($user)
+    {
+        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
+        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
+        // y los usuarios no se podrían desconectar
+        return in_array($this->request->getParam('action'), ['']) ||
+               $user['rol'] === 'administrador';
+
+    }
+
     public function index()
     {
         $resultado = $this->paginate($this->Resultado);
@@ -28,7 +38,7 @@ class ResultadoController extends AppController
      * View method
      *
      * @param string|null $id Resultado id.
-     * @return void
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
@@ -47,13 +57,20 @@ class ResultadoController extends AppController
      */
     public function add()
     {
+        $var = $this->request->getData();
+        if($this->request->is('post')){
+            $data = $var['enfrentamientoId'];
+            unset($var['enfrentamientoId']);
+            $var['enfrentamiento_id'] = $data;
+        }
+       
         $resultado = $this->Resultado->newEntity();
         if ($this->request->is('post')) {
-            $resultado = $this->Resultado->patchEntity($resultado, $this->request->getData());
+            $resultado = $this->Resultado->patchEntity($resultado, $var);
             if ($this->Resultado->save($resultado)) {
-                $this->Flash->success(__('The resultado has been saved.'));
+                $this->Flash->success(__('Has introducido bien el resultado'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['controller' => 'Campeonato', 'action' => 'index']);
             }
             $this->Flash->error(__('The resultado could not be saved. Please, try again.'));
         }

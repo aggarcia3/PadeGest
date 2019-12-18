@@ -52,38 +52,41 @@ class UsuarioTable extends Table
 
         $validator
             ->scalar('username')
-            ->maxLength('username', 32)
-            ->requirePresence('username', 'create')
-            ->notEmptyString('username');
+            ->maxLength('username', 32, __('El nombre de usuario es demasiado largo.'))
+            ->requirePresence('username', 'create', __('El nombre de usuario no puede estar en blanco.'))
+            ->notEmptyString('username', __('El nombre de usuario no puede estar en blanco.'));
 
         $validator
             ->scalar('password')
             ->lengthBetween('password', [32, 32], __('Ha ocurrido un error interno al almacenar la contraseña.'))
-            ->requirePresence('password', 'create')
-            ->notEmptyString('password', null, 'create');
+            ->requirePresence('password', 'create', __('La contraseña no puede estar en blanco.'))
+            ->notEmptyString('password', __('La contraseña no puede estar en blanco.'), 'create');
 
         $validator
             ->scalar('nombre')
-            ->maxLength('nombre', 50)
-            ->requirePresence('nombre', 'create')
-            ->notEmptyString('nombre');
+            ->maxLength('nombre', 50, __('El nombre es demasiado largo.'))
+            ->requirePresence('nombre', 'create', __('El nombre no puede estar en blanco.'))
+            ->notEmptyString('nombre', __('El nombre no puede estar en blanco.'));
 
         $validator
             ->scalar('apellidos')
             ->maxLength('apellidos', 50, __('Los apellidos son demasiado largos.'))
-            ->requirePresence('apellidos', 'create', __('Es obligatorio especificar los apellidos.'))
+            ->requirePresence('apellidos', 'create', __('Los apellidos no pueden estar en blanco.'))
             ->notEmptyString('apellidos', __('Los apellidos no pueden estar en blanco.'));
 
         $validator
-            ->requirePresence('genero', 'create', __('Es necesario especificar el género de un usuario.'))
+            ->requirePresence('genero', 'create', __('Es necesario especificar el género.'))
+            ->notEmptyString('genero', __('Es necesario especificar el género.'))
             ->inList('genero', ['masculino', 'femenino'], __('El género especificado no es uno esperado por este sistema.'));
 
         $validator
             ->requirePresence('esSocio', 'create', __('Debe de saberse si un usuario es socio o no.'))
+            ->notEmptyString('esSocio', __('Debe de saberse si un usuario es socio o no.'))
             ->inList('esSocio', [0, 1], __('Ha ocurrido un error interno al registrar el estado de asociación.'));
 
         $validator
             ->requirePresence('rol', 'create', __('Todo usuario debe de tener un rol asignado.'))
+            ->notEmptyString('rol', __('Todo usuario debe de tener un rol asignado.'))
             ->inList('rol', ['deportista', 'administrador'], __('El rol especificado no es válido.'));
 
         return $validator;

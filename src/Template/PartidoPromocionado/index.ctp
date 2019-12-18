@@ -3,18 +3,20 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\PartidoPromocionado[]|\Cake\Collection\CollectionInterface $partidoPromocionado
  */
+
+use Cake\Routing\Router;
+
 ?>
-<?= $this->element('menu') ?>
-<div class="partidoPromocionado index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="partidoPromocionado index content">
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
-    <h3 class="card-title text-center" style="color: black;">Partidos Promocionados<a href="/partido-promocionado/add" class="btn btn-primary btn-sm float-right">Añadir Partido Promocionado</a></h3>
+    <h3 class="card-title text-center">Partidos Promocionados<a href="<?= Router::url(['controller' => 'PartidoPromocionado', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">Añadir Partido Promocionado</a></h3>
 
 
 <?php }else{ ?>
 
-    <h3 class="card-title text-center" style="color: black;">Partidos Promocionados</h3>
+    <h3 class="card-title text-center">Partidos Promocionados</h3>
 
 <?php }?>
 
@@ -25,23 +27,24 @@
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('idReserva') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('id', 'Id del Partido') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('idReserva', 'Id de la Reserva') ?></th>
 
 <?php } ?>
                 <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fecha') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fecha', 'Fecha del partido') ?></th>
+                <th scope="col" class="actions"><?= __('Acciones') ?></th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($partidoPromocionado as $partidoPromocionado): ?>
+            <?php foreach ($partidoPromocionado as $partidoPromocionado):
+                if ($partidoPromocionado->id != ""): ?>
             <tr>
 
 <?php if($Auth->user('rol') == "administrador"){ ?>
 
                     <td><?= $this->Number->format($partidoPromocionado->id) ?></td>
-                    <td><?php if($this->Number->format($partidoPromocionado->idReserva)== 0){ echo "No hay reserva de Pista"; }else{ echo $this->Number->format($partidoPromocionado->idReserva); } ?></td>
+                    <td><?php echo (h($partidoPromocionado->reserva_id) == "") ? "No hay reserva de pista" : h($partidoPromocionado->reserva_id); ?></td>
 
 <?php } ?>
 
@@ -62,6 +65,7 @@
 
                 </td>
             </tr>
+                <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
     </table>

@@ -16,7 +16,6 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Event\Event;
 
 /**
  * Application Controller
@@ -41,6 +40,8 @@ class AppController extends Controller
     public function initialize()
     {
         parent::initialize();
+
+        
 
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
@@ -67,12 +68,14 @@ class AppController extends Controller
             ],
             'authorize' => ['Controller'],
             'loginRedirect' => [
-                'controller' => 'Usuario',
-                'action' => 'index'
+                'controller' => 'Pages',
+                'action' => 'display',
+                'index'
             ],
             'logoutRedirect' => [
-                'controller' => 'Usuario',
-                'action' => 'login'
+                'controller' => 'Pages',
+                'action' => 'display',
+                'index'
             ],
             'storage' => 'Session'
         ]);

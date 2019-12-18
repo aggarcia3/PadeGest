@@ -1,29 +1,20 @@
-<?php if($Auth->user('id')){
-    ?>
-    <nav class="large-3 medium-4 columns" id="actions-sidebar" style="padding-bottom: 0px; margin-bottom: 0px;">
-        <ul class="side-nav ">
+<?php
 
+use Cake\Routing\Router;
 
-    <?php if($Auth->user('id') && $Auth->user('rol') == "administrador"){ ?>
+if ($Auth->user('id')): ?>
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'PartidoPromocionado', 'action' => 'index']) ?>"><?= __('Partidos promocionados') ?></a></li>
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Campeonato', 'action' => 'index']) ?>"><?= __('Campeonatos') ?></a></li>
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Reserva', 'action' => 'index']) ?>"><?= __('Reservas de pistas') ?></a></li>
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Enfrentamiento', 'action' => 'index']) ?>"><?= __('Enfrentamientos') ?></a></li>
 
+    <?php if ($Auth->user('rol') === "administrador"): ?>
 
-    <?= $this->Html->link(__('Partidos Promocionados'), ['controller' => 'PartidoPromocionado', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-    <?= $this->Html->link(__('Campeonatos'), ['controller' => 'Campeonato', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-    <?= $this->Html->link(__('Reservas de Pistas'), ['controller' => 'Reserva', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-    <?= $this->Html->link(__('Playoffs'), ['controller' => 'Playoffs', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-    <?= $this->Html->link(__('Usuarios'), ['controller' => 'Usuario', 'action' => 'listar'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Pista', 'action' => 'index']) ?>"><?= __('Pistas') ?></a></li>
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'index']) ?>"><?= __('Usuarios') ?></a></li>
 
-    <?php }else if($Auth->user('id') && $Auth->user('rol') == "deportista"){ ?>
-
-    <?= $this->Html->link(__('Partidos Promocionados'), ['controller' => 'PartidoPromocionado', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-    <?= $this->Html->link(__('Enfrentamientos Restantes'), ['controller' => 'Enfrentamiento', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-    <?= $this->Html->link(__('Campeonatos'), ['controller' => 'Campeonato', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-    <?= $this->Html->link(__('Reservas de Pistas'), ['controller' => 'Reserva', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-    <?= $this->Html->link(__('Playoffs'), ['controller' => 'Playoffs', 'action' => 'index'], array('class' => 'list-group-item list-group-item-action bg-light')) ?>
-
-
-    <?php } ?>
-
-        </ul>
-    </nav>
-<?php } ?>
+    <?php endif; ?>
+    <?php if ($Auth->user('rol') === "deportista"): ?>
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'hacerseSocio']) ?>"><?= __('Hacerse Socio') ?></a></li>
+    <?php endif; ?>
+<?php endif; ?>

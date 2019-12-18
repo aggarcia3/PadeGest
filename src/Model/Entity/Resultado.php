@@ -6,7 +6,7 @@ use Cake\ORM\Entity;
 /**
  * Resultado Entity
  *
- * @property int $idEnfrentamiento
+ * @property int $enfrentamiento_id
  * @property int $set1pareja1
  * @property int $set1pareja2
  * @property int $set2pareja1
@@ -25,7 +25,8 @@ class Resultado extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected $_accessible = [    
+        'enfrentamiento_id' => true, 
         'set1pareja1' => true,
         'set1pareja2' => true,
         'set2pareja1' => true,

@@ -349,10 +349,6 @@ pre {
     padding: 0.4375rem 0.875rem;
 }
 
-#actions-sidebar {
-    background: #fafafa;
-}
-
 .index table {
     margin-top: 0rem;
     border: 0;
@@ -406,12 +402,7 @@ fieldset legend {
 
 .form button[type="submit"] {
     float: right;
-    text-transform: uppercase;
-    box-shadow: none;
-}
-
-.form button:hover, .form button:focus {
-    background: #BE840B;
+    text-transform: capitalize;
     box-shadow: none;
 }
 
@@ -495,7 +486,6 @@ div.message.hidden {
 }
 
 /* Force equal height by overflowing */
-.content,
 #actions-sidebar {
     margin-bottom: -99999px;
     padding-bottom: 99999px;
@@ -508,13 +498,11 @@ div.message.hidden {
 }
 
 .content h3 {
-    color: #be140b;
     padding-bottom: 0.5rem;
     margin-bottom: 20px;
 }
 
 .content h4 {
-    color: #be140b;
     padding-bottom: 0.5rem;
     margin-bottom: 20px;
     border-bottom: 2px solid #be140b;
@@ -549,4 +537,120 @@ table td {
 
 .delete-action-fa-icon {
     color: #cf0000;
+}
+
+/* Personalizaciones a estilos de frameworks */
+
+footer div {
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+form button[type='submit'].btn {
+    margin: 1.5rem 0 1.5rem 0;
+}
+
+a.nav-link {
+    text-align: center;
+}
+
+/* Widget Franjapicker */
+
+div.input.franja_horaria .franjapicker-oculto {
+    display: none !important;
+}
+
+table.franjapicker {
+    display: block;
+    position: relative;
+    margin: auto;
+    overflow: auto;
+    width: 20ch;
+    height: 22rem;
+}
+
+table.franjapicker > tbody {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: 22rem;
+}
+
+table.franjapicker > tbody > tr {
+    display: block;
+}
+
+table.franjapicker > tbody > tr:nth-child(1) {
+    border-top: 1px solid #ebebec;
+}
+
+table.franjapicker > tbody > tr > td {
+    display: block;
+    text-align: center;
+    padding: 0;
+}
+
+table.franjapicker > tbody > tr.franja-disponible > td {
+    background-color: #adeab1;
+}
+
+table.franjapicker > tbody > tr.franja-ocupada > td {
+    background-color: #343a40;
+}
+
+table.franjapicker > tbody > tr.franja-disponible {
+    cursor: pointer;
+}
+
+table.franjapicker > tbody > tr.franja-disponible * {
+    cursor: pointer;
+}
+
+table.franjapicker > tbody > tr > td > input + label {
+    display: block;
+    padding: 0.45rem;
+}
+
+table.franjapicker > tbody > tr.franja-disponible > td > input:checked + label {
+    position: relative;
+}
+
+table.franjapicker > tbody > tr.franja-disponible > td > input + label:before {
+    content : "";
+    position: absolute;
+    left: 25%;
+    bottom: 0;
+    width: 50%;
+    border-bottom: 2px solid transparent;
+}
+
+table.franjapicker > tbody > tr.franja-disponible > td > input:checked + label:before {
+    transition: border-bottom 0.2s ease-out;
+    border-bottom: 2px solid #007bff;
+}
+
+table.franjapicker > tbody > tr.franja-ocupada {
+    cursor: not-allowed;
+}
+
+table.franjapicker > tbody > tr.franja-ocupada * {
+    cursor: not-allowed;
+}
+
+table.franjapicker > tbody > tr > td > label {
+    margin: 0;
+    padding: 0;
+}
+
+table.franjapicker > tbody > tr > td > input[name='franja'] {
+    display: none;
+}
+
+div.franjapicker-mensaje-inicial, div.franjapicker-mensaje-carga {
+    height: 22rem;
 }

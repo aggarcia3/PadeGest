@@ -6,8 +6,7 @@
 
 // Page title
 ?>
-<?= $this->element('menu') ?>
-<div class="grupo view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="grupo view large-9 medium-8 columns content">
     <h3><?= __('Detalles de la {0}', __('grupo')) . ' ' . h($grupo->id) ?></h3>
     <table class="vertical-table">
         <tr>

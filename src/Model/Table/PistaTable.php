@@ -1,10 +1,12 @@
 <?php
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
+use Cake\Datasource\ConnectionManager;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use DateTimeInterface;
+use Exception;
 
 /**
  * Pista Model
@@ -53,21 +55,58 @@ class PistaTable extends Table
 
         $validator
             ->inList('tipoSuelo', ['césped', 'moqueta', 'hormigón', 'cemento'], __('Una pista solo puede tener un suelo de césped, de moqueta, de hormigón o de cemento.'))
-            ->requirePresence('tipoSuelo', 'create');
+            ->requirePresence('tipoSuelo', 'create', __('Una pista debe de tener un tipo de suelo.'));
 
         $validator
             ->inList('tipoCerramiento', ['valla', 'pared', 'cristal'], __('Una pista solo puede ser tener como tipo de cerramiento una valla, una pared o cristales.'))
-            ->requirePresence('tipoCerramiento', 'create');
+            ->requirePresence('tipoCerramiento', 'create', __('Una pista debe de tener un tipo de cerramiento.'));
 
         $validator
             ->inList('localizacion', ['exterior', 'interior'], __('Una pista solo puede ser exterior o interior.'))
-            ->requirePresence('localizacion', 'create');
+            ->requirePresence('localizacion', 'create', __('Una pista debe de tener una localización.'));
 
         $validator
-            ->nonNegativeInteger('focos')
+            ->nonNegativeInteger('focos', __('El número de focos de una pista debe de ser un número positivo.'))
             ->lessThanOrEqual('focos', 100, __('Una pista puede tener hasta un máximo de 100 focos.'))
-            ->requirePresence('focos', 'create');
+            ->requirePresence('focos', 'create', __('Una pista debe de tener un número de focos.'));
 
         return $validator;
+    }
+
+    /**
+     * Obtiene la primera pista libre para una determinada fecha.
+     *
+     * @param DateTimeInterface $fecha La fecha a comprobar si tiene alguna pista libre.
+     * @return array|\Cake\Datasource\EntityInterface|null La primera pista libre encontrada
+     * para esa fecha, o nulo si no hay ninguna.
+     */
+    public function libreEn($fecha)
+    {
+        /** @var \App\Model\Entity\Pista */
+        $pistaLibre = null;
+
+        try {
+            if ($fecha instanceof DateTimeInterface) {
+                $sentencia = ConnectionManager::get(self::defaultConnectionName())
+                    ->prepare('SELECT `PADEGEST`.`pistaDisponibleEnFecha`(?) AS idPista');
+
+                $sentencia->bind([$fecha], ['datetime']);
+
+                if ($sentencia->execute()) {
+                    $idPista = $sentencia->fetch('assoc')['idPista'];
+
+                    if (is_numeric($idPista)) {
+                        $pistaLibre = $this
+                            ->find()
+                            ->where(['id' => $idPista])
+                            ->first();
+                    }
+                }
+            }
+        } catch (Exception $_) {
+            throw new InternalErrorException();
+        }
+
+        return $pistaLibre;
     }
 }

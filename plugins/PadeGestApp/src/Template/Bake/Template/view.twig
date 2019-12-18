@@ -7,62 +7,6 @@
 // Page title
 $this->assign('title', __('Gestión de {0}', __('{{ pluralVar }}')));
 ?>
-{% set associations = {'BelongsTo': [], 'HasOne': [], 'HasMany': [], 'BelongsToMany': []}|merge(associations) %}
-{% set fieldsData = Bake.getViewFieldsData(fields, schema, associations) %}
-{% set associationFields = fieldsData.associationFields %}
-{% set groupedFields = fieldsData.groupedFields %}
-{% set pK = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Acciones') ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('{{ singularHumanName }}')),
-                ['action' => 'edit', {{ pK|raw }}],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Form->postLink(
-                '<i class="fas fa-minus-square delete-action-fa-icon"></i> ' . __('Eliminar {0}', __('{{ singularHumanName }}')),
-                ['action' => 'delete', {{ pK|raw }}],
-                ['escapeTitle' => false, 'confirm' =>
-                    __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la {{ singularHumanName }} número {0}', {{ pK|raw }})])
-                ]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('{{ pluralHumanName }}')),
-                ['action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('{{ singularHumanName }}')),
-                ['action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-{% set done = [] %}
-{% for type, data in associations %}
-{% for alias, details in data %}
-{% if details.controller is not same as(_view.name) and details.controller not in done %}
-        <li><?= $this->Html->link(
-                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('{{ alias|underscore|humanize }}')),
-                ['controller' => '{{ details.controller }}', 'action' => 'index'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-        <li><?= $this->Html->link(
-                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('{{ alias|underscore|singularize|humanize }}')),
-                ['controller' => '{{ details.controller }}', 'action' => 'add'],
-                ['escapeTitle' => false]
-            )
-        ?></li>
-{% set done = done|merge(['controller']) %}
-{% endif %}
-{% endfor %}
-{% endfor %}
-    </ul>
-</nav>
 <div class="{{ pluralVar }} view large-9 medium-8 columns content">
     <h3><?= __('Detalles de la {0}', __('{{ singularVar }}')) . ' ' . h(${{ singularVar }}->{{ displayField }}) ?></h3>
     <table class="vertical-table">

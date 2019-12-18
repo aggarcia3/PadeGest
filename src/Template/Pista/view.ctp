@@ -4,12 +4,16 @@
  * @var \Cake\Datasource\EntityInterface $pista
  */
 
+use App\Model\Table\ReservaTable;
+
 // Page title
 $this->assign('title', __('Gestión de {0}', __('pistas')));
+
 ?>
-<?= $this->element('menu') ?>
-<div class="pista view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
-    <h3><?= __('Detalles de la {0}', __('pista')) . ' número ' . h($pista->id) ?></h3>
+<div class="pista view content">
+    <h3 class="card-title text-center">
+        <?= __('Detalles de la {0}', __('pista')) . ' número ' . h($pista->id) ?>
+    </h3>
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('Tipo de suelo') ?></th>
@@ -29,7 +33,7 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
         </tr>
     </table>
     <div class="related">
-        <h4><?= __('Reservas asociadas') ?></h4>
+        <h4 class="text-center"><?= __('Reservas asociadas') ?></h4>
         <?php if (!empty($pista->reserva)): ?>
         <table cellpadding="0" cellspacing="0">
             <tr>
@@ -48,12 +52,7 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
                             ['escapeTitle' => false]
                         )
                     ?>
-                    <?= $this->Html->link(
-                            '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
-                            ['controller' => 'Reserva', 'action' => 'edit', $reserva->id],
-                            ['escapeTitle' => false]
-                        )
-                    ?>
+                    <?php if (ReservaTable::esModificable($reserva)): ?>
                     <?= $this->Form->postLink(
                             '<i class="fas fa-calendar-minus delete-action-fa-icon"></i>',
                             ['controller' => 'Reserva', 'action' => 'delete', $reserva->id],
@@ -62,6 +61,7 @@ $this->assign('title', __('Gestión de {0}', __('pistas')));
                             ]
                         )
                     ?>
+                    <?php endif; ?>
                 </td>
             </tr>
             <?php endforeach; ?>

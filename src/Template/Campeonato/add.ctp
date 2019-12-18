@@ -4,19 +4,19 @@
  * @var \App\Model\Entity\Campeonato $campeonato
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="campeonato form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
-<h3 class="card-title text-center" style="color: black;">Añadir Campeonato</h3>
+<div class="campeonato form content">
+<h3 class="card-title text-center">Añadir Campeonato</h3>
     <?= $this->Form->create($campeonato) ?>
     <fieldset>
         <?php
             echo $this->Form->control('nombre');
             echo $this->Form->control('bases');
-            echo $this->Form->control('fechaInicioInscripciones');
-            echo $this->Form->control('fechaFinInscripciones');
-        ?>
+            ?>
+            <label for="fecha">Fecha de Inicio de Inscripciones</label>
+            <input type="date" name="fechaInicioInscripciones">
+            <label for="fecha">Fecha de Fin de Inscripciones</label>
+            <input type="date" name="fechaFinInscripciones">
     </fieldset>
-    <br>
     <?= $this->Form->button(__('Añadir'), array('class' => 'btn btn-primary')) ?>
     <?= $this->Form->end() ?>
 </div>

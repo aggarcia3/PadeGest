@@ -45,7 +45,6 @@ class PistaController extends AppController
      *
      * @param string|null $id Pista id.
      * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
@@ -71,8 +70,8 @@ class PistaController extends AppController
      */
     public function add()
     {
-        if ($this->request->is('post')) {
-            $pista = $this->Pista->newEntity($this->request->getData());
+        if ($this->getRequest()->is('post')) {
+            $pista = $this->Pista->newEntity($this->getRequest()->getData());
 
             if ($this->Pista->save($pista)) {
                 $this->Flash->success(__('{0} creada con éxito.', __('Pista')));
@@ -104,8 +103,8 @@ class PistaController extends AppController
             return $this->redirect(['action' => 'index']);
         }
 
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $pista = $this->Pista->patchEntity($pista, $this->request->getData());
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            $pista = $this->Pista->patchEntity($pista, $this->getRequest()->getData());
 
             if ($this->Pista->save($pista)) {
                 $this->Flash->success(__('{0} editada con éxito.', [__('Pista')]));
@@ -127,7 +126,7 @@ class PistaController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->getRequest()->allowMethod(['post', 'delete']);
 
         try {
             $pista = $this->Pista->get($id);
