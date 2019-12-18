@@ -4,8 +4,15 @@
  * @var \App\Model\Entity\Pareja $pareja
  */
 ?>
-<?= $this->element('menu') ?>
-<div class="pareja form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading"><?= __('Actions') ?></li>
+        <li><?= $this->Html->link(__('List Pareja'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('List Enfrentamiento'), ['controller' => 'Enfrentamiento', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('New Enfrentamiento'), ['controller' => 'Enfrentamiento', 'action' => 'add']) ?></li>
+    </ul>
+</nav>
+<div class="pareja form large-9 medium-8 columns content">
     <?= $this->Form->create($pareja) ?>
     <fieldset>
         <legend><?= __('Add Pareja') ?></legend>

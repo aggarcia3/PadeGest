@@ -7,8 +7,62 @@
 // Page title
 $this->assign('title', __('Gestión de {0}', __('usuarioPartidoPromocionado')));
 ?>
-<?= $this->element('menu') ?>
-<div class="usuarioPartidoPromocionado view large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading"><?= __('Acciones') ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-pen-square edit-action-fa-icon"></i> ' . __('Editar {0}', __('Usuario Partido Promocionado')),
+                ['action' => 'edit', $usuarioPartidoPromocionado->idUsuario],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Form->postLink(
+                '<i class="fas fa-minus-square delete-action-fa-icon"></i> ' . __('Eliminar {0}', __('Usuario Partido Promocionado')),
+                ['action' => 'delete', $usuarioPartidoPromocionado->idUsuario],
+                ['escapeTitle' => false, 'confirm' =>
+                    __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la Usuario Partido Promocionado número {0}', $usuarioPartidoPromocionado->idUsuario)])
+                ]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Usuario Partido Promocionado')),
+                ['action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Usuario Partido Promocionado')),
+                ['action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Usuario')),
+                ['controller' => 'Usuario', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Usuario')),
+                ['controller' => 'Usuario', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Partido Promocionado')),
+                ['controller' => 'PartidoPromocionado', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Partido Promocionado')),
+                ['controller' => 'PartidoPromocionado', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+    </ul>
+</nav>
+<div class="usuarioPartidoPromocionado view large-9 medium-8 columns content">
     <h3><?= __('Detalles de la {0}', __('usuarioPartidoPromocionado')) . ' ' . h($usuarioPartidoPromocionado->idUsuario) ?></h3>
     <table class="vertical-table">
         <tr>

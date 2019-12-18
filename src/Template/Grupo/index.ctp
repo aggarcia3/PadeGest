@@ -16,9 +16,33 @@ $this->assign('title', __('Gestión de {0}', __('grupo')));
                 ['escapeTitle' => false]
             )
         ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Categoria Nivel')),
+                ['controller' => 'CategoriaNivel', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Categoria Nivel')),
+                ['controller' => 'CategoriaNivel', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Pareja')),
+                ['controller' => 'Pareja', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Pareja')),
+                ['controller' => 'Pareja', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
     </ul>
 </nav>
-<div class="grupo index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="grupo index large-9 medium-8 columns content">
     <h3><?= __('Grupo') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>

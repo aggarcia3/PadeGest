@@ -16,9 +16,33 @@ $this->assign('title', __('Gestión de {0}', __('usuarioPartidoPromocionado')));
                 ['escapeTitle' => false]
             )
         ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Usuario')),
+                ['controller' => 'Usuario', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Usuario')),
+                ['controller' => 'Usuario', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-eye view-action-fa-icon"></i> ' . __('Ver {0}', __('Partido Promocionado')),
+                ['controller' => 'PartidoPromocionado', 'action' => 'index'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
+        <li><?= $this->Html->link(
+                '<i class="fas fa-plus-circle add-action-fa-icon"></i> ' . __('Crear {0}', __('Partido Promocionado')),
+                ['controller' => 'PartidoPromocionado', 'action' => 'add'],
+                ['escapeTitle' => false]
+            )
+        ?></li>
     </ul>
 </nav>
-<div class="usuarioPartidoPromocionado index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="usuarioPartidoPromocionado index large-9 medium-8 columns content">
     <h3><?= __('Usuario Partido Promocionado') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>

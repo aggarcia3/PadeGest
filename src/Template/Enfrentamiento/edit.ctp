@@ -7,8 +7,25 @@
 // Page title
 $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
 ?>
-<?= $this->element('menu') ?>
-<div class="enfrentamiento form large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading"><?= __('Actions') ?></li>
+        <li><?= $this->Form->postLink(
+                __('Delete'),
+                ['action' => 'delete', $enfrentamiento->id],
+                ['confirm' => __('Are you sure you want to delete # {0}?', $enfrentamiento->id)]
+            )
+        ?></li>
+        <li><?= $this->Html->link(__('List Enfrentamiento'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('List Pareja'), ['controller' => 'Pareja', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('New Pareja'), ['controller' => 'Pareja', 'action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('List Reserva'), ['controller' => 'Reserva', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('New Reserva'), ['controller' => 'Reserva', 'action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('List Resultado'), ['controller' => 'Resultado', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('New Resultado'), ['controller' => 'Resultado', 'action' => 'add']) ?></li>
+    </ul>
+</nav>
+<div class="enfrentamiento form large-9 medium-8 columns content">
     <?= $this->Form->create($enfrentamiento) ?>
     <fieldset>
         <legend><?= __('Edit Enfrentamiento') ?></legend>

@@ -18,7 +18,7 @@ $this->assign('title', __('Gestión de {0}', __('parejaEnfrentamiento')));
         ?></li>
     </ul>
 </nav>
-<div class="parejaEnfrentamiento index large-9 medium-8 columns content" style="padding-bottom: 0px; margin-bottom:0px;">
+<div class="parejaEnfrentamiento index large-9 medium-8 columns content">
     <h3><?= __('Pareja Enfrentamiento') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
