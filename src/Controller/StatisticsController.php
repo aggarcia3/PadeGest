@@ -51,7 +51,8 @@ class StatisticsController extends AppController
             }
 
         endforeach;
-        
+        $fechaInicioDefinitiva = $fechaInicio; 
+
         $mesesDiferencia = ($fechaFin->year - $fechaInicio->year)*12;
         if($fechaInicio->month > $fechaFin->month){
             $mesesDiferencia += $fechaFin->month - $fechaInicio->month;
@@ -59,9 +60,9 @@ class StatisticsController extends AppController
             $mesesDiferencia += 12-$fechaFin->month +$fechaInicio->month;
         }
 
-        debug($mesesDiferencia);
         $i = 0;
         $contadores = array();
+        $contadorReservas2 = 0;
 
         $reservas = TableRegistry::getTableLocator()->get('Reserva');
         
@@ -76,7 +77,6 @@ class StatisticsController extends AppController
             $contadorReservas2= 0;
             $fechaInicio = $fechaInicio->addMonth(1);
         }
-        debug($contadores);
 
         //fin parte que calcula las reservas por mes
 
@@ -110,15 +110,18 @@ class StatisticsController extends AppController
 
          //parte que calcula la hora con más reservas
          $contadorAux = 0;
+         $contadorRes = 0;
          $horaAux;
          $horaFinal;
          $contadorHoraReservas = 0;
          $horas = ['09:00:00', '10:30:00', '12:00:00', '13:30:00', '15:00:00', '16:30:00','18:00:00', '19:30:00'];
+         
          foreach( $horas as $hora):
             $reservas = TableRegistry::getTableLocator()->get('Reserva');
             $resultsIteratorObject4 = $reservas->find('all', array('conditions'=>array('RESERVA.fechaInicio LIKE'=>'%'.$hora.'%')));;
             $contadorAux = 0;
             $pistaId = -1;
+            
             foreach( $resultsIteratorObject4 as $reservasHora):
                 $contadorAux++;
                 $horaAux = $hora;
@@ -128,10 +131,19 @@ class StatisticsController extends AppController
                     $horaFinal = $horaAux;
                 }
          endforeach;
+        
+
+         $reservas = TableRegistry::getTableLocator()->get('Reserva');
+         $resultsIteratorObject6 = $reservas->find('all');
+         foreach( $resultsIteratorObject6 as $resultado):
+            $contadorRes++;
+         endforeach;
+
+        
  
          //fin parte que calcula la horaa con más reservas
 
-        $this->set(array('contadores' => $contadores, 'fechas' => $fechas, 'contadorPistaReservas' => $contadorPistaReservas, 'pistaFinal' => $pistaFinal,  'contadorHoraReservas' => $contadorHoraReservas, 'horaFinal' => $horaFinal));
+        $this->set(array('contadores' => $contadores, 'contadorPistaReservas' => $contadorPistaReservas, 'pistaFinal' => $pistaFinal,  'contadorHoraReservas' => $contadorHoraReservas, 'horaFinal' => $horaFinal, 'mesesDiferencia' => $mesesDiferencia, 'fechaInicioDefinitiva' => $fechaInicioDefinitiva, 'contadorReservas' => $contadorRes));
     }
 
     /**

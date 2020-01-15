@@ -19,17 +19,25 @@ $this->assign('title', 'Estadísticas');
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('Fecha Inicio semana', __('Fecha Inicio semana')) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('Fecha Fin semana', __('Fecha Fin semana')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('Fecha Inicio semana', __('Fecha Inicio mes')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('Fecha Fin semana', __('Fecha Fin mes')) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('Numero de reservas', __('Numero de reservas')) ?></th>
             </tr>
         </thead>
         <tbody>
+        <?php 
+        $i = 1;
+        
+        foreach ($contadores as $contador): ?>
             <tr>
-                <td><?= h($fechas['fechaInicio']) ?></td>
-                <td><?= h($fechas['fechaFin']) ?></td>
-                <td><?= h($contadorReservas) ?></td>
+                <td><?= h($fechaInicioDefinitiva) ?></td>
+                <td><?= h($fechaInicioDefinitiva->addMonth($i)) ?></td>
+                <td><?= h($contador) ?></td>
             </tr>
+
+            <?php 
+        $i++;
+        endforeach; ?> 
             <tr>
             <td> </td>
             <td> </td>
@@ -43,7 +51,7 @@ $this->assign('title', 'Estadísticas');
             <tr>
                 <th>Número de reservas totales</th>
                 <th></th>
-                <th><?= h($contadorReservas2) ?></th>
+                <th><?= h($contadorReservas) ?></th>
             </tr>
         </tbody>
     </table>
