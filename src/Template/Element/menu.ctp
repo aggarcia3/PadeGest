@@ -10,6 +10,7 @@ if ($Auth->user('id')): ?>
 
     <?php if ($Auth->user('rol') === "administrador"): ?>
 
+    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Statistics', 'action' => 'index']) ?>"><?= __('Estadísticas') ?></a></li>
     <li><a class="nav-link" href="<?= Router::url(['controller' => 'Pista', 'action' => 'index']) ?>"><?= __('Pistas') ?></a></li>
     <li><a class="nav-link" href="<?= Router::url(['controller' => 'Usuario', 'action' => 'index']) ?>"><?= __('Usuarios') ?></a></li>
 
