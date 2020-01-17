@@ -34,10 +34,10 @@ class ClaseTable extends Table
         parent::initialize($config);
 
         $this->setTable('clase');
-        $this->setDisplayField('id');
+        $this->setDisplayField('nombre');
         $this->setPrimaryKey('id');
 
-        $this->hasMany('Reserva', [
+        $this->hasOne('Reserva', [
             'foreignKey' => 'clase_id',
         ]);
         $this->belongsToMany('Usuario', [

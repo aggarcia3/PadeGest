@@ -61,6 +61,13 @@ foreach ($reserva as $reservaAct) {
                     ['controller' => 'PartidoPromocionado', 'action' => 'view', $reservaAct->partido_promocionado->id]
                 )
             ?></td>
+            <?php elseif ($reservaAct->has('clase')): ?>
+            <td><?=
+                $this->Html->link(
+                    __('Clase') . ': ' . $reservaAct->clase->nombre,
+                    ['controller' => 'Clase', 'action' => 'view', $reservaAct->clase->id]
+                )
+            ?></td>
             <?php else: ?>
             <td>No disponible</td>
             <?php endif; ?>

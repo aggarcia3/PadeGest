@@ -42,7 +42,7 @@ class ReservaController extends AppController
     public function index()
     {
         $paginationOptions = [
-            'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado'],
+            'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado', 'Clase'],
             'order' => [
                 'Reserva.fechaInicio' => 'desc'
             ]
@@ -66,7 +66,7 @@ class ReservaController extends AppController
     public function view($id = null)
     {
         $getOptions = [
-            'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado']
+            'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado', 'Clase']
         ];
         // Los usuarios no administradores solo ven sus reservas
         if ($this->Auth->user('rol') !== 'administrador') {
@@ -167,13 +167,13 @@ class ReservaController extends AppController
     public function add2($datos)
     {
         $datos['usuario_id'] = null;
-        
+
         $reserva = $this->Reserva->newEntity($datos);
         if ($this->Reserva->save($reserva)) {
             return $this->redirect(['action' => 'index']);
         }
         $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
-        
+
     }
 
     /**

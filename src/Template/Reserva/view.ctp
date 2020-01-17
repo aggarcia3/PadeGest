@@ -63,6 +63,13 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
                         ['controller' => 'PartidoPromocionado', 'action' => 'view', $reserva->partido_promocionado->id]
                     )
                 ?></td>
+                <?php elseif ($reserva->has('clase')): ?>
+                <td><?=
+                    $this->Html->link(
+                        __('Clase') . ': ' . $reserva->clase->nombre,
+                        ['controller' => 'Clase', 'action' => 'view', $reserva->clase->id]
+                    )
+                ?></td>
                 <?php else: ?>
                 <td>No disponible</td>
                 <?php endif; ?>

@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $fechaFin
  * @property int $pista_id
  * @property int|null $usuario_id
+ * @property int|null $clase_id
  *
  * @property \App\Model\Entity\Pista $pista
  * @property \App\Model\Entity\Usuario $usuario
@@ -33,6 +34,7 @@ class Reserva extends Entity
         'fechaInicio' => true,
         'pista_id' => true,
         'usuario_id' => true,
+        'clase_id' => true,
         'pista' => true,
         'usuario' => true,
         'enfrentamiento' => true,

@@ -16,7 +16,7 @@ use Cake\ORM\Entity;
  * @property int $semanasDuracion
  * @property \Cake\I18n\FrozenTime $horaInicio
  *
- * @property \App\Model\Entity\Reserva[] $reserva
+ * @property \App\Model\Entity\Reserva $reserva
  * @property \App\Model\Entity\Usuario[] $usuario
  */
 class Clase extends Entity
