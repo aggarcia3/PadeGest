@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 18 Dec 2019 11:41:18 CET
+-- Generated on 17 Jan 2020 20:39:22    
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -1122,6 +1122,35 @@ INSERT INTO `PADEGEST`.`noticia` (`id`, `titulo`, `cuerpo`, `fecha`, `usuario_id
 INSERT INTO `PADEGEST`.`noticia` (`id`, `titulo`, `cuerpo`, `fecha`, `usuario_id`) VALUES (3, 'Conoce el recorrido de las chicas en el Master Final ', 'Ya es oficial, ya se conoce cómo será el camino del Master Final en lo que a la categoría masculina se refiere tras el sorteo de emparejamientos. Un sorteo que, teniendo en cuenta el nombre de los participantes, no ha dejado a nadie indiferente y todos serán duelos de altas revoluciones. La pelea arrancará el jueves en el segundo turno (las chicas comienzan a las 12 horas del mediodía) con la pareja de circunstancias formada por Agustín Gómez Silingo y Juani Mieres ante Fernando Belasteguín y Agustín Tapia, para continuar por la tarde con un duelo 100% español entre Uri Botello y Javi Ruiz ante Paquito Navarro y Juan Lebrón, los números 1. Este choque, además, nos presentará a dos parejas que podrían estar en sus últimos compromisos juntos si los rumores de separación son ciertos.', '2019-11-25 08:00:00', 1);
 INSERT INTO `PADEGEST`.`noticia` (`id`, `titulo`, `cuerpo`, `fecha`, `usuario_id`) VALUES (4, 'Una Navidad de pádel y solidaria para los pequeños de Málaga', 'Por cuarto año consecutivo, la firma StarVie se pone del lado de los más pequeños, en concreto de los que necesitan una alegría extra en estas fiestas, colaborando con la Fundación Cesare Scariolo en la iniciativa benéfica \'\'Operación juguete\'\'. La campaña solidaria busca obtener el máximo número de juguetes para repartir esta Navidad a los niños ingresados en la planta de oncología del Hospital Materno-Infantil de Málaga. El evento consiste en un clinic impartido por jugadores StarVie con la única condición para participar de entregar un juguete nuevo. Tras el éxito de los años anteriores en el que se recaudaron más de 850 regalos, esta edición el evento se realiza en cinco ciudades españolas: Madrid, Málaga, Sevilla, Valencia y Benidorm. De la misma manera que en ediciones anteriores, las personas que quieran participar deben inscribirse en la recepción del club de cada una de las ciudades. Todos los juguetes recogidos serán donados a la Fundación Cesare Scariolo para después ser entregados a los niños que están recibiendo tratamientos oncológicos en el Hospital de Málaga.', '2019-12-21 09:00:00', 1);
 INSERT INTO `PADEGEST`.`noticia` (`id`, `titulo`, `cuerpo`, `fecha`, `usuario_id`) VALUES (5, 'Empieza el baile de parejas para la próxima temporada', 'Aunque queda por disputarse el Estrella Damm Barcelona Master muchos jugadores ya han terminado la temporada y han comenzado a planificar el año próximo. Como todos los años se aproxima una gran cantidad de nuevas parejas, las cuales iremos conociendo poco a poco en las próximas semanas.', '2019-12-29 11:00:00', 1);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `PADEGEST`.`clase_deportista`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `PADEGEST`;
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (10, 30);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (10, 5);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 12);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 15);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (7, 7);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (5, 29);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (10, 10);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (6, 27);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 30);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (4, 13);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 30);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 2);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (1, 3);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 13);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (4, 7);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (3, 25);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 27);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 17);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (8, 18);
+INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 4);
 
 COMMIT;
 
