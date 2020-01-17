@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 17 Jan 2020 20:39:22    
+-- Generated on 17 Jan 2020 22:07:27    
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -335,11 +335,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `PADEGEST`.`clase_deportista`
+-- Table `PADEGEST`.`clase_usuario`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `PADEGEST`.`clase_deportista` ;
+DROP TABLE IF EXISTS `PADEGEST`.`clase_usuario` ;
 
-CREATE TABLE IF NOT EXISTS `PADEGEST`.`clase_deportista` (
+CREATE TABLE IF NOT EXISTS `PADEGEST`.`clase_usuario` (
   `clase_id` INT UNSIGNED NOT NULL,
   `usuario_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`clase_id`, `usuario_id`),
@@ -472,6 +472,30 @@ END$$
 
 
 USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`clase_BEFORE_INSERT` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`clase_BEFORE_INSERT`
+BEFORE INSERT ON `clase` FOR EACH ROW
+BEGIN
+	IF NEW.`plazasMin` > NEW.`plazasMax` THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'El número mínimo de plazas debe de ser menor o igual que el número máximo de plazas';
+    END IF;
+END$$
+
+
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`clase_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`clase_BEFORE_UPDATE`
+BEFORE UPDATE ON `clase` FOR EACH ROW
+BEGIN
+	IF NEW.`plazasMin` > NEW.`plazasMax` THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'El número mínimo de plazas debe de ser menor o igual que el número máximo de plazas';
+    END IF;
+END$$
+
+
+USE `PADEGEST`$$
 DROP TRIGGER IF EXISTS `PADEGEST`.`reserva_BEFORE_INSERT` $$
 USE `PADEGEST`$$
 CREATE TRIGGER `PADEGEST`.`reserva_BEFORE_INSERT`
@@ -486,7 +510,7 @@ BEGIN
     SELECT id FROM `PADEGEST`.`enfrentamiento` WHERE reserva_id = NEW.`id` INTO idEnfrentamiento;
 
 	IF	NEW.`usuario_id` IS NOT NULL AND
-        (idPartidoPromocionado IS NOT NULL OR idEnfrentamiento IS NOT NULL)
+        (NEW.`clase_id` IS NOT NULL OR idPartidoPromocionado IS NOT NULL OR idEnfrentamiento IS NOT NULL)
 	THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una reserva no puede realizarse por varias entidades a la vez';
     END IF;
@@ -541,9 +565,9 @@ BEGIN
     SELECT id FROM `PADEGEST`.`enfrentamiento` WHERE reserva_id = NEW.`id` INTO idEnfrentamiento;
 
 	IF	NEW.`usuario_id` IS NOT NULL AND
-        (idPartidoPromocionado IS NOT NULL OR idEnfrentamiento IS NOT NULL)
+        (NEW.`clase_id` IS NOT NULL OR idPartidoPromocionado IS NOT NULL OR idEnfrentamiento IS NOT NULL)
 	THEN
-		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una reserva no puede realizarse por un usuario y por un partido promocionado o enfrentamiento a la vez';
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una reserva no puede realizarse por un usuario y por un partido promocionado, enfrentamiento o clase a la vez';
     END IF;
 
 	IF NEW.`fechaInicio` > NEW.`fechaFin` THEN
@@ -777,6 +801,54 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`clase_usuario_BEFORE_INSERT` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`clase_usuario_BEFORE_INSERT`
+BEFORE INSERT ON `clase_usuario` FOR EACH ROW
+BEGIN
+	DECLARE plazasMax SMALLINT UNSIGNED;
+    DECLARE fechaFinInscripciones DATE;
+
+	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+
+	SELECT `plazasMax` FROM `PADEGEST`.`clase` WHERE `id` = NEW.`clase_id` INTO plazasMax;
+    SELECT `fechaFinInscripcion` FROM `PADEGEST`.`clase` WHERE `id` = NEW.`clase_id` INTO fechaFinInscripciones;
+
+    IF ((SELECT COUNT(*) FROM `PADEGEST`.`clase_usuario` WHERE `clase_id` = NEW.`clase_id`) > plazasMax) THEN
+		SIGNAL SQLSTATE 'HY000' SET MESSAGE_TEXT = 'Se intentan inscribir más deportista en una clase que los permitidos por el número de plazas';
+    END IF;
+
+	IF CURDATE() > fechaFinInscripciones THEN
+		SIGNAL SQLSTATE 'HY000' SET MESSAGE_TEXT = 'Se ha intentado inscribir un deportista en una clase cuya fecha de fin de inscripciones ha finalizado';
+    END IF;
+END$$
+
+
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`clase_usuario_BEFORE_UPDATE` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`clase_usuario_BEFORE_UPDATE`
+BEFORE UPDATE ON `clase_usuario` FOR EACH ROW
+BEGIN
+	DECLARE plazasMax SMALLINT UNSIGNED;
+    DECLARE fechaFinInscripciones DATE;
+
+	DECLARE EXIT HANDLER FOR NOT FOUND BEGIN END;
+
+	SELECT `plazasMax` FROM `PADEGEST`.`clase` WHERE `id` = NEW.`clase_id` INTO plazasMax;
+    SELECT `fechaFinInscripcion` FROM `PADEGEST`.`clase` WHERE `id` = NEW.`clase_id` INTO fechaFinInscripciones;
+
+    IF ((SELECT COUNT(*) FROM `PADEGEST`.`clase_usuario` WHERE `clase_id` = NEW.`clase_id`) > plazasMax) THEN
+		SIGNAL SQLSTATE 'HY000' SET MESSAGE_TEXT = 'Se intentan inscribir más deportista en una clase que los permitidos por el número de plazas';
+    END IF;
+
+	IF CURDATE() > fechaFinInscripciones THEN
+		SIGNAL SQLSTATE 'HY000' SET MESSAGE_TEXT = 'Se ha intentado inscribir un deportista en una clase cuya fecha de fin de inscripciones ha finalizado';
+    END IF;
+END$$
+
+
 DELIMITER ;
 
 -- -----------------------------------------------------
@@ -862,14 +934,14 @@ START TRANSACTION;
 USE `PADEGEST`;
 INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (1, 'Golpe bajo', 10, 15, DEFAULT, '2019-12-30', '2020-01-31', 3, '13:30');
 INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (2, 'Golpe alto', 8, 20, DEFAULT, '2020-01-18', '2020-02-15', 4, '16:30');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (3, 'Rev�s', 10, 17, DEFAULT, '2019-11-28', '2020-01-15', 3, '13:30');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (4, 'T�cnica', 7, 17, DEFAULT, '2020-01-31', '2020-03-25', 6, '12:00');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (5, 'T�ctica', 9, 20, DEFAULT, '2019-11-19', '2020-01-17', 6, '09:00');
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (3, 'Revés', 10, 17, DEFAULT, '2019-11-28', '2020-04-15', 3, '13:30');
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (4, 'Técnica', 7, 17, DEFAULT, '2020-01-31', '2020-03-25', 6, '12:00');
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (5, 'Táctica', 9, 20, DEFAULT, '2019-11-19', '2020-02-17', 6, '09:00');
 INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (6, 'Saque', 9, 20, DEFAULT, '2020-01-09', '2020-02-29', 6, '09:00');
 INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (7, 'Resistencia', 7, 18, DEFAULT, '2020-01-28', '2020-03-10', 6, '09:00');
 INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (8, 'Dejadas', 6, 20, DEFAULT, '2020-01-09', '2020-02-05', 5, '18:00');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (9, 'Fuerza', 5, 19, DEFAULT, '2019-11-24', '2020-01-19', 3, '13:30');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (10, 'Psicolog�a', 7, 15, DEFAULT, '2019-11-27', '2020-01-02', 6, '13:30');
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (9, 'Fuerza', 5, 19, DEFAULT, '2019-11-24', '2020-01-05', 3, '13:30');
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (10, 'Psicología', 7, 15, DEFAULT, '2019-11-27', '2020-03-02', 6, '13:30');
 
 COMMIT;
 
@@ -1127,30 +1199,30 @@ COMMIT;
 
 
 -- -----------------------------------------------------
--- Data for table `PADEGEST`.`clase_deportista`
+-- Data for table `PADEGEST`.`clase_usuario`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (10, 30);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (10, 5);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 12);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 15);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (7, 7);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (5, 29);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (10, 10);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (6, 27);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 30);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (4, 13);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 30);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 2);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (1, 3);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 13);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (4, 7);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (3, 25);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 27);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 17);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (8, 18);
-INSERT INTO `PADEGEST`.`clase_deportista` (`clase_id`, `usuario_id`) VALUES (2, 4);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (10, 30);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (10, 5);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 12);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 15);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (7, 7);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (5, 29);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (10, 10);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (6, 27);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 30);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (4, 13);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 24);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 2);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (1, 3);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 13);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (4, 7);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (3, 25);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 27);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 17);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (8, 18);
+INSERT INTO `PADEGEST`.`clase_usuario` (`clase_id`, `usuario_id`) VALUES (2, 4);
 
 COMMIT;
 
