@@ -17,6 +17,7 @@ use DateTimeInterface;
  * @property \App\Model\Table\PistaTable&\Cake\ORM\Association\BelongsTo $Pista
  * @property \App\Model\Table\UsuarioTable&\Cake\ORM\Association\BelongsTo $Usuario
  * @property \App\Model\Table\EnfrentamientoTable&\Cake\ORM\Association\HasOne $Enfrentamiento
+ * @property \App\Model\Table\ClaseTable&\Cake\ORM\Association\HasOne $Clase
  * @property \App\Model\Table\PartidoPromocionadoTable&\Cake\ORM\Association\HasOne $PartidoPromocionado
  *
  * @method \App\Model\Entity\Reserva get($primaryKey, $options = [])
@@ -114,6 +115,10 @@ class ReservaTable extends Table
 
         $this->hasOne('PartidoPromocionado', [
             'foreignKey' => 'reserva_id'
+        ]);
+
+        $this->hasOne('Clase', [
+            'foreignKey' => 'clase_id'
         ]);
     }
 

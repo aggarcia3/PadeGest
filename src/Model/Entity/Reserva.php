@@ -16,6 +16,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Usuario $usuario
  * @property \App\Model\Entity\Enfrentamiento|null $enfrentamiento
  * @property \App\Model\Entity\PartidoPromocionado|null $partido_promocionado
+ * @property \App\Model\Entity\Clase|null $clase
  */
 class Reserva extends Entity
 {
@@ -35,6 +36,7 @@ class Reserva extends Entity
         'pista' => true,
         'usuario' => true,
         'enfrentamiento' => true,
-        'partido_promocionado' => true
+        'partido_promocionado' => true,
+        'clase' => true
     ];
 }
