@@ -20,6 +20,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\PartidoPromocionado[] $partido_promocionado
  * @property \App\Model\Entity\Reserva[] $reserva
+ * @property \App\Model\Entity\Clase[] $clase
  */
 class Usuario extends Entity
 {

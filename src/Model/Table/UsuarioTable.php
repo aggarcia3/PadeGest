@@ -11,6 +11,7 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\PartidoPromocionadoTable&\Cake\ORM\Association\BelongsToMany $PartidoPromocionado
  * @property \App\Model\Table\ReservaTable&\Cake\ORM\Association\BelongsToMany $Reserva
+ * @property \App\Model\Table\ClaseTable&\Cake\ORM\Association\BelongsToMany $Clase
  *
  * @method \App\Model\Entity\Usuario get($primaryKey, $options = [])
  * @method \App\Model\Entity\Usuario newEntity($data = null, array $options = [])
