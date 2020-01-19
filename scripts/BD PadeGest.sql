@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 17 Jan 2020 22:07:27    
+-- Generated on 19 Jan 2020 22:17:43    
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`clase` (
   `nombre` VARCHAR(45) NOT NULL,
   `plazasMin` SMALLINT UNSIGNED NOT NULL,
   `plazasMax` SMALLINT UNSIGNED NOT NULL,
-  `frecuencia` TIME GENERATED ALWAYS AS ('0000-01-07 00:00:00') VIRTUAL,
+  `frecuencia` TIME NOT NULL DEFAULT '7 00:00:00',
   `fechaInicioInscripcion` DATE NOT NULL,
   `fechaFinInscripcion` DATE NOT NULL,
   `semanasDuracion` TINYINT UNSIGNED NOT NULL,
@@ -366,6 +366,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`pago` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `concepto` VARCHAR(60) NOT NULL,
   `importe` DECIMAL(5,2) UNSIGNED NOT NULL,
+  `fecha` DATETIME NOT NULL,
   `usuario_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FK_PAGO_USUARIO_idx` (`usuario_id` ASC),
@@ -849,6 +850,18 @@ BEGIN
 END$$
 
 
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`pago_BEFORE_INSERT` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`pago_BEFORE_INSERT`
+BEFORE INSERT ON `pago` FOR EACH ROW
+BEGIN
+	IF (NEW.`fecha` IS NULL) THEN
+		SET NEW.`fecha` = NOW();
+    END IF;
+END$$
+
+
 DELIMITER ;
 
 -- -----------------------------------------------------
@@ -1232,16 +1245,16 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (1, 'Inscripción campeonato', 5, 13);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (2, 'Cuota socio', 15, 18);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (3, 'Reserva pista', 18, 20);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (4, 'Reserva pista', 12, 8);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (5, 'Reserva pista', 8, 18);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (6, 'Inscripción campeonato', 5, 5);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (7, 'Cuota socio', 15, 23);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (8, 'Reserva pista', 10, 12);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (9, 'Cuota socio', 15, 25);
-INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `usuario_id`) VALUES (10, 'Reserva pista', 16, 24);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (1, 'Inscripción campeonato', 5, '2019-08-22 03:55:25', 13);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (2, 'Cuota socio', 15, '2019-10-23 11:26:35', 18);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (3, 'Reserva pista', 18, '2019-12-08 04:52:40', 20);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (4, 'Reserva pista', 12, '2019-12-28 11:38:20', 8);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (5, 'Reserva pista', 8, '2019-10-16 19:18:22', 18);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (6, 'Inscripción campeonato', 5, '2019-10-23 12:55:43', 5);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (7, 'Cuota socio', 15, '2019-09-10 15:20:35', 23);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (8, 'Reserva pista', 10, '2019-08-15 10:52:53', 12);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (9, 'Cuota socio', 15, '2019-12-22 15:43:30', 25);
+INSERT INTO `PADEGEST`.`pago` (`id`, `concepto`, `importe`, `fecha`, `usuario_id`) VALUES (10, 'Reserva pista', 16, '2019-08-31 18:40:56', 24);
 
 COMMIT;
 
