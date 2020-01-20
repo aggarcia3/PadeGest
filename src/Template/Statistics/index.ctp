@@ -9,7 +9,7 @@ $this->assign('title', 'Estadísticas');
 <div class="statistics view content">
 
     <h3 class="card-title text-center">
-       Estadísitcas de reservas
+       Estadísticas de reservas
     </h3>
 
 
@@ -98,10 +98,10 @@ $this->assign('title', 'Estadísticas');
 
 
     <h3 class="card-title text-center">
-       Estadísitcas de pagos
+        Estadísticas de pagos
     </h3>
 
     <h3 class="card-title text-center">
-       Estadísitcas de clases deportivas
+        Estadísticas de clases deportivas
     </h3>
 </div>

@@ -29,7 +29,7 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
         </tr>
     </table>
     <div class="related">
-        <h3 class="card-title text-center" style="color: black;"><?= __('Parejas relacionadas') ?></h3>
+        <h3 class="card-title text-center" style="color: black;"><?= __('Parejas Enfrentadas') ?></h3>
         <?php if (!empty($enfrentamiento->pareja)): ?>
         <table cellpadding="0" cellspacing="0">
             <tr>
@@ -154,8 +154,9 @@ $this->assign('title', __('Gestión de {0}', __('enfrentamiento')));
             <?php endforeach; ?>
         </table>
         <?php endif; ?>
-        <?php if (empty($enfrentamiento->resultado)): ?>
-            <?= $this->Html->link(__('Añadir Resultado'), ['controller' => 'Resultado', 'action' => 'add', $enfrentamiento->id], array('class' => 'btn btn-primary center text-center')) ?>
+        <?php if (empty($enfrentamiento->resultado)):
+            $idEnfrentamiento = $enfrentamiento->id ?>
+            <?= $this->Html->link(('Añadir Resultado'), array('controller' => 'Resultado', 'action' => 'add', $idEnfrentamiento), array('class' => 'btn btn-primary center text-center')) ?>
         <?php endif; ?>
     </div>
 </div>
