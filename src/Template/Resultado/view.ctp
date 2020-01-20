@@ -4,45 +4,26 @@
  * @var \App\Model\Entity\Resultado $resultado
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Resultado'), ['action' => 'edit', $resultado->idEnfrentamiento]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Resultado'), ['action' => 'delete', $resultado->idEnfrentamiento], ['confirm' => __('Are you sure you want to delete # {0}?', $resultado->idEnfrentamiento)]) ?> </li>
-        <li><?= $this->Html->link(__('List Resultado'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Resultado'), ['action' => 'add']) ?> </li>
-    </ul>
-</nav>
-<div class="resultado view large-9 medium-8 columns content">
-    <h3><?= h($resultado->idEnfrentamiento) ?></h3>
-    <table class="vertical-table">
-        <tr>
-            <th scope="row"><?= __('IdEnfrentamiento') ?></th>
-            <td><?= $this->Number->format($resultado->idEnfrentamiento) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Set1pareja1') ?></th>
-            <td><?= $this->Number->format($resultado->set1pareja1) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Set1pareja2') ?></th>
-            <td><?= $this->Number->format($resultado->set1pareja2) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Set2pareja1') ?></th>
-            <td><?= $this->Number->format($resultado->set2pareja1) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Set2pareja2') ?></th>
-            <td><?= $this->Number->format($resultado->set2pareja2) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Set3pareja1') ?></th>
-            <td><?= $this->Number->format($resultado->set3pareja1) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Set3pareja2') ?></th>
-            <td><?= $this->Number->format($resultado->set3pareja2) ?></td>
-        </tr>
+<div class="resultado view content">
+<h3 class="card-title text-center" style="color: black;"><?= __('Resultado del {0}', __('enfrentamiento')) . ' ' . h($resultado->enfrentamiento_id) ?></h3>
+    <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Set 1</th>
+                <th scope="col">Set 2</th>
+                <th scope="col">Set 3</th>
+            </tr>
+            <tr>
+                <td>Pareja1</td>
+                <td><?= h($resultado->set1pareja1) ?></td>
+                <td><?= h($resultado->set2pareja1) ?></td>
+                <td><?= h($resultado->set3pareja1) ?></td>
+            </tr>
+            <tr>
+                <td>Pareja2</td>
+                <td><?= h($resultado->set1pareja2) ?></td>
+                <td><?= h($resultado->set2pareja2) ?></td>
+                <td><?= h($resultado->set3pareja2) ?></td>
+            </tr>
     </table>
 </div>
