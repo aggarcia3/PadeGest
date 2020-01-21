@@ -34,11 +34,6 @@ class StatisticsController extends AppController
         //parte que calcula las reservas por mes
         $reservas = TableRegistry::getTableLocator()->get('Reserva');
         $resultsIteratorObject1 = $reservas->find()->all();
-        
-
-        $sdate = new FrozenTime('2019-11-00 00:00:00');   
-
-        $edate = new FrozenTime('2019-12-00 00:00:00');  
 
         $fechaAux;
         $fechaInicio = FrozenTime::now();  

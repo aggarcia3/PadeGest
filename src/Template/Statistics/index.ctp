@@ -30,7 +30,7 @@ $this->assign('title', 'Estadísticas');
         
         foreach ($contadores as $contador): ?>
             <tr>
-                <td><?= h($fechaInicioDefinitiva) ?></td>
+                <td><?= h($fechaInicioDefinitiva->addMonth($i)) ?></td>
                 <td><?= h($fechaInicioDefinitiva->addMonth($i)) ?></td>
                 <td><?= h($contador) ?></td>
             </tr>
