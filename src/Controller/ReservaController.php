@@ -234,13 +234,11 @@ class ReservaController extends AppController
     {
         $this->getRequest()->allowMethod('get');
         $timestamp = $this->getRequest()->getQueryParams()['fecha'];
-        if (!is_numeric($timestamp)) {
+        if (!is_numeric($timestamp) || !is_int($timestamp + 0)) {
             throw new BadRequestException();
         }
+
         $dia = FrozenTime::now()->setTimestamp($timestamp / 1000);
-        if (!$dia) {
-            throw new BadRequestException();
-        }
         $this->viewBuilder()->setClassName('Json');
         $tablaPistas = TableRegistry::getTableLocator()->get('Pista');
         assert($tablaPistas instanceof PistaTable);
