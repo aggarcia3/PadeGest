@@ -238,7 +238,7 @@ class ReservaController extends AppController
             throw new BadRequestException();
         }
         $dia = FrozenTime::now()->setTimestamp($timestamp / 1000);
-        if ($dia === false) {
+        if (!$dia) {
             throw new BadRequestException();
         }
         $this->viewBuilder()->setClassName('Json');

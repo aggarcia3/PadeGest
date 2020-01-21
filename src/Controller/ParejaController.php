@@ -14,11 +14,8 @@ use Cake\ORM\TableRegistry;
 class ParejaController extends AppController
 {
     /**
-     * Index method
-     *
-     * @return void
+     * @return boolean
      */
-
     public function isAuthorized($user)
     {
         // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
@@ -28,6 +25,11 @@ class ParejaController extends AppController
                $user['rol'] === 'administrador';
     }
 
+    /**
+     * Index method
+     *
+     * @return void
+     */
     public function index()
     {
         $pareja = $this->paginate($this->Pareja);
@@ -60,29 +62,26 @@ class ParejaController extends AppController
     {
         $data = $this->request->getData();
         $usuario = TableRegistry::getTableLocator()->get('Usuario');
-        $resultsIteratorObject = $usuario->find()->where(['username' => $data['usernameCapitan']])->all();
-        $resultsIteratorObject2 = $usuario->find()->where(['username' => $data['usernamePareja']])->all();
+        $user = $usuario->find()->where(['username' => $data['usernameCapitan']])->last();
+        $var = $user->id;
+        $genero1 = $user->genero;
+        $user2 = $usuario->find()->where(['username' => $data['usernamePareja']])->last();
+        $var2 = $user2->id;
+        $genero2 = $user2->genero;
 
         $categoriaNivel = TableRegistry::getTableLocator()->get('CategoriaNivel');
-        $resultsIteratorObject3 = $categoriaNivel->find()->where(['campeonato_id' => $data['campeonatoId']])->all();
+        $categoriaNivel2 = $categoriaNivel->find()->where(['campeonato_id' => $data['campeonatoId']])->last();
 
-        foreach ($resultsIteratorObject as $usuario) {
-            $var = $usuario->id;
-            $genero1 = $usuario->genero;
+        if ($data['categoria'] == $categoriaNivel2->categoria && $data['nivel'] == $categoriaNivel2->nivel) {
+            $var3 = $categoriaNivel2->id;
+        } else {
+            $var3 = null;
         }
 
-        foreach ($resultsIteratorObject2 as $usuario) {
-            $var2 = $usuario->id;
-            $genero2 = $usuario->genero;
-        }
-        foreach ($resultsIteratorObject3 as $categoriaNivel) {
-            if ($data['categoria'] == $categoriaNivel['categoria'] && $data['nivel'] == $categoriaNivel['nivel']) {
-                $var3 = $categoriaNivel['id'];
-            }
-        }
-        debug($genero1);
-        debug($genero2);
-        debug($data['categoria']);
+        //debug($genero1);
+        //debug($genero2);
+        //debug($data['categoria']);
+
         if ($data['categoria'] == "masculina" && ($genero1 != "masculino" || $genero2 != "masculino")) {
             $this->Flash->error(__('No te has inscrito en la categoria y nivel correcto'));
 

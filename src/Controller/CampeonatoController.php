@@ -17,14 +17,13 @@ use Cake\Event\Event;
 class CampeonatoController extends AppController
 {
     /**
-     * @return Cake\Http\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $campeonato = (new CampeonatoController());
         $partidoPromocionado = (new PartidoPromocionadoController());
-        $campeonato->agrupar();
+        $this->agrupar();
         $partidoPromocionado->agrupar();
     }
 

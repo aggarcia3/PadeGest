@@ -13,9 +13,7 @@ use App\Controller\AppController;
 class ResultadoController extends AppController
 {
     /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null
+     * @return boolean
      */
     public function isAuthorized($user)
     {
@@ -26,6 +24,11 @@ class ResultadoController extends AppController
                $user['rol'] === 'administrador';
     }
 
+    /**
+     * Index method
+     *
+     * @return \Cake\Http\Response|null
+     */
     public function index()
     {
         $resultado = $this->paginate($this->Resultado);

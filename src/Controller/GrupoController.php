@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -135,10 +136,10 @@ class GrupoController extends AppController
         $enfrentamiento2->nombre = "Playoffs grupo " . $id . " Enfrentamiento2";
         $enfrentamiento3->nombre = "Playoffs grupo " . $id . " Enfrentamiento3";
         $enfrentamiento4->nombre = "Playoffs grupo " . $id . " Enfrentamiento4";
-        $enfrentamiento1->fecha = '2019-12-19 16:00:';
-        $enfrentamiento2->fecha = '2019-12-19 16:00:';
-        $enfrentamiento3->fecha = '2019-12-19 16:00:';
-        $enfrentamiento4->fecha = '2019-12-19 16:00:';
+        $enfrentamiento1->fecha = new FrozenTime('2019-12-19 16:00:00');
+        $enfrentamiento2->fecha = new FrozenTime('2019-12-19 16:00:00');
+        $enfrentamiento3->fecha = new FrozenTime('2019-12-19 16:00:00');
+        $enfrentamiento4->fecha = new FrozenTime('2019-12-19 16:00:00');
         $enfrentamiento1->fase = 'playoffs4';
         $enfrentamiento2->fase = 'playoffs4';
         $enfrentamiento3->fase = 'playoffs4';
@@ -161,6 +162,7 @@ class GrupoController extends AppController
         $id4 = $enfrentamiento4->id;
         $auxiliar = 0;
         foreach ($resultsIteratorObject3 as $pareja1) :
+            /** @var \App\Model\Entity\ParejaEnfrentamiento */
             $nuevarelacion = $parejaenfrentamiento->newEntity();
             if ($auxiliar == 0 || $auxiliar == 7) {
                 $nuevarelacion->pareja_id = $pareja1->id;

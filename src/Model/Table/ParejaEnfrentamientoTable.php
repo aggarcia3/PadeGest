@@ -9,8 +9,8 @@ use Cake\Validation\Validator;
 /**
  * ParejaEnfrentamiento Model
  *
- * @property &\Cake\ORM\Association\BelongsTo $Pareja
- * @property &\Cake\ORM\Association\BelongsTo $Enfrentamiento
+ * @property \Cake\ORM\Association\BelongsTo $Pareja
+ * @property \Cake\ORM\Association\BelongsTo $Enfrentamiento
  *
  * @method \App\Model\Entity\ParejaEnfrentamiento get($primaryKey, $options = [])
  * @method \App\Model\Entity\ParejaEnfrentamiento newEntity($data = null, array $options = [])

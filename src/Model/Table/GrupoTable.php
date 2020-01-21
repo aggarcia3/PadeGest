@@ -9,8 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Grupo Model
  *
- * @property &\Cake\ORM\Association\BelongsTo $CategoriaNivel
- * @property &\Cake\ORM\Association\HasMany $Pareja
+ * @property \Cake\ORM\Association\BelongsTo $CategoriaNivel
+ * @property \Cake\ORM\Association\HasMany $Pareja
  *
  * @method \App\Model\Entity\Grupo get($primaryKey, $options = [])
  * @method \App\Model\Entity\Grupo newEntity($data = null, array $options = [])

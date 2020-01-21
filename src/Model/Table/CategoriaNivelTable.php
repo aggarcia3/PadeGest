@@ -9,9 +9,9 @@ use Cake\Validation\Validator;
 /**
  * CategoriaNivel Model
  *
- * @property &\Cake\ORM\Association\BelongsTo $Campeonato
- * @property &\Cake\ORM\Association\HasMany $Grupo
- * @property &\Cake\ORM\Association\HasMany $Pareja
+ * @property \Cake\ORM\Association\BelongsTo $Campeonato
+ * @property \Cake\ORM\Association\HasMany $Grupo
+ * @property \Cake\ORM\Association\HasMany $Pareja
  *
  * @method \App\Model\Entity\CategoriaNivel get($primaryKey, $options = [])
  * @method \App\Model\Entity\CategoriaNivel newEntity($data = null, array $options = [])

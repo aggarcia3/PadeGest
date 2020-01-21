@@ -16,9 +16,7 @@ use Cake\I18n\FrozenTime;
 class UsuarioPartidoPromocionadoController extends AppController
 {
     /**
-     * Index method
-     *
-     * @return void
+     * @return boolean
      */
     public function isAuthorized($user)
     {
@@ -29,6 +27,11 @@ class UsuarioPartidoPromocionadoController extends AppController
                $user['rol'] === 'administrador';
     }
 
+    /**
+     * Index method
+     *
+     * @return void
+     */
     public function index()
     {
         $this->paginate = [
@@ -94,10 +97,7 @@ class UsuarioPartidoPromocionadoController extends AppController
                     FrozenTime::setToStringFormat('yyyy-MM-dd HH:mm:ss');
 
                     $partidos = TableRegistry::getTableLocator()->get('PartidoPromocionado');
-                    $resultsIteratorObject4 = $partidos->find()->where(['id' => $data['partido_promocionado_id']])->all();
-                    foreach ($resultsIteratorObject4 as $partidoPromocionado) {
-                        $var['fechaInicio'] = $partidoPromocionado['fecha'];
-                    }
+                    $var['fechaInicio'] = $partidos->find()->where(['id' => $data['partido_promocionado_id']])->last()->fecha;
                     $var['fechaInicio'] = $var['fechaInicio']->format('Y-m-d H:i:s');
                     $var['pista_id'] = 1;
                     $reserva = (new ReservaController());

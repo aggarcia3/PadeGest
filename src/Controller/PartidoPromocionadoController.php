@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 
@@ -12,24 +13,23 @@ use Cake\ORM\TableRegistry;
  *
  * @method \App\Model\Entity\PartidoPromocionado[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-use Cake\Event\Event;
-
 class PartidoPromocionadoController extends AppController
 {
     /**
-     * Index method
-     *
-     * @return void
+     * @param Event $event
+     * @return \Cake\Http\Response|null
      */
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
         $campeonato = (new CampeonatoController());
-        $partidoPromocionado = (new PartidoPromocionadoController());
         $campeonato->agrupar();
-        $partidoPromocionado->agrupar();
+        $this->agrupar();
     }
 
+    /**
+     * @return bool
+     */
     public function isAuthorized($user)
     {
         // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
@@ -39,10 +39,16 @@ class PartidoPromocionadoController extends AppController
                $user['rol'] === 'administrador';
     }
 
+    /**
+     * Index method
+     *
+     * @return void
+     */
     public function index()
     {
         $usuariosPartidosPromocionados = TableRegistry::getTableLocator()->get('UsuarioPartidoPromocionado');
         $partidoPromocionado = $this->paginate($this->PartidoPromocionado);
+
         if ($this->Auth->user('rol') != "administrador") {
             foreach ($partidoPromocionado as $partidoPromocionados) {
                 $resultsIteratorObject = $usuariosPartidosPromocionados->find()->where(['partido_promocionado_id' => $partidoPromocionados['id']])->all();
@@ -59,9 +65,7 @@ class PartidoPromocionadoController extends AppController
                 }
             }
         }
-        if (!isset($partidoPromocionado)) {
-            $partidoPromocionado = [];
-        }
+
         $this->set(compact('partidoPromocionado'));
     }
 
@@ -84,8 +88,7 @@ class PartidoPromocionadoController extends AppController
      * TODO
      *
      * @param string|null $id Partido Promocionado id.
-     * @return void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return \Cake\Http\Response|null Redirects on successful inscription, renders view otherwise.
      */
     public function inscribirse($id = null)
     {
