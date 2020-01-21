@@ -55,7 +55,7 @@ class UsuarioFixture extends TestFixture
                 'apellidos' => 'Lorem ipsum dolor sit amet',
                 'genero' => 'Lorem ipsum dolor sit amet',
                 'esSocio' => 1,
-                'rol' => 'Lorem ipsum dolor sit amet'
+                'rol' => 'Lorem ipsum dolor sit amet',
             ],
         ];
         parent::init();

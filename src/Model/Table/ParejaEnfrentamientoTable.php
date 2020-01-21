@@ -39,11 +39,11 @@ class ParejaEnfrentamientoTable extends Table
 
         $this->belongsTo('Pareja', [
             'foreignKey' => 'pareja_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Enfrentamiento', [
             'foreignKey' => 'enfrentamiento_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
     }
 

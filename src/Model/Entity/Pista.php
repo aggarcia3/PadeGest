@@ -27,6 +27,6 @@ class Pista extends Entity
         'tipoSuelo' => true,
         'tipoCerramiento' => true,
         'localizacion' => true,
-        'focos' => true
+        'focos' => true,
     ];
 }

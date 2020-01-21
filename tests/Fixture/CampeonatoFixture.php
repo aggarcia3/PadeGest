@@ -49,7 +49,7 @@ class CampeonatoFixture extends TestFixture
                 'nombre' => 'Lorem ipsum dolor sit amet',
                 'bases' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
                 'fechaInicioInscripciones' => '2019-10-30 16:21:13',
-                'fechaFinInscripciones' => '2019-10-30 16:21:13'
+                'fechaFinInscripciones' => '2019-10-30 16:21:13',
             ],
         ];
         parent::init();

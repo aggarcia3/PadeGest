@@ -1,5 +1,6 @@
 <?php
 namespace App\Controller;
+
 use App\Controller\AppController;
 use App\Model\Table\PistaTable;
 use App\Model\Table\ReservaTable;
@@ -34,6 +35,7 @@ class ReservaController extends AppController
         // El uso de franjasFecha solo se permite si la solicitud es Ajax
         return $this->getRequest()->getParam('action') !== 'franjasFecha' || $this->getRequest()->is('ajax');
     }
+
     /**
      * Index method
      *
@@ -44,19 +46,20 @@ class ReservaController extends AppController
         $paginationOptions = [
             'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado', 'Clase'],
             'order' => [
-                'Reserva.fechaInicio' => 'desc'
-            ]
+                'Reserva.fechaInicio' => 'desc',
+            ],
         ];
         // Los usuarios no administradores solo ven sus reservas
         if ($this->Auth->user('rol') !== 'administrador') {
             $paginationOptions += [
-                'conditions' => ['usuario_id =' => $this->Auth->user('id')]
+                'conditions' => ['usuario_id =' => $this->Auth->user('id')],
             ];
         }
         $this->paginate = $paginationOptions;
         $reserva = $this->paginate($this->Reserva);
         $this->set(compact('reserva'));
     }
+
     /**
      * View method
      *
@@ -66,12 +69,12 @@ class ReservaController extends AppController
     public function view($id = null)
     {
         $getOptions = [
-            'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado', 'Clase']
+            'contain' => ['Pista', 'Usuario', 'Enfrentamiento', 'PartidoPromocionado', 'Clase'],
         ];
         // Los usuarios no administradores solo ven sus reservas
         if ($this->Auth->user('rol') !== 'administrador') {
             $getOptions += [
-                'conditions' => ['usuario_id =' => $this->Auth->user('id')]
+                'conditions' => ['usuario_id =' => $this->Auth->user('id')],
             ];
         }
         try {
@@ -83,6 +86,7 @@ class ReservaController extends AppController
         }
         $this->set(compact('reserva'));
     }
+
     /**
      * Add method
      *
@@ -96,7 +100,8 @@ class ReservaController extends AppController
             // La fecha final se calcula a partir del número de franja y la
             // duración de cada reserva
             $franjas = ReservaTable::franjasReservas();
-            if (isset($datos['fechaInicio']) &&
+            if (
+                isset($datos['fechaInicio']) &&
                 isset($datos['franja']) &&
                 is_numeric($datos['fechaInicio']) &&
                 is_numeric($datos['franja']) &&
@@ -137,6 +142,7 @@ class ReservaController extends AppController
                 $reserva = $this->Reserva->newEntity($datos);
                 if ($this->Reserva->save($reserva)) {
                     $this->Flash->success(__('Reservada la pista número {0} a fecha {1}.', $reserva->pista_id, $reserva->fechaInicio));
+
                     return $this->redirect(['action' => 'index']);
                 }
                 $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
@@ -154,10 +160,10 @@ class ReservaController extends AppController
             $usuario = $this->Reserva->Usuario
                 ->find('list', [
                     'valueField' => 'username',
-                    'groupField' => 'estado_asociado'
+                    'groupField' => 'estado_asociado',
                 ])
                 ->where([
-                    'rol <>' => 'administrador'
+                    'rol <>' => 'administrador',
                 ])->orderAsc('username');
             $pista = $this->Reserva->Pista->find('list');
             $this->set(compact('usuario', 'pista'));
@@ -173,7 +179,6 @@ class ReservaController extends AppController
             return $this->redirect(['action' => 'index']);
         }
         $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
-
     }
 
     /**
@@ -190,7 +195,8 @@ class ReservaController extends AppController
             $reserva = $this->Reserva->get($id);
             // Si el usuario no es administrador, solo puede borrar las reservas
             // a su nombre
-            if ((
+            if (
+                (
                     $this->Auth->user('rol') === 'administrador' ||
                     $reserva->usuario_id === $this->Auth->user('id')
                 ) && $this->Reserva->delete($reserva)
@@ -215,8 +221,10 @@ class ReservaController extends AppController
                 )
             );
         }
+
         return $this->redirect(['action' => 'index']);
     }
+
     /**
      * Obtiene las franjas horarias disponibles y ocupadas para una fecha dada.
      *
@@ -241,7 +249,7 @@ class ReservaController extends AppController
             $franja = [
                 $franja->format('H:i'),
                 $franja->add(ReservaTable::getDuracionReservas())->format('H:i'),
-                $tablaPistas->libreEn($dia->setTime($franja->hour, $franja->minute)) !== null
+                $tablaPistas->libreEn($dia->setTime($franja->hour, $franja->minute)) !== null,
             ];
         }
         $this->set(compact('franjas'));
@@ -260,6 +268,7 @@ class ReservaController extends AppController
     {
         $this->getRequest()->allowMethod('get');
         $this->Flash->error(__('Javascript no está activado en tu navegador, y es necesario para acceder a esta funcionalidad. Por favor, actívalo y vuelve a intentarlo.'));
+
         return $this->redirect(['action' => 'index']);
     }
 }

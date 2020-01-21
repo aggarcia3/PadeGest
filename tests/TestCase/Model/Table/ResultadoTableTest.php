@@ -23,7 +23,7 @@ class ResultadoTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.Resultado'
+        'app.Resultado',
     ];
 
     /**

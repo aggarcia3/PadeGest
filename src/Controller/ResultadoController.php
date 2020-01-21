@@ -24,7 +24,6 @@ class ResultadoController extends AppController
         // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), ['']) ||
                $user['rol'] === 'administrador';
-
     }
 
     public function index()
@@ -44,7 +43,7 @@ class ResultadoController extends AppController
     public function view($id = null)
     {
         $resultado = $this->Resultado->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
 
         $this->set('resultado', $resultado);
@@ -58,12 +57,12 @@ class ResultadoController extends AppController
     public function add()
     {
         $var = $this->request->getData();
-        if($this->request->is('post')){
+        if ($this->request->is('post')) {
             $data = $var['enfrentamientoId'];
             unset($var['enfrentamientoId']);
             $var['enfrentamiento_id'] = $data;
         }
-       
+
         $resultado = $this->Resultado->newEntity();
         if ($this->request->is('post')) {
             $resultado = $this->Resultado->patchEntity($resultado, $var);
@@ -87,7 +86,7 @@ class ResultadoController extends AppController
     public function edit($id = null)
     {
         $resultado = $this->Resultado->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $resultado = $this->Resultado->patchEntity($resultado, $this->request->getData());

@@ -26,7 +26,6 @@ class ParejaController extends AppController
         // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), ['add', 'view']) ||
                $user['rol'] === 'administrador';
-
     }
 
     public function index()
@@ -46,7 +45,7 @@ class ParejaController extends AppController
     public function view($id = null)
     {
         $pareja = $this->Pareja->get($id, [
-            'contain' => ['Enfrentamiento']
+            'contain' => ['Enfrentamiento'],
         ]);
 
         $this->set('pareja', $pareja);
@@ -77,27 +76,28 @@ class ParejaController extends AppController
             $genero2 = $usuario->genero;
         }
         foreach ($resultsIteratorObject3 as $categoriaNivel) {
-            if($data['categoria'] == $categoriaNivel['categoria'] && $data['nivel'] == $categoriaNivel['nivel']){
+            if ($data['categoria'] == $categoriaNivel['categoria'] && $data['nivel'] == $categoriaNivel['nivel']) {
                 $var3 = $categoriaNivel['id'];
             }
         }
         debug($genero1);
         debug($genero2);
         debug($data['categoria']);
-        if($data['categoria'] == "masculina" && ($genero1 != "masculino" || $genero2 != "masculino") ){
+        if ($data['categoria'] == "masculina" && ($genero1 != "masculino" || $genero2 != "masculino")) {
             $this->Flash->error(__('No te has inscrito en la categoria y nivel correcto'));
+
             return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
-        }
-        else if($data['categoria'] == "femenina" && ($genero1 != "femenino" || $genero2 != "femenino") ){
+        } elseif ($data['categoria'] == "femenina" && ($genero1 != "femenino" || $genero2 != "femenino")) {
             $this->Flash->error(__('No te has inscrito en la categoria y nivel correcto'));
+
             return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
-        }
-        else if($data['categoria'] == "mixta" &&  (($genero1 == "masculino" && $genero2 == "masculino") || ($genero1 == "femenino" && $genero2 == "femenino"))){
+        } elseif ($data['categoria'] == "mixta" && (($genero1 == "masculino" && $genero2 == "masculino") || ($genero1 == "femenino" && $genero2 == "femenino"))) {
             $this->Flash->error(__('No te has inscrito en la categoria y nivel correcto'));
+
             return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
-        }
-        else if($data['usernameCapitan'] == $data['usernamePareja']){
+        } elseif ($data['usernameCapitan'] == $data['usernamePareja']) {
             $this->Flash->error(__('No te puedes inscribir a ti mismo'));
+
             return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
         }
 
@@ -108,14 +108,12 @@ class ParejaController extends AppController
         $data['categoria_nivel_id'] = $var3;
         $data['grupo_id'] = null;
 
-        unset($data['usernameCapitan']);     
-        unset($data['usernamePareja']);    
+        unset($data['usernameCapitan']);
+        unset($data['usernamePareja']);
         unset($data['categoria']);
-        unset($data['nivel']); 
-        unset($data['nivel']); 
-        unset($data['campeonatoId']); 
-
-
+        unset($data['nivel']);
+        unset($data['nivel']);
+        unset($data['campeonatoId']);
 
         if ($this->request->is('post')) {
             $pareja = $this->Pareja->patchEntity($pareja, $data);
@@ -125,6 +123,7 @@ class ParejaController extends AppController
                 return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
             }
             $this->Flash->error(__('No se pudo realizar la inscripcion, inténtalo más tarde'));
+
             return $this->redirect(['controller' => 'campeonato', 'action' => 'index']);
         }
         $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);
@@ -141,7 +140,7 @@ class ParejaController extends AppController
     public function edit($id = null)
     {
         $pareja = $this->Pareja->get($id, [
-            'contain' => ['Enfrentamiento']
+            'contain' => ['Enfrentamiento'],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $pareja = $this->Pareja->patchEntity($pareja, $this->request->getData());
@@ -155,18 +154,18 @@ class ParejaController extends AppController
         $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);
         $this->set(compact('pareja', 'enfrentamiento'));
     }
+
     public function edit2($var, $var2)
     {
         $pareja = $this->Pareja->get($var, [
-            'contain' => ['Enfrentamiento']
+            'contain' => ['Enfrentamiento'],
         ]);
             $pareja = $this->Pareja->patchEntity($pareja, $var2);
-            if ($this->Pareja->save($pareja)) {
-
-                return $this->redirect(['action' => 'index']);
-            }else{
-                $this->Flash->error(__('The pareja could not be saved. Please, try again.'));
-            }
+        if ($this->Pareja->save($pareja)) {
+            return $this->redirect(['action' => 'index']);
+        } else {
+            $this->Flash->error(__('The pareja could not be saved. Please, try again.'));
+        }
         $enfrentamiento = $this->Pareja->Enfrentamiento->find('list', ['limit' => 200]);
         $this->set(compact('pareja', 'enfrentamiento'));
     }

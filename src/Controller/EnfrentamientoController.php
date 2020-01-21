@@ -14,9 +14,7 @@ use Cake\ORM\TableRegistry;
 class EnfrentamientoController extends AppController
 {
     /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null
+     * @return bool
      */
     public function isAuthorized($user)
     {
@@ -25,13 +23,12 @@ class EnfrentamientoController extends AppController
         // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), []) ||
                $user['rol'] === 'administrador';
-
     }
 
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Pareja', 'Reserva']
+            'contain' => ['Pareja', 'Reserva'],
         ];
         $enfrentamiento = $this->paginate($this->Enfrentamiento);
 
@@ -48,12 +45,12 @@ class EnfrentamientoController extends AppController
     public function view($id = null)
     {
         $enfrentamiento = $this->Enfrentamiento->get($id, [
-            'contain' => ['Pareja', 'Reserva', 'Resultado']
+            'contain' => ['Pareja', 'Reserva', 'Resultado'],
         ]);
 
         $resultados = TableRegistry::getTableLocator()->get('Resultado');
         $resultado = $resultados->find()->where(['enfrentamiento_id' => $id])->all();
-    
+
         $this->set(compact('enfrentamiento', 'resultado'));
     }
 
@@ -81,18 +78,16 @@ class EnfrentamientoController extends AppController
 
     public function add2($var)
     {
-        
+
         $enfrentamiento = $this->Enfrentamiento->newEntity();
         $enfrentamiento = $this->Enfrentamiento->patchEntity($enfrentamiento, $var);
-            if ($this->Enfrentamiento->save($enfrentamiento)) {
-
-                return $this->redirect(['action' => 'index']);
-            }
+        if ($this->Enfrentamiento->save($enfrentamiento)) {
+            return $this->redirect(['action' => 'index']);
+        }
         $pareja = $this->Enfrentamiento->Pareja->find('list', ['limit' => 200]);
         $reserva = $this->Enfrentamiento->Reserva->find('list', ['limit' => 200]);
         $this->set(compact('enfrentamiento', 'pareja', 'reserva'));
     }
-
 
     /**
      * Edit method
@@ -104,7 +99,7 @@ class EnfrentamientoController extends AppController
     public function edit($id = null)
     {
         $enfrentamiento = $this->Enfrentamiento->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $enfrentamiento = $this->Enfrentamiento->patchEntity($enfrentamiento, $this->request->getData());

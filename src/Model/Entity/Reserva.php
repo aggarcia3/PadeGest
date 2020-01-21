@@ -39,6 +39,6 @@ class Reserva extends Entity
         'usuario' => true,
         'enfrentamiento' => true,
         'partido_promocionado' => true,
-        'clase' => true
+        'clase' => true,
     ];
 }

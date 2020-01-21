@@ -1,7 +1,9 @@
 <?php
 namespace App\Controller;
+
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
+
 /**
  * Grupo Controller
  *
@@ -12,23 +14,23 @@ use Cake\ORM\TableRegistry;
 class GrupoController extends AppController
 {
     /**
-     * Index method
-     *
-     * @return void
+     * @return bool
      */
     public function isAuthorized($user)
     {
         // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
         // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
         // y los usuarios no se podrían desconectar
-        return in_array($this->request->getParam('action'), ['register','index', 'logout', 'edit']) ||
+        return in_array($this->request->getParam('action'), ['register', 'index', 'logout', 'edit']) ||
                $user['rol'] === 'administrador';
     }
+
     public function index()
     {
         $grupo = $this->paginate($this->Grupo);
         $this->set(compact('grupo'));
     }
+
     /**
      * View method
      *
@@ -39,20 +41,21 @@ class GrupoController extends AppController
     public function view($id = null)
     {
         $grupo = $this->Grupo->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
 
         $pareja = TableRegistry::getTableLocator()->get('Pareja');
         $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->all();
         $this->set(compact('grupo', 'resultsIteratorObject3'));
     }
+
     public function ligaRegular($id = null)
     {
         $grupo = $this->Grupo->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
 
-        $auxiliar= array();
+        $auxiliar = [];
         $pareja = TableRegistry::getTableLocator()->get('Pareja');
         $usuario = TableRegistry::getTableLocator()->get('Usuario');
         $enfrentamiento = TableRegistry::getTableLocator()->get('Enfrentamiento');
@@ -63,25 +66,26 @@ class GrupoController extends AppController
             'type' => 'INNER',
             'conditions' => 'Enfrentamiento.id=P.enfrentamiento_id',
             ],
-            'L' =>[
-                'table'=> 'Pareja',
-                'type'=>'INNER',
-                'conditions'=> 'L.id=P.pareja_id',
+            'L' => [
+                'table' => 'Pareja',
+                'type' => 'INNER',
+                'conditions' => 'L.id=P.pareja_id',
+            ],
             ]
-        ])->where(['grupo_id'=>$id,'fase'=>"liga regular"])->group('Enfrentamiento.id')->all();
+        )->where(['grupo_id' => $id, 'fase' => "liga regular"])->group('Enfrentamiento.id')->all();
         $this->set(compact('grupo', 'resultsIteratorObject3', 'iterador'));
     }
+
     public function Playoffs($id = null)
     {
         $grupo = $this->Grupo->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
-
 
         $pareja = TableRegistry::getTableLocator()->get('Pareja');
         $usuario = TableRegistry::getTableLocator()->get('Usuario');
         $enfrentamiento = TableRegistry::getTableLocator()->get('Enfrentamiento');
-        $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->limit(8)->order(['puntuacion'=>'DESC']);
+        $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->limit(8)->order(['puntuacion' => 'DESC']);
 
         $iterador = $enfrentamiento->find()->join(
             [
@@ -89,13 +93,13 @@ class GrupoController extends AppController
             'type' => 'INNER',
             'conditions' => 'Enfrentamiento.id=P.enfrentamiento_id',
             ],
-            'L' =>[
-                'table'=> 'Pareja',
-                'type'=>'INNER',
-                'conditions'=> 'L.id=P.pareja_id',
+            'L' => [
+                'table' => 'Pareja',
+                'type' => 'INNER',
+                'conditions' => 'L.id=P.pareja_id',
+            ],
             ]
-        ])->  where([['fase'=>'playoffse']or['fase'=>'playoffs1']or['fase'=>'playoffs2']or['fase'=>'playoffs4']])->group('Enfrentamiento.id');
-
+        )->  where([['fase' => 'playoffse'] or ['fase' => 'playoffs1'] or ['fase' => 'playoffs2'] or ['fase' => 'playoffs4']])->group('Enfrentamiento.id');
 
         $this->set(compact('grupo', 'resultsIteratorObject3', 'iterador'));
     }
@@ -104,36 +108,49 @@ class GrupoController extends AppController
     {
 
         $grupo = $this->Grupo->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         $enfrentamiento = TableRegistry::getTableLocator()->get('Enfrentamiento');
         $parejaenfrentamiento = TableRegistry::getTableLocator()->get('Pareja_enfrentamiento');
-        $resultados = TableRegistry::getTableLocator()->get('Resultado');
+
+        /**
+         * @var \App\Model\Entity\Enfrentamiento
+         */
         $enfrentamiento1 = $enfrentamiento->newEntity();
+        /**
+         * @var \App\Model\Entity\Enfrentamiento
+         */
         $enfrentamiento2 = $enfrentamiento->newEntity();
+        /**
+         * @var \App\Model\Entity\Enfrentamiento
+         */
         $enfrentamiento3 = $enfrentamiento->newEntity();
+        /**
+         * @var \App\Model\Entity\Enfrentamiento
+         */
         $enfrentamiento4 = $enfrentamiento->newEntity();
         $pareja = TableRegistry::getTableLocator()->get('Pareja');
-        $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->limit(8)->order(['puntuacion'=>'DESC'])->all();
-        $enfrentamiento1->nombre = "Playoffs grupo ". $id." Enfrentamiento1";
-        $enfrentamiento2->nombre = "Playoffs grupo ". $id." Enfrentamiento2";
-        $enfrentamiento3->nombre = "Playoffs grupo ". $id." Enfrentamiento3";
-        $enfrentamiento4->nombre = "Playoffs grupo ". $id." Enfrentamiento4";
+        $resultsIteratorObject3 = $pareja->find()->where(['grupo_id' => $id])->limit(8)->order(['puntuacion' => 'DESC'])->all();
+        $enfrentamiento1->nombre = "Playoffs grupo " . $id . " Enfrentamiento1";
+        $enfrentamiento2->nombre = "Playoffs grupo " . $id . " Enfrentamiento2";
+        $enfrentamiento3->nombre = "Playoffs grupo " . $id . " Enfrentamiento3";
+        $enfrentamiento4->nombre = "Playoffs grupo " . $id . " Enfrentamiento4";
         $enfrentamiento1->fecha = '2019-12-19 16:00:';
         $enfrentamiento2->fecha = '2019-12-19 16:00:';
         $enfrentamiento3->fecha = '2019-12-19 16:00:';
         $enfrentamiento4->fecha = '2019-12-19 16:00:';
-        $enfrentamiento1->fase= 'playoffs4';
-        $enfrentamiento2->fase= 'playoffs4';
-        $enfrentamiento3->fase= 'playoffs4';
-        $enfrentamiento4->fase= 'playoffs4';
+        $enfrentamiento1->fase = 'playoffs4';
+        $enfrentamiento2->fase = 'playoffs4';
+        $enfrentamiento3->fase = 'playoffs4';
+        $enfrentamiento4->fase = 'playoffs4';
         $enfrentamiento1->reserva_id = null;
         $enfrentamiento2->reserva_id = null;
         $enfrentamiento3->reserva_id = null;
         $enfrentamiento4->reserva_id = null;
         if (!$enfrentamiento->save($enfrentamiento1)) {
             $this->Flash->success(__('Ya se han generado los  primeros enfrentamientos del playoff'));
-            return $this->redirect(['action'=>'Playoffs',$grupo->id]);
+
+            return $this->redirect(['action' => 'Playoffs', $grupo->id]);
         }
         $id1 = $enfrentamiento1->id;
         $enfrentamiento->save($enfrentamiento2);
@@ -142,33 +159,29 @@ class GrupoController extends AppController
         $id3 = $enfrentamiento3->id;
         $enfrentamiento->save($enfrentamiento4);
         $id4 = $enfrentamiento4->id;
-        $auxiliar=0;
-        foreach( $resultsIteratorObject3 as $pareja1):
-
+        $auxiliar = 0;
+        foreach ($resultsIteratorObject3 as $pareja1) :
             $nuevarelacion = $parejaenfrentamiento->newEntity();
-            if($auxiliar == 0 || $auxiliar ==7) {
+            if ($auxiliar == 0 || $auxiliar == 7) {
                 $nuevarelacion->pareja_id = $pareja1->id;
                 $nuevarelacion->enfrentamiento_id = $id1;
-            }elseif($auxiliar ==1 || $auxiliar == 6) {
+            } elseif ($auxiliar == 1 || $auxiliar == 6) {
                 $nuevarelacion->pareja_id = $pareja1->id;
                 $nuevarelacion->enfrentamiento_id = $id2;
-            }elseif($auxiliar ==2 || $auxiliar == 5) {
+            } elseif ($auxiliar == 2 || $auxiliar == 5) {
                 $nuevarelacion->pareja_id = $pareja1->id;
                 $nuevarelacion->enfrentamiento_id = $id3;
-            }else{
+            } else {
                 $nuevarelacion->pareja_id = $pareja1->id;
                 $nuevarelacion->enfrentamiento_id = $id4;
             }
             $auxiliar++;
-            $nuevarelacion->participacionConfirmada=0;
+            $nuevarelacion->participacionConfirmada = 0;
             $parejaenfrentamiento->save($nuevarelacion);
-
         endforeach;
 
-
-        return $this->redirect(['action'=>'Playoffs',$grupo->id]);
+        return $this->redirect(['action' => 'Playoffs', $grupo->id]);
     }
-
 
     /**
      * Add method
@@ -182,24 +195,27 @@ class GrupoController extends AppController
             $grupo = $this->Grupo->patchEntity($grupo, $this->request->getData());
             if ($this->Grupo->save($grupo)) {
                 $this->Flash->success(__('The grupo has been saved.'));
+
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
         }
         $this->set(compact('grupo'));
     }
+
     public function add2($var)
     {
         $grupo = $this->Grupo->newEntity();
         $grupo = $this->Grupo->patchEntity($grupo, $var);
         if ($this->Grupo->save($grupo)) {
             return $this->redirect(['action' => 'index']);
-        }else{
+        } else {
             $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
         }
 
         $this->set(compact('grupo'));
     }
+
     /**
      * Edit method
      *
@@ -210,18 +226,20 @@ class GrupoController extends AppController
     public function edit($id = null)
     {
         $grupo = $this->Grupo->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $grupo = $this->Grupo->patchEntity($grupo, $this->request->getData());
             if ($this->Grupo->save($grupo)) {
                 $this->Flash->success(__('The grupo has been saved.'));
+
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The grupo could not be saved. Please, try again.'));
         }
         $this->set(compact('grupo'));
     }
+
     /**
      * Delete method
      *
@@ -238,6 +256,7 @@ class GrupoController extends AppController
         } else {
             $this->Flash->error(__('The grupo could not be deleted. Please, try again.'));
         }
+
         return $this->redirect(['action' => 'index']);
     }
 }

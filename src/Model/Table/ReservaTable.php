@@ -102,23 +102,23 @@ class ReservaTable extends Table
 
         $this->belongsTo('Pista', [
             'foreignKey' => 'pista_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ])->setProperty('pista');
 
         $this->belongsTo('Usuario', [
-            'foreignKey' => 'usuario_id'
+            'foreignKey' => 'usuario_id',
         ]);
 
         $this->hasOne('Enfrentamiento', [
-            'foreignKey' => 'reserva_id'
+            'foreignKey' => 'reserva_id',
         ]);
 
         $this->hasOne('PartidoPromocionado', [
-            'foreignKey' => 'reserva_id'
+            'foreignKey' => 'reserva_id',
         ]);
 
         $this->belongsTo('Clase', [
-            'foreignKey' => 'clase_id'
+            'foreignKey' => 'clase_id',
         ]);
     }
 
@@ -155,7 +155,7 @@ class ReservaTable extends Table
                         return $fecha->add(self::getAntelacionCreacion()) <= $value;
                     }
                 },
-                'message' => __('Las reservas deben de crearse con antelación suficiente.')
+                'message' => __('Las reservas deben de crearse con antelación suficiente.'),
             ])
             ->add('fechaInicio', 'franjaValida', [
                 'rule' => function ($value, $context) {
@@ -175,7 +175,7 @@ class ReservaTable extends Table
                         return $franjaExistente;
                     }
                 },
-                'message' => __('La franja seleccionada para la reserva no es válida.')
+                'message' => __('La franja seleccionada para la reserva no es válida.'),
             ]);
 
         // Por ahora, la fecha de fin se genera automáticamente
@@ -196,12 +196,12 @@ class ReservaTable extends Table
     {
         $rules->add($rules->existsIn(['pista_id'], 'Pista'), 'validTrack', [
             'errorField' => 'pista_id',
-            'message' => __('Esa pista no existe en el sistema.')
+            'message' => __('Esa pista no existe en el sistema.'),
         ]);
 
         $rules->add($rules->existsIn(['usuario_id'], 'Usuario'), 'validUser', [
             'errorField' => 'usuario_id',
-            'message' => __('Ese usuario no existe en el sistema.')
+            'message' => __('Ese usuario no existe en el sistema.'),
         ]);
 
         $rules->add(function ($reserva, $_) {
@@ -211,7 +211,7 @@ class ReservaTable extends Table
             return $tablaPistas->libreEn($reserva->fechaInicio) !== null;
         }, 'pistaDisponibleParaReserva', [
             'errorField' => 'fechaInicio',
-            'message' => __('La pista está ocupada en esa fecha y hora.')
+            'message' => __('La pista está ocupada en esa fecha y hora.'),
         ]);
 
         $rules->add(function ($reserva, $_) {
@@ -227,7 +227,7 @@ class ReservaTable extends Table
             return $usuario === null || self::puedeDeportistaEfectuarReservas($usuario);
         }, 'reservasMaximasAlcanzadas', [
             'errorField' => 'fechaInicio',
-            'message' => __('No puedes tener más de {0} reservas activas simultáneamente.', self::$reservasMaximasDeportista)
+            'message' => __('No puedes tener más de {0} reservas activas simultáneamente.', self::$reservasMaximasDeportista),
         ]);
 
         for ($i = 0, $events = [ 'add', 'addDelete' ]; $i < 2; ++$i) {
@@ -235,7 +235,7 @@ class ReservaTable extends Table
                 return self::esModificable($reserva);
             }, 'esModificable', [
                 'errorField' => 'fechaInicio',
-                'message' => __('No se puede modificar una reserva a menos de {0} horas de su comienzo.', self::getIntervaloSoloLectura()->h)
+                'message' => __('No se puede modificar una reserva a menos de {0} horas de su comienzo.', self::getIntervaloSoloLectura()->h),
             ]);
         }
 
@@ -386,7 +386,7 @@ class ReservaTable extends Table
                 ->find()
                 ->select('id')
                 ->where([
-                    'usuario_id' => $id
+                    'usuario_id' => $id,
                 ])
                 ->count() < self::$reservasMaximasDeportista;
         }

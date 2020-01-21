@@ -3,9 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
-
 use Cake\I18n\FrozenTime;
-FrozenTime::setJsonEncodeFormat('yyyy-MM-dd HH:mm:ss');
 
 /**
  * UsuarioPartidoPromocionado Controller
@@ -29,14 +27,12 @@ class UsuarioPartidoPromocionadoController extends AppController
         // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), ['add']) ||
                $user['rol'] === 'administrador';
-
     }
-
 
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Usuario', 'PartidoPromocionado']
+            'contain' => ['Usuario', 'PartidoPromocionado'],
         ];
         $usuarioPartidoPromocionado = $this->paginate($this->UsuarioPartidoPromocionado);
 
@@ -53,7 +49,7 @@ class UsuarioPartidoPromocionadoController extends AppController
     public function view($id = null)
     {
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->get($id, [
-            'contain' => ['Usuario', 'PartidoPromocionado']
+            'contain' => ['Usuario', 'PartidoPromocionado'],
         ]);
         $this->set('usuarioPartidoPromocionado', $usuarioPartidoPromocionado);
     }
@@ -66,18 +62,15 @@ class UsuarioPartidoPromocionadoController extends AppController
     public function add()
     {
 
-
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             $data['usuario_id'] = $this->Auth->user('id');
 
-
             //se buscan y filtran todas las tuplas que tengan como id el enviado en el formulario
             $sitios = $this->UsuarioPartidoPromocionado->find('all');
             $sitiosFiltrado = $sitios->where(['partido_promocionado_id' => $data['partido_promocionado_id']]);
-            
-            
+
             $reservas = 0;
             foreach ($sitios as $sitios) {
                 $reservas++;
@@ -102,7 +95,7 @@ class UsuarioPartidoPromocionadoController extends AppController
 
                     $partidos = TableRegistry::getTableLocator()->get('PartidoPromocionado');
                     $resultsIteratorObject4 = $partidos->find()->where(['id' => $data['partido_promocionado_id']])->all();
-                    foreach($resultsIteratorObject4 as $partidoPromocionado){
+                    foreach ($resultsIteratorObject4 as $partidoPromocionado) {
                         $var['fechaInicio'] = $partidoPromocionado['fecha'];
                     }
                     $var['fechaInicio'] = $var['fechaInicio']->format('Y-m-d H:i:s');
@@ -138,7 +131,7 @@ class UsuarioPartidoPromocionadoController extends AppController
     public function edit($id = null)
     {
         $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $usuarioPartidoPromocionado = $this->UsuarioPartidoPromocionado->patchEntity($usuarioPartidoPromocionado, $this->request->getData());

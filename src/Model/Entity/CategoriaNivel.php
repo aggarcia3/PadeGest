@@ -25,6 +25,6 @@ class CategoriaNivel extends Entity
     protected $_accessible = [
         'categoria' => true,
         'nivel' => true,
-        'campeonato_id' => true
+        'campeonato_id' => true,
     ];
 }

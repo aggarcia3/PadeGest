@@ -13,6 +13,7 @@ use Cake\ORM\TableRegistry;
  * @method \App\Model\Entity\PartidoPromocionado[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 use Cake\Event\Event;
+
 class PartidoPromocionadoController extends AppController
 {
     /**
@@ -26,7 +27,7 @@ class PartidoPromocionadoController extends AppController
         $campeonato = (new CampeonatoController());
         $partidoPromocionado = (new PartidoPromocionadoController());
         $campeonato->agrupar();
-        $partidoPromocionado->agrupar(); 
+        $partidoPromocionado->agrupar();
     }
 
     public function isAuthorized($user)
@@ -36,21 +37,21 @@ class PartidoPromocionadoController extends AppController
         // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), ['index', 'inscribirse']) ||
                $user['rol'] === 'administrador';
-
     }
+
     public function index()
     {
         $usuariosPartidosPromocionados = TableRegistry::getTableLocator()->get('UsuarioPartidoPromocionado');
         $partidoPromocionado = $this->paginate($this->PartidoPromocionado);
-        if($this->Auth->user('rol') != "administrador"){
-            foreach($partidoPromocionado as $partidoPromocionados){
+        if ($this->Auth->user('rol') != "administrador") {
+            foreach ($partidoPromocionado as $partidoPromocionados) {
                 $resultsIteratorObject = $usuariosPartidosPromocionados->find()->where(['partido_promocionado_id' => $partidoPromocionados['id']])->all();
                 $var = 0;
-                
-                foreach($resultsIteratorObject as $inscripciones){
+
+                foreach ($resultsIteratorObject as $inscripciones) {
                     $var++;
                 }
-                if($var == 4){
+                if ($var == 4) {
                     unset($partidoPromocionados['id']);
                     unset($partidoPromocionados['nombre']);
                     unset($partidoPromocionados['fecha']);
@@ -58,7 +59,7 @@ class PartidoPromocionadoController extends AppController
                 }
             }
         }
-        if(!isset($partidoPromocionado)){
+        if (!isset($partidoPromocionado)) {
             $partidoPromocionado = [];
         }
         $this->set(compact('partidoPromocionado'));
@@ -74,7 +75,7 @@ class PartidoPromocionadoController extends AppController
     public function view($id = null)
     {
         $partidoPromocionado = $this->PartidoPromocionado->get($id, [
-            'contain' => ['Usuario']
+            'contain' => ['Usuario'],
         ]);
         $this->set('partidoPromocionado', $partidoPromocionado);
     }
@@ -89,26 +90,27 @@ class PartidoPromocionadoController extends AppController
     public function inscribirse($id = null)
     {
         $usuariosPartidosPromocionados = TableRegistry::getTableLocator()->get('UsuarioPartidoPromocionado');
-        $fecha_actual = FrozenTime::now(); 
+        $fecha_actual = FrozenTime::now();
 
         $partidoPromocionado = $this->PartidoPromocionado->get($id, [
-            'contain' => ['Usuario']
+            'contain' => ['Usuario'],
         ]);
 
         $resultsIteratorObject = $usuariosPartidosPromocionados->find()->where(['partido_promocionado_id' => $partidoPromocionado['id']])->all();
         $var = 0;
-        
-        foreach($resultsIteratorObject as $inscripciones){
+
+        foreach ($resultsIteratorObject as $inscripciones) {
             $var++;
         }
-        if($var == 4){
+        if ($var == 4) {
             $this->Flash->error(__('No puedes acceder a esta URL, se notificará al administrador'));
+
             return $this->redirect(['action' => 'index']);
         }
 
-        if($partidoPromocionado['fecha']->subDays(2) <  $fecha_actual){
-            
+        if ($partidoPromocionado['fecha']->subDays(2) <  $fecha_actual) {
             $this->Flash->error(__('No puedes acceder a esta URL, se notificará al administrador'));
+
             return $this->redirect(['action' => 'index']);
         }
 
@@ -122,7 +124,6 @@ class PartidoPromocionadoController extends AppController
      */
     public function add()
     {
-
 
         $partidoPromocionado = $this->PartidoPromocionado->newEntity();
         if ($this->request->is('post')) {
@@ -141,7 +142,6 @@ class PartidoPromocionadoController extends AppController
             $this->Flash->error(__('The partido promocionado could not be saved. Please, try again.'));
         }
         $this->set(compact('partidoPromocionado'));
-
     }
 
     /**
@@ -151,9 +151,10 @@ class PartidoPromocionadoController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null){
+    public function edit($id = null)
+    {
         $partidoPromocionado = $this->PartidoPromocionado->get($id, [
-            'contain' => ['Usuario']
+            'contain' => ['Usuario'],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $this->request->getData());
@@ -166,7 +167,6 @@ class PartidoPromocionadoController extends AppController
         }
         $usuario = $this->PartidoPromocionado->Usuario->find('list', ['limit' => 200]);
         $this->set(compact('partidoPromocionado', 'usuario'));
-
     }
 
     /**
@@ -176,7 +176,8 @@ class PartidoPromocionadoController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null){
+    public function delete($id = null)
+    {
         $this->request->allowMethod(['post', 'delete']);
         $partidoPromocionado = $this->PartidoPromocionado->get($id);
         if ($this->PartidoPromocionado->delete($partidoPromocionado)) {
@@ -188,21 +189,24 @@ class PartidoPromocionadoController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function delete2($id = null){
+    public function delete2($id = null)
+    {
         $partidoPromocionado = $this->PartidoPromocionado->get($id);
         $this->PartidoPromocionado->delete($partidoPromocionado);
+
         return $this->redirect(['controller' => 'index', 'action' => 'index']);
     }
 
-
-    public function agrupar(){
+    public function agrupar()
+    {
         $fecha_actual = FrozenTime::now();
         $partidoPromocionado = $this->PartidoPromocionado->find('all');
-        foreach($partidoPromocionado as $partidoPromocionado){
-            if($partidoPromocionado['fecha']->subDays(2) <  $fecha_actual){
+        foreach ($partidoPromocionado as $partidoPromocionado) {
+            if ($partidoPromocionado['fecha']->subDays(2) <  $fecha_actual) {
                 $this->delete2($partidoPromocionado['id']);
             }
         }
+
         return null;
     }
 }

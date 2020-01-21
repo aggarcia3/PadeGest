@@ -51,7 +51,7 @@ class Usuario extends Entity
      */
     protected $_virtual = [
         'nombre_completo',
-        'estado_asociado'
+        'estado_asociado',
     ];
 
     /**

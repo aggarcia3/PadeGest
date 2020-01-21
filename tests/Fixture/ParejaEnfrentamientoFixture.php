@@ -49,7 +49,7 @@ class ParejaEnfrentamientoFixture extends TestFixture
             [
                 'pareja_id' => 1,
                 'enfrentamiento_id' => 1,
-                'participacionConfirmada' => 1
+                'participacionConfirmada' => 1,
             ],
         ];
         parent::init();

@@ -26,7 +26,7 @@ class EnfrentamientoTableTest extends TestCase
         'app.Enfrentamiento',
         'app.Pareja',
         'app.Reserva',
-        'app.Resultado'
+        'app.Resultado',
     ];
 
     /**

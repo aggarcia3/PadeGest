@@ -40,15 +40,15 @@ class ParejaTable extends Table
 
         $this->belongsTo('CategoriaNivel', [
             'foreignKey' => 'categoria_nivel_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Grupo', [
-            'foreignKey' => 'grupo_id'
+            'foreignKey' => 'grupo_id',
         ]);
         $this->belongsToMany('Enfrentamiento', [
             'foreignKey' => 'pareja_id',
             'targetForeignKey' => 'enfrentamiento_id',
-            'joinTable' => 'pareja_enfrentamiento'
+            'joinTable' => 'pareja_enfrentamiento',
         ]);
     }
 

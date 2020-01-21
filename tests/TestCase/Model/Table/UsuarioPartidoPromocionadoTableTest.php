@@ -25,7 +25,7 @@ class UsuarioPartidoPromocionadoTableTest extends TestCase
     public $fixtures = [
         'app.UsuarioPartidoPromocionado',
         'app.Usuario',
-        'app.PartidoPromocionado'
+        'app.PartidoPromocionado',
     ];
 
     /**

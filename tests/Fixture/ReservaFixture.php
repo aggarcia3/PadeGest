@@ -53,7 +53,7 @@ class ReservaFixture extends TestFixture
                 'id' => 1,
                 'fecha' => '2019-11-01 18:28:40',
                 'pista_id' => 1,
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
         ];
         parent::init();

@@ -31,8 +31,8 @@ class ParejaEnfrentamientoController extends AppController
         // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), []) ||
                $user['rol'] === 'administrador';
-
     }
+
     /**
      * View method
      *
@@ -43,7 +43,7 @@ class ParejaEnfrentamientoController extends AppController
     public function view($id = null)
     {
         $parejaEnfrentamiento = $this->ParejaEnfrentamiento->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
 
         $this->set('parejaEnfrentamiento', $parejaEnfrentamiento);
@@ -73,12 +73,11 @@ class ParejaEnfrentamientoController extends AppController
     {
         $parejaEnfrentamiento = $this->ParejaEnfrentamiento->newEntity();
         $parejaEnfrentamiento = $this->ParejaEnfrentamiento->patchEntity($parejaEnfrentamiento, $var);
-            if ($this->ParejaEnfrentamiento->save($parejaEnfrentamiento)) {
-
-                return $this->redirect(['action' => 'index']);
-            }else{
-                $this->Flash->error(__('The pareja enfrentamiento could not be saved. Please, try again.'));
-            }
+        if ($this->ParejaEnfrentamiento->save($parejaEnfrentamiento)) {
+            return $this->redirect(['action' => 'index']);
+        } else {
+            $this->Flash->error(__('The pareja enfrentamiento could not be saved. Please, try again.'));
+        }
     }
 
     /**
@@ -91,7 +90,7 @@ class ParejaEnfrentamientoController extends AppController
     public function edit($id = null)
     {
         $parejaEnfrentamiento = $this->ParejaEnfrentamiento->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $parejaEnfrentamiento = $this->ParejaEnfrentamiento->patchEntity($parejaEnfrentamiento, $this->request->getData());

@@ -46,7 +46,7 @@ class GrupoFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'categoria_nivel_id' => 1
+                'categoria_nivel_id' => 1,
             ],
         ];
         parent::init();

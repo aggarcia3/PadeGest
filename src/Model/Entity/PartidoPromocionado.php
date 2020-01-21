@@ -28,6 +28,6 @@ class PartidoPromocionado extends Entity
         'nombre' => true,
         'fecha' => true,
         'reserva_id' => true,
-        'usuario' => true
+        'usuario' => true,
     ];
 }

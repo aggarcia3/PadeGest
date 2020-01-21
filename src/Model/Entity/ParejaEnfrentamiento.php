@@ -24,6 +24,6 @@ class ParejaEnfrentamiento extends Entity
     protected $_accessible = [
         'pareja_id' => true,
         'participacionConfirmada' => true,
-        'enfrentamiento_id' => true
+        'enfrentamiento_id' => true,
     ];
 }

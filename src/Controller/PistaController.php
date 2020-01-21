@@ -50,7 +50,7 @@ class PistaController extends AppController
     {
         try {
             $pista = $this->Pista->get($id, [
-                'contain' => ['Reserva']
+                'contain' => ['Reserva'],
             ]);
         } catch (RecordNotFoundException $_) {
             $this->Flash->error(__('La {0} especificada no existe.', __('pista')));

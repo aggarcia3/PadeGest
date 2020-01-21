@@ -53,7 +53,7 @@ class EnfrentamientoFixture extends TestFixture
                 'nombre' => 'Lorem ipsum dolor sit amet',
                 'fecha' => '2019-11-15 17:11:47',
                 'fase' => 'Lorem ipsum dolor sit amet',
-                'reserva_id' => 1
+                'reserva_id' => 1,
             ],
         ];
         parent::init();

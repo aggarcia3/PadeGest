@@ -27,6 +27,6 @@ class Campeonato extends Entity
         'nombre' => true,
         'bases' => true,
         'fechaInicioInscripciones' => true,
-        'fechaFinInscripciones' => true
+        'fechaFinInscripciones' => true,
     ];
 }

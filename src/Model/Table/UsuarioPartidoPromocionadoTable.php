@@ -39,11 +39,11 @@ class UsuarioPartidoPromocionadoTable extends Table
 
         $this->belongsTo('Usuario', [
             'foreignKey' => 'usuario_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->belongsTo('PartidoPromocionado', [
             'foreignKey' => 'partido_promocionado_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
     }
 

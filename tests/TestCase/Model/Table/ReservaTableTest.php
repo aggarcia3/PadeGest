@@ -27,7 +27,7 @@ class ReservaTableTest extends TestCase
         'app.Pista',
         'app.Usuario',
         'app.Enfrentamiento',
-        'app.PartidoPromocionado'
+        'app.PartidoPromocionado',
     ];
 
     /**

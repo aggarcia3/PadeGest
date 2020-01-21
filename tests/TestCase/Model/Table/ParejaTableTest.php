@@ -26,7 +26,7 @@ class ParejaTableTest extends TestCase
         'app.Pareja',
         'app.CategoriaNivel',
         'app.Grupo',
-        'app.Enfrentamiento'
+        'app.Enfrentamiento',
     ];
 
     /**

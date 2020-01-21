@@ -48,15 +48,15 @@ class PistaFixture extends TestFixture
                 'tipoSuelo' => 'moqueta',
                 'tipoCerramiento' => 'cristal',
                 'localizacion' => 'exterior',
-                'focos' => 3
+                'focos' => 3,
             ],
             [
                 'id' => 2,
                 'tipoSuelo' => 'cemento',
                 'tipoCerramiento' => 'cristal',
                 'localizacion' => 'interior',
-                'focos' => 2
-            ]
+                'focos' => 2,
+            ],
         ];
         parent::init();
     }

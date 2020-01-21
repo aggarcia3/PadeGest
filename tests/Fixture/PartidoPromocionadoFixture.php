@@ -51,7 +51,7 @@ class PartidoPromocionadoFixture extends TestFixture
                 'id' => 1,
                 'nombre' => 'Lorem ipsum dolor sit amet',
                 'fecha' => '2019-11-06 19:47:20',
-                'reserva_id' => 1
+                'reserva_id' => 1,
             ],
         ];
         parent::init();

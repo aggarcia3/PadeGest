@@ -34,7 +34,7 @@ class ResultadoTable extends Table
         $this->setDisplayField('enfrentamiento_id');
         $this->setPrimaryKey('enfrentamiento_id');
         $this->hasOne('enfrentamiento', [
-            'foreignKey' => 'id'
+            'foreignKey' => 'id',
         ]);
     }
 

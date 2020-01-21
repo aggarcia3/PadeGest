@@ -21,6 +21,6 @@ class Grupo extends Entity
      * @var array
      */
     protected $_accessible = [
-        'categoria_nivel_id' => true
+        'categoria_nivel_id' => true,
     ];
 }

@@ -23,7 +23,7 @@ class PartidoPromocionadoTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.PartidoPromocionado'
+        'app.PartidoPromocionado',
     ];
 
     /**

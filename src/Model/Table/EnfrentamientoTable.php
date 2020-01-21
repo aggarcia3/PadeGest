@@ -39,15 +39,15 @@ class EnfrentamientoTable extends Table
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Reserva', [
-            'foreignKey' => 'reserva_id'
+            'foreignKey' => 'reserva_id',
         ]);
         $this->hasOne('Resultado', [
-            'foreignKey' => 'enfrentamiento_id'
+            'foreignKey' => 'enfrentamiento_id',
         ]);
         $this->belongsToMany('Pareja', [
             'foreignKey' => 'enfrentamiento_id',
             'targetForeignKey' => 'pareja_id',
-            'joinTable' => 'pareja_enfrentamiento'
+            'joinTable' => 'pareja_enfrentamiento',
         ]);
     }
 

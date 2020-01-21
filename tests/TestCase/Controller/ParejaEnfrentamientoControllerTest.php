@@ -20,7 +20,7 @@ class ParejaEnfrentamientoControllerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.ParejaEnfrentamiento'
+        'app.ParejaEnfrentamiento',
     ];
 
     /**

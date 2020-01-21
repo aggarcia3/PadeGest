@@ -34,6 +34,6 @@ class Enfrentamiento extends Entity
         'reserva_id' => true,
         'pareja' => true,
         'reserva' => true,
-        'resultado' => true
+        'resultado' => true,
     ];
 }

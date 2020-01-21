@@ -38,13 +38,13 @@ class AppView extends View
         parent::initialize();
 
         $this->Form->setConfig([
-            'autoSetCustomValidity' => true
+            'autoSetCustomValidity' => true,
         ]);
 
         // Registrar widgets personalizados
         $this->Form->addWidget('flatpickr_date', ['Flatpickr']);
         $this->Form->setTemplates([
-            'flatpickrInput' => '<input type="text"{{attrs}}>'
+            'flatpickrInput' => '<input type="text"{{attrs}}>',
         ]);
 
         $this->Form->addWidget('franja_horaria', ['FranjaPicker']);

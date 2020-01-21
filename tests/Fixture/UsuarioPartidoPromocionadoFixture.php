@@ -47,7 +47,7 @@ class UsuarioPartidoPromocionadoFixture extends TestFixture
         $this->records = [
             [
                 'usuario_id' => 1,
-                'partido_promocionado_id' => 1
+                'partido_promocionado_id' => 1,
             ],
         ];
         parent::init();

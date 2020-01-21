@@ -14,9 +14,7 @@ use Cake\ORM\TableRegistry;
 class CategoriaNivelController extends AppController
 {
     /**
-     * Index method
-     *
-     * @return void
+     * @return bool
      */
     public function isAuthorized($user)
     {
@@ -25,8 +23,8 @@ class CategoriaNivelController extends AppController
         // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), []) ||
                $user['rol'] === 'administrador';
-
     }
+
     public function index()
     {
         $categoriaNivel = $this->paginate($this->CategoriaNivel);
@@ -44,7 +42,7 @@ class CategoriaNivelController extends AppController
     public function view($id = null)
     {
         $categoriaNivel = $this->CategoriaNivel->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
 
         $grupo = TableRegistry::getTableLocator()->get('Grupo');
@@ -76,11 +74,8 @@ class CategoriaNivelController extends AppController
         if ($this->request->is('post')) {
             $categoriaNivel = $this->CategoriaNivel->patchEntity($categoriaNivel, $var);
             if ($this->CategoriaNivel->save($categoriaNivel)) {
-
-
                 return $this->redirect(['action' => 'index']);
             }
-
         }
         $this->set(compact('categoriaNivel'));
     }
@@ -95,7 +90,7 @@ class CategoriaNivelController extends AppController
     public function edit($id = null)
     {
         $categoriaNivel = $this->CategoriaNivel->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $categoriaNivel = $this->CategoriaNivel->patchEntity($categoriaNivel, $this->request->getData());

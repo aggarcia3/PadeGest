@@ -23,7 +23,7 @@ class GrupoTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.Grupo'
+        'app.Grupo',
     ];
 
     /**

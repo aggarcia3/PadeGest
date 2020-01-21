@@ -38,12 +38,12 @@ class PartidoPromocionadoTable extends Table
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Reserva', [
-            'foreignKey' => 'reserva_id'
+            'foreignKey' => 'reserva_id',
         ]);
         $this->belongsToMany('Usuario', [
             'foreignKey' => 'partido_promocionado_id',
             'targetForeignKey' => 'usuario_id',
-            'joinTable' => 'usuario_partido_promocionado'
+            'joinTable' => 'usuario_partido_promocionado',
         ]);
     }
 

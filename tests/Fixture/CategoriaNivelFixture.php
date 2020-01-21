@@ -51,7 +51,7 @@ class CategoriaNivelFixture extends TestFixture
                 'id' => 1,
                 'categoria' => 'Lorem ipsum dolor sit amet',
                 'nivel' => 'Lorem ipsum dolor sit amet',
-                'campeonato_id' => 1
+                'campeonato_id' => 1,
             ],
         ];
         parent::init();

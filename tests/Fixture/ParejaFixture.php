@@ -58,7 +58,7 @@ class ParejaFixture extends TestFixture
                 'idCapitan' => 1,
                 'idCompanero' => 1,
                 'categoria_nivel_id' => 1,
-                'grupo_id' => 1
+                'grupo_id' => 1,
             ],
         ];
         parent::init();

@@ -40,13 +40,13 @@ class CategoriaNivelTable extends Table
 
         $this->belongsTo('Campeonato', [
             'foreignKey' => 'campeonato_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->hasMany('Grupo', [
-            'foreignKey' => 'categoria_nivel_id'
+            'foreignKey' => 'categoria_nivel_id',
         ]);
         $this->hasMany('Pareja', [
-            'foreignKey' => 'categoria_nivel_id'
+            'foreignKey' => 'categoria_nivel_id',
         ]);
     }
 

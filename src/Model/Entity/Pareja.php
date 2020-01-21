@@ -34,6 +34,6 @@ class Pareja extends Entity
         'grupo_id' => true,
         'categoria_nivel' => true,
         'grupo' => true,
-        'enfrentamiento' => true
+        'enfrentamiento' => true,
     ];
 }

@@ -20,7 +20,7 @@ class CategoriaNivelControllerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.CategoriaNivel'
+        'app.CategoriaNivel',
     ];
 
     /**

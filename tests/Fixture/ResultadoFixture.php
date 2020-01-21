@@ -53,7 +53,7 @@ class ResultadoFixture extends TestFixture
                 'set2pareja1' => 1,
                 'set2pareja2' => 1,
                 'set3pareja1' => 1,
-                'set3pareja2' => 1
+                'set3pareja2' => 1,
             ],
         ];
         parent::init();

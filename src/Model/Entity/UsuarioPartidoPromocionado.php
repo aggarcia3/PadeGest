@@ -25,6 +25,6 @@ class UsuarioPartidoPromocionado extends Entity
      */
     protected $_accessible = [
         'usuario_id' => true,
-        'partido_promocionado_id' => true
+        'partido_promocionado_id' => true,
     ];
 }

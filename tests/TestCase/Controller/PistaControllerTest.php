@@ -20,7 +20,7 @@ class PistaControllerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.Pista'
+        'app.Pista',
     ];
 
     /**
@@ -40,9 +40,9 @@ class PistaControllerTest extends TestCase
                 'User' => [
                     'id' => 1,
                     'username' => 'administrador',
-                    'rol' => 'administrador'
-                ]
-            ]
+                    'rol' => 'administrador',
+                ],
+            ],
         ]);
     }
 
@@ -68,7 +68,7 @@ class PistaControllerTest extends TestCase
             'tipoSuelo' => 'moqueta',
             'tipoCerramiento' => 'cristal',
             'localizacion' => 'exterior',
-            'focos' => '5'
+            'focos' => '5',
         ]);
 
         // Test appropriate response
@@ -77,7 +77,7 @@ class PistaControllerTest extends TestCase
 
         // Test that the entity persisted in the database
         $entityRows = TableRegistry::getTableLocator()->get('pista')->find()->where([
-            'id' => '3'
+            'id' => '3',
         ])->count();
         $this->assertEquals(1, $entityRows);
     }
@@ -94,7 +94,7 @@ class PistaControllerTest extends TestCase
             'tipoSuelo' => 'cielo',
             'tipoCerramiento' => 'abierto',
             'localizacion' => 'espacio',
-            'focos' => '-5'
+            'focos' => '-5',
         ]);
 
         // Test appropriate response
@@ -102,7 +102,7 @@ class PistaControllerTest extends TestCase
 
         // Test that the entity did not persist in the database
         $entityRows = TableRegistry::getTableLocator()->get('pista')->find()->where([
-            'id' => '10'
+            'id' => '10',
         ])->count();
         $this->assertEquals(0, $entityRows);
     }
@@ -118,7 +118,7 @@ class PistaControllerTest extends TestCase
             'tipoSuelo' => 'moqueta',
             'tipoCerramiento' => 'pared',
             'localizacion' => 'interior',
-            'focos' => '0'
+            'focos' => '0',
         ]);
 
         // Test appropriate response
@@ -131,7 +131,7 @@ class PistaControllerTest extends TestCase
             'tipoSuelo' => 'moqueta',
             'tipoCerramiento' => 'pared',
             'localizacion' => 'interior',
-            'focos' => '0'
+            'focos' => '0',
         ])->count();
         $this->assertEquals(1, $entityRows);
     }
@@ -147,7 +147,7 @@ class PistaControllerTest extends TestCase
             'tipoSuelo' => 'cielo',
             'tipoCerramiento' => 'abierto',
             'localizacion' => 'espacio',
-            'focos' => '-5'
+            'focos' => '-5',
         ]);
 
         // Test appropriate response
@@ -159,7 +159,7 @@ class PistaControllerTest extends TestCase
             'tipoSuelo' => 'cielo',
             'tipoCerramiento' => 'abierto',
             'localizacion' => 'espacio',
-            'focos' => '-5'
+            'focos' => '-5',
         ])->count();
         $this->assertEquals(0, $entityRows);
     }

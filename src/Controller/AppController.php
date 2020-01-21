@@ -41,8 +41,6 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        
-
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
@@ -52,7 +50,7 @@ class AppController extends Controller
         $this->loadComponent('Auth', [
             'loginAction' => [
                 'controller' => 'Usuario',
-                'action' => 'login'
+                'action' => 'login',
             ],
             'authError' => __('No tienes los permisos necesarios para acceder a ese recurso.'),
             'authenticate' => [
@@ -63,21 +61,21 @@ class AppController extends Controller
                     // Por ahora, se usa un algoritmo intencionadamente débil para acelerar la generación
                     // de datos de prueba y demostraciones
                     'passwordHasher' => ['className' => 'Weak', 'hashType' => 'md5'],
-                    'userModel' => 'Usuario'
-                ]
+                    'userModel' => 'Usuario',
+                ],
             ],
             'authorize' => ['Controller'],
             'loginRedirect' => [
                 'controller' => 'Pages',
                 'action' => 'display',
-                'index'
+                'index',
             ],
             'logoutRedirect' => [
                 'controller' => 'Pages',
                 'action' => 'display',
-                'index'
+                'index',
             ],
-            'storage' => 'Session'
+            'storage' => 'Session',
         ]);
 
         if (Configure::read('skipAuth')) {

@@ -20,7 +20,7 @@ class CampeonatoControllerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.Campeonato'
+        'app.Campeonato',
     ];
 
     /**

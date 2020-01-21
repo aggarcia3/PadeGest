@@ -68,7 +68,7 @@ class FlatpickrWidget implements WidgetInterface
         ];
 
         $input = $this->_templates->format('flatpickrInput', [
-            'attrs' => $this->_templates->formatAttributes($data, ['type', 'options', 'val', 'flatpickrOptions'])
+            'attrs' => $this->_templates->formatAttributes($data, ['type', 'options', 'val', 'flatpickrOptions']),
         ]);
 
         $opcionesExtra = '';

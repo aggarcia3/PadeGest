@@ -39,10 +39,10 @@ class GrupoTable extends Table
 
         $this->belongsTo('CategoriaNivel', [
             'foreignKey' => 'categoria_nivel_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->hasMany('Pareja', [
-            'foreignKey' => 'grupo_id'
+            'foreignKey' => 'grupo_id',
         ]);
     }
 

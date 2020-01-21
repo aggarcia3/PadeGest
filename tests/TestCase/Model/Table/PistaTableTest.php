@@ -23,7 +23,7 @@ class PistaTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.Pista'
+        'app.Pista',
     ];
 
     /**
