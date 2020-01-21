@@ -23,6 +23,14 @@ use Cake\Validation\Validator;
 class NoticiaTable extends Table
 {
     /**
+     * El componente encargado de autenticar al usuario, usado
+     * en esta tabla para calcular restricciones.
+     *
+     * @var \Cake\Controller\Component\AuthComponent
+     */
+    private $auth;
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -68,8 +76,7 @@ class NoticiaTable extends Table
 
         $validator
             ->dateTime('fecha')
-            ->requirePresence('fecha', 'create')
-            ->notEmptyDateTime('fecha');
+            ->allowEmptyString('fecha', null, 'create');
 
         return $validator;
     }
@@ -85,7 +92,25 @@ class NoticiaTable extends Table
     {
         $rules->add($rules->isUnique(['titulo']));
         $rules->add($rules->existsIn(['usuario_id'], 'Usuario'));
+        $rules->add(function ($noticia, $_) {
+            return $this->auth !== null && $noticia->usuario_id == $this->auth->user('id');
+        }, 'usuarioInvalido', [
+            'errorField' => 'titulo',
+            'message' => __('Las noticias solo pueden ser creadas por el usuario actual.'),
+        ]);
 
         return $rules;
+    }
+
+    /**
+     * Establece el componente encargado de autenticar al usuario, usado
+     * en esta tabla para calcular restricciones.
+     *
+     * @param \Cake\Controller\Component\AuthComponent $auth El descrito componente.
+     * @return void
+     */
+    public function setAuth($auth)
+    {
+        $this->auth = $auth;
     }
 }

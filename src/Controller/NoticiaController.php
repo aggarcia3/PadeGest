@@ -2,7 +2,10 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use Cake\I18n\FrozenTime;
+use App\Model\Table\NoticiaTable;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 
 /**
  * Noticia Controller
@@ -13,15 +16,23 @@ use Cake\I18n\FrozenTime;
  */
 class NoticiaController extends AppController
 {
+    /**
+     * @return \Cake\Http\Response|null
+     */
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
 
+        $tablaNoticia = TableRegistry::getTableLocator()->get('Noticia');
+        assert($tablaNoticia instanceof NoticiaTable);
+        $tablaNoticia->setAuth($this->Auth);
+    }
+
+    /** @return bool */
     public function isAuthorized($user)
     {
-        // Los usuarios no administradores solo tienen acceso a las acciones index y logout.
-        // De otro modo, el proceso de conexión desembocaría en un bucle infinito de redirecciones,
-        // y los usuarios no se podrían desconectar
         return in_array($this->request->getParam('action'), ['view', 'index']) ||
                $user['rol'] === 'administrador';
-
     }
 
     /**
@@ -31,20 +42,7 @@ class NoticiaController extends AppController
      */
     public function index()
     {
-        $fecha_actual = FrozenTime::now();
-
         $noticias = $this->paginate($this->Noticia);
-        if($this->Auth->user('rol') != "administrador"){
-            foreach($noticias as $noticia){
-                if($noticia['fecha'] >  $fecha_actual){
-                    unset($noticia['id']);
-                    unset($noticia['titulo']);
-                    unset($noticia['cuerpo']);
-                    unset($noticia['fecha']);
-                }
-            }
-        }
-
         $this->set(compact('noticias'));
     }
 
@@ -56,7 +54,7 @@ class NoticiaController extends AppController
      */
     public function view($id = null)
     {
-        try{
+        try {
             $noticium = $this->Noticia->get($id, [
                 'contain' => ['Usuario'],
             ]);
@@ -80,6 +78,7 @@ class NoticiaController extends AppController
     {
         if ($this->request->is('post')) {
             $noticium = $this->Noticia->newEntity($this->request->getData());
+            $noticium->usuario_id = $this->Auth->user('id');
 
             if ($this->Noticia->save($noticium)) {
                 $this->Flash->success(__('{0} creada con éxito.', __('Noticia')));
@@ -103,7 +102,7 @@ class NoticiaController extends AppController
      */
     public function edit($id = null)
     {
-        try{
+        try {
             $noticium = $this->Noticia->get($id);
         } catch (RecordNotFoundException $_) {
             $this->Flash->error(__('La {0} especificada no existe, por lo que no se puede editar.', __('pista')));
