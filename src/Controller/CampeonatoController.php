@@ -212,28 +212,21 @@ class CampeonatoController extends AppController
 
     public function agrupar()
     {
-        $i = 0;
         $fecha_actual = FrozenTime::now();
         $campeonatos = $this->Campeonato->find('all');
         foreach ($campeonatos as $campeonato) {
             if ($campeonato['fechaFinInscripciones'] <  $fecha_actual) {
-                $var[$i] = $campeonato['id'];
                 $this->obtenerCategoriaNivel($campeonato['id']);
-                $i++;
             }
         }
-
-        return $this->redirect(['action' => 'index']);
     }
 
     public function obtenerCategoriaNivel($var)
     {
-        $j = 0;
         $categoriaNivel = TableRegistry::getTableLocator()->get('CategoriaNivel');
         $resultsIteratorObject = $categoriaNivel->find()->where(['campeonato_id' => $var])->all();
 
         foreach ($resultsIteratorObject as $categoriaNivel) {
-            $ultimoId[$j] = $categoriaNivel['id'];
             $this->obtenerParejas($categoriaNivel['id']);
         }
 
