@@ -14,7 +14,7 @@ $this->assign('title', 'Estadísticas');
 
 
     <h5 class="card-title text-center">
-       Por semana
+       Por mes
     </h5>
     <table cellpadding="0" cellspacing="0">
         <thead>
@@ -26,17 +26,19 @@ $this->assign('title', 'Estadísticas');
         </thead>
         <tbody>
         <?php 
-        $i = 1;
+        $i = 0;
+        $i2 = 1;
         
         foreach ($contadores as $contador): ?>
             <tr>
                 <td><?= h($fechaInicioDefinitiva->addMonth($i)) ?></td>
-                <td><?= h($fechaInicioDefinitiva->addMonth($i)) ?></td>
+                <td><?= h($fechaInicioDefinitiva->addMonth($i2)) ?></td>
                 <td><?= h($contador) ?></td>
             </tr>
 
             <?php 
         $i++;
+        $i2++;
         endforeach; ?> 
             <tr>
             <td> </td>
@@ -55,7 +57,7 @@ $this->assign('title', 'Estadísticas');
             </tr>
         </tbody>
     </table>
-
+<br>
     <h5 class="card-title text-center">
        Pista más reservada
     </h5>
@@ -63,15 +65,15 @@ $this->assign('title', 'Estadísticas');
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('Fecha Inicio semana', __('Id de la pista')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('Fecha Inicio semana', __('Pista más reservada')) ?></th>
                 <th></th>
                 <th scope="col"><?= $this->Paginator->sort('Numero de reservas', __('Numero de reservas')) ?></th>
             </tr>
         </thead>
         <tbody>
-                <td><?= h($pistaFinal) ?></td>
+                <td>Pista número <?= h($pistaFinal) ?></td>
                 <td></td>
-                <td><?= h($contadorPistaReservas) ?></td>
+                <td><?= h($contadorPistaReservas) ?> reservas</td>
             </tr>
         </tbody>
     </table>
@@ -91,17 +93,67 @@ $this->assign('title', 'Estadísticas');
         <tbody>
                 <td><?= h($horaFinal) ?></td>
                 <td></td>
-                <td><?= h($contadorHoraReservas) ?></td>
+                <td><?= h($contadorHoraReservas) ?> reservas</td>
             </tr>
         </tbody>
     </table>
 
-
+<br><br><br>
     <h3 class="card-title text-center">
         Estadísticas de pagos
     </h3>
 
+    <h5 class="card-title text-center">
+       Por mes
+    </h5>
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col"><?= $this->Paginator->sort('Fecha Inicio semana', __('Fecha Inicio mes')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('Fecha Fin semana', __('Fecha Fin mes')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('Numero de reservas', __('Numero de pagos')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('Numero de reservas', __('Importe por mes')) ?></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php 
+        $i = 0;
+        $i2 = 1;
+        
+        foreach ($contadores2 as $contador): ?>
+            <tr>
+                <td><?= h($fechaInicioDefinitiva2->addMonth($i)) ?></td>
+                <td><?= h($fechaInicioDefinitiva2->addMonth($i2)) ?></td>
+                <td><?= h($contador) ?> pagos</td>
+                <td><?= h($importePorMes[$i]) ?> €</td>
+            </tr>
+
+            <?php 
+        $i++;
+        $i2++;
+        endforeach; ?> 
+            <tr>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td></td>
+            </tr>
+            <tr>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            </tr>
+            <tr>
+                <th>Importe total</th>
+                <th></th>
+                <th></th>
+                <th><?= h($importeTotal) ?> €</th>
+            </tr>
+        </tbody>
+    </table>
+
     <h3 class="card-title text-center">
-        Estadísticas de clases deportivas
+        Estadísticas de escuelas deportivas
     </h3>
 </div>

@@ -136,9 +136,80 @@ class StatisticsController extends AppController
 
         
  
-         //fin parte que calcula la horaa con más reservas
+         //fin parte que calcula la hora con más reservas
 
-        $this->set(array('contadores' => $contadores, 'contadorPistaReservas' => $contadorPistaReservas, 'pistaFinal' => $pistaFinal,  'contadorHoraReservas' => $contadorHoraReservas, 'horaFinal' => $horaFinal, 'mesesDiferencia' => $mesesDiferencia, 'fechaInicioDefinitiva' => $fechaInicioDefinitiva, 'contadorReservas' => $contadorRes));
+         //inicio calculo de pagos por semana
+
+        $reservas = TableRegistry::getTableLocator()->get('Pago');
+        $resultsIteratorObject1 = $reservas->find()->all();
+
+        $fechaAux2;
+        $fechaInicio2 = FrozenTime::now();  
+        $fechaFin2 = FrozenTime::now();  
+        $query2 = $reservas->find('all');
+        foreach( $query2 as $pago):
+
+            if($pago['fecha'] < $fechaInicio2){
+                $fechaInicio2 = $pago['fecha'];
+            }
+
+        endforeach;
+        $fechaInicioDefinitiva2 = $fechaInicio2; 
+
+        $mesesDiferencia2 = ($fechaFin2->year - $fechaInicio2->year)*12;
+        if($fechaInicio2->month > $fechaFin2->month){
+            $mesesDiferencia2 += $fechaFin2->month - $fechaInicio2->month;
+        }else if($fechaInicio2->month > $fechaFin2->month){
+            $mesesDiferencia2 += 12-$fechaFin2->month +$fechaInicio2->month;
+        }
+
+        $i2 = 0;
+        $contadores2 = array();
+        $contadorPago2 = 0;
+
+        $pagos = TableRegistry::getTableLocator()->get('Pago');
+        $importePorMes = array();
+        $importe = 0;
+        
+        for($i2 = 0; $i2 < $mesesDiferencia2; $i2++){
+            
+            $pagosPorMes = $pagos->find('all', array('conditions'=>array('PAGO.fecha BETWEEN '.'\''.$fechaInicio2->i18nFormat('yyyy-MM-dd HH:mm:ss').'\''.' AND '.'\''.$fechaInicio2->addMonth(1)->i18nFormat('yyyy-MM-dd HH:mm:ss').'\'')));
+            foreach( $pagosPorMes as $pagoPorMes2):
+                $contadorPago2++;
+
+                $importe += $pagoPorMes2['importe'];
+                
+            endforeach;
+            
+            $contadores2[$i2] = $contadorPago2; 
+            $contadorPago2= 0;
+            $importePorMes[$i2] = $importe;
+            $importe = 0;
+            $fechaInicio2 = $fechaInicio2->addMonth(1);
+        }
+        //fin de calculo de pagos por mes
+
+        //calculo de de suma de pago
+
+        $reservas = TableRegistry::getTableLocator()->get('Pago');
+        $resultsIteratorObject4 = $reservas->find()->all();
+
+        $importeTotal = 0;
+
+        foreach($resultsIteratorObject4 as $pagos){
+            $importeTotal+=$pagos['importe'];
+        }
+
+
+        //fin de calculo de suma de pago 
+
+        //calculo de clase mas atendida
+
+
+        //fin de calculo de clase mas atendida
+
+
+        $this->set(array('contadores' => $contadores, 'contadorPistaReservas' => $contadorPistaReservas, 'pistaFinal' => $pistaFinal,  'contadorHoraReservas' => $contadorHoraReservas, 'horaFinal' => $horaFinal, 'mesesDiferencia' => $mesesDiferencia, 'fechaInicioDefinitiva' => $fechaInicioDefinitiva, 'contadorReservas' => $contadorRes, 'fechaInicioDefinitiva2' => $fechaInicioDefinitiva2, 'contadores2' => $contadores2, 'importeTotal' => $importeTotal, 'importePorMes' => $importePorMes));
     }
 
     /**
