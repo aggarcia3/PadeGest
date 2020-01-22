@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`clase` (
   `nombre` VARCHAR(45) NOT NULL,
   `plazasMin` SMALLINT UNSIGNED NOT NULL,
   `plazasMax` SMALLINT UNSIGNED NOT NULL,
-  `frecuencia` TIME NOT NULL DEFAULT '7 00:00:00',
+  `frecuencia` TIME NOT NULL DEFAULT '00:00:00',
   `fechaInicioInscripcion` DATE NOT NULL,
   `fechaFinInscripcion` DATE NOT NULL,
   `semanasDuracion` TINYINT UNSIGNED NOT NULL,
