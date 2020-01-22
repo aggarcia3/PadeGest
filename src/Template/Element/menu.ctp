@@ -6,7 +6,6 @@ if ($Auth->user('id')): ?>
     <li><a class="nav-link" href="<?= Router::url(['controller' => 'PartidoPromocionado', 'action' => 'index']) ?>"><?= __('Partidos promocionados') ?></a></li>
     <li><a class="nav-link" href="<?= Router::url(['controller' => 'Campeonato', 'action' => 'index']) ?>"><?= __('Campeonatos') ?></a></li>
     <li><a class="nav-link" href="<?= Router::url(['controller' => 'Reserva', 'action' => 'index']) ?>"><?= __('Reservas de pistas') ?></a></li>
-    <li><a class="nav-link" href="<?= Router::url(['controller' => 'Enfrentamiento', 'action' => 'index']) ?>"><?= __('Enfrentamientos') ?></a></li>
 
     <?php if ($Auth->user('rol') === "administrador"): ?>
 
