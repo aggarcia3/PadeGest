@@ -33,7 +33,7 @@ use Cake\Routing\Router;
 
                 <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>', ['action' => 'view', $noticium->id], ['escapeTitle' => false]) ?>
                 <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $noticium->id], ['escapeTitle' => false]) ?>
-                <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $noticium->id], ['escapeTitle' => false, 'confirm' => __('¿Quieres eliminar la Noticia "{0}"?', $noticium->id)]) ?> 
+                <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $noticium->id], ['escapeTitle' => false, 'confirm' => __('¿Quieres eliminar la Noticia "{0}"?', $noticium->titulo)]) ?> 
 
                 </td>
 
