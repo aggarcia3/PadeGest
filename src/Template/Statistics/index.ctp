@@ -156,4 +156,24 @@ $this->assign('title', 'Estadísticas');
     <h3 class="card-title text-center">
         Estadísticas de escuelas deportivas
     </h3>
+
+    <h5 class="card-title text-center">
+       Clase más atendida
+    </h5>
+
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col"><?= $this->Paginator->sort('Fecha Inicio semana', __('Clase más atendida')) ?></th>
+                <th></th>
+                <th scope="col"><?= $this->Paginator->sort('Numero de reservas', __('Numero de reservas')) ?></th>
+            </tr>
+        </thead>
+        <tbody>
+                <td> <?= h($nombreClase) ?></td>
+                <td></td>
+                <td><?= h($contadorClaseVisitada) ?> reservas</td>
+            </tr>
+        </tbody>
+    </table>
 </div>

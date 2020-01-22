@@ -193,6 +193,7 @@ class StatisticsController extends AppController
 
         $reservas = TableRegistry::getTableLocator()->get('Pago');
         $resultsIteratorObject4 = $reservas->find()->all();
+        
 
         $importeTotal = 0;
 
@@ -204,12 +205,34 @@ class StatisticsController extends AppController
         //fin de calculo de suma de pago 
 
         //calculo de clase mas atendida
+        $clases = TableRegistry::getTableLocator()->get('Clase');
+        $iteradorClases = $clases->find()->all();
 
+        $contadorClaseVisitada = 0;
+        $nombreClase;
+        
+        foreach($iteradorClases as $clase){
+            $claseUsuario = TableRegistry::getTableLocator()->get('ClaseUsuario');
+            $isteradorClaseUsuario = $claseUsuario->find()->where(['clase_id' => $clase['id']])->all();
+            $contadorClaseVisitadaAux = 0;
+            $nombreClaseAux = $clase['nombre'];
+            foreach($isteradorClaseUsuario as $claseUsuario){
+                $contadorClaseVisitadaAux++;
+            }
+
+            if($contadorClaseVisitadaAux > $contadorClaseVisitada){
+                $contadorClaseVisitada = $contadorClaseVisitadaAux;
+                $nombreClase = $nombreClaseAux;
+                
+            }
+        }
 
         //fin de calculo de clase mas atendida
 
 
-        $this->set(array('contadores' => $contadores, 'contadorPistaReservas' => $contadorPistaReservas, 'pistaFinal' => $pistaFinal,  'contadorHoraReservas' => $contadorHoraReservas, 'horaFinal' => $horaFinal, 'mesesDiferencia' => $mesesDiferencia, 'fechaInicioDefinitiva' => $fechaInicioDefinitiva, 'contadorReservas' => $contadorRes, 'fechaInicioDefinitiva2' => $fechaInicioDefinitiva2, 'contadores2' => $contadores2, 'importeTotal' => $importeTotal, 'importePorMes' => $importePorMes));
+        $this->set(array('contadores' => $contadores, 'contadorPistaReservas' => $contadorPistaReservas, 'pistaFinal' => $pistaFinal,  'contadorHoraReservas' => $contadorHoraReservas, 'horaFinal' => $horaFinal,
+         'mesesDiferencia' => $mesesDiferencia, 'fechaInicioDefinitiva' => $fechaInicioDefinitiva, 'contadorReservas' => $contadorRes, 'fechaInicioDefinitiva2' => $fechaInicioDefinitiva2, 'contadores2' => $contadores2,
+          'importeTotal' => $importeTotal, 'importePorMes' => $importePorMes, 'nombreClase' => $nombreClase, 'contadorClaseVisitada' => $contadorClaseVisitada));
     }
 
     /**
