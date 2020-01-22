@@ -52,7 +52,7 @@ use Cake\Routing\Router;
             <tr>
             
     
-    <td colspan="12"><p><?= h($noticium->cuerpo) ?></p></td>
+    <td colspan="12"><p class="text-justify text-wrap" ><?= h($noticium->cuerpo) ?></p></td>
     
     
 

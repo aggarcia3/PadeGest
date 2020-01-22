@@ -11,7 +11,7 @@
     <table cellpadding="0" cellspacing="0">
         <tbody>
             <tr>
-                <td colspan="12"><p style="font-size: 20px;"><?= h($noticium->cuerpo) ?></p></td>
+                <td colspan="12"><p class="text-wrap text-justify" style="font-size: 20px;"><?= h($noticium->cuerpo) ?></p></td>
             </tr>
         </tbody>
     </table>
