@@ -7,6 +7,8 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\I18n\FrozenTime;
+use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 
 /**
  * Noticia Controller
@@ -77,14 +79,33 @@ class NoticiaController extends AppController
      */
     public function add()
     {
-        $fecha_actual = FrozenTime::now();   
+        $fecha_actual = FrozenTime::now(); 
+    
         if ($this->request->is('post')) {
             $noticium = $this->Noticia->newEntity($this->request->getData());
             $noticium->usuario_id = $this->Auth->user('id');
             $noticium->fecha = $fecha_actual;
 
             if ($this->Noticia->save($noticium)) {
+
+                TransportFactory::setConfig('mailtrap', [
+                    'host' => 'smtp.mailtrap.io',
+                    'port' => 2525,
+                    'username' => '8bf4341c41b90b',
+                    'password' => '7ebfbfaa262629',
+                    'className' => 'Smtp'
+                  ]);
+
+                    $email = new Email();
+                    $email->transport('mailtrap');
+                    $email->emailFormat('html');
+                    $email->from('padegest@abp.esei.es', 'Padegest');
+                    $email->subject('Nueva noticia añadida');
+                    $email->to('emailprueba@gmail.com');
+                    $email->send('Hola, se ha publicado una nueva noticia en la aplicaión Padegest <br> <a href="http://localhost:8765/noticia">Haz clic aquí para ver la noticia</a>');
+
                 $this->Flash->success(__('{0} creada con éxito.', __('Noticia')));
+                $this->Flash->success(__('Se ha enviado un email a todos los usuarios'));
 
                 return $this->redirect(['action' => 'index']);
             }
