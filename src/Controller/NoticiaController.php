@@ -6,6 +6,7 @@ use App\Model\Table\NoticiaTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use Cake\I18n\FrozenTime;
 
 /**
  * Noticia Controller
@@ -76,9 +77,11 @@ class NoticiaController extends AppController
      */
     public function add()
     {
+        $fecha_actual = FrozenTime::now();   
         if ($this->request->is('post')) {
             $noticium = $this->Noticia->newEntity($this->request->getData());
             $noticium->usuario_id = $this->Auth->user('id');
+            $noticium->fecha = $fecha_actual;
 
             if ($this->Noticia->save($noticium)) {
                 $this->Flash->success(__('{0} creada con éxito.', __('Noticia')));
