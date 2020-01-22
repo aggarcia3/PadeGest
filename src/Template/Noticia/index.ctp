@@ -20,37 +20,41 @@ use Cake\Routing\Router;
 <?php }?>
 
     <table cellpadding="0" cellspacing="0">
+        
+        
+            <?php foreach ($noticias as $noticium):
+                if($noticium['id'] != ""): ?>
+
         <thead>
             <tr>
-<?php if($Auth->user('rol') == "administrador"){ ?>
+             <td colspan="11"><h5><?=  h($noticium->titulo) ?>, <?= h($noticium->fecha) ?></h5> </td>
+             <?php if($Auth->user('rol') == "administrador"){ ?>
+                <td class="actions">
 
-                <th scope="col"><?= $this->Paginator->sort('id', 'Id de la Noticia') ?></th>
-<?php } ?>
+                <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>', ['action' => 'view', $noticium->id], ['escapeTitle' => false]) ?>
+                <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $noticium->id], ['escapeTitle' => false]) ?>
+                <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $noticium->id], ['escapeTitle' => false, 'confirm' => __('¿Quieres eliminar la Noticia "{0}"?', $noticium->id)]) ?> 
 
-                <th scope="col"><?= $this->Paginator->sort('titulo', 'Título') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('cuerpo', 'Cuerpo') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fecha', 'Fecha de publicación') ?></th>
-                <th scope="col" class="actions"><?= __('Acciones') ?></th>
+                </td>
+
+            <?php }else{ ?>
+             <td class="actions" colspan="1">
+
+                <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>', ['action' => 'view', $noticium->id], ['escapeTitle' => false]) ?>
+            
+            </td>
+
+            <?php } ?>
+
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($noticias as $noticium):
-                if($noticium['id'] != ""): ?>
             <tr>
-<?php if($Auth->user('rol') == "administrador"){ ?>
-
-    <td><?= $this->Number->format($noticium->id) ?></td>
-
-<?php } ?>
-
-    <td><?= h($noticium->titulo) ?></td>
-    <td><?= h($noticium->cuerpo) ?></td>
-    <td><?= h($noticium->fecha) ?></td>
-    <td class="actions">
-
-    <?= $this->Html->link('<i class="fas fa-eye view-action-fa-icon"></i>', ['action' => 'view', $noticium->id], ['escapeTitle' => false]) ?>
-    <?= $this->Html->link('<i class="fas fa-pen-square edit-action-fa-icon"></i>', ['action' => 'edit', $noticium->id], ['escapeTitle' => false]) ?>
-    <?= $this->Form->postLink('<i class="fas fa-minus-square delete-action-fa-icon"></i>', ['action' => 'delete', $noticium->id], ['escapeTitle' => false, 'confirm' => __('¿Quieres eliminar la Noticia "{0}"?', $noticium->id)]) ?>
+            
+    
+    <td colspan="12"><p><?= h($noticium->cuerpo) ?></p></td>
+    
+    
 
             </tr>
                 <?php endif; ?>
