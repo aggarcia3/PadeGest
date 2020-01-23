@@ -47,4 +47,30 @@ $this->assign('title', $Auth->user('id') == $usuario->id ? __('Mi perfil') : __(
             <td><?= h($usuario->esSocio) == 1 ? "Sí" : "No" ?></td>
         </tr>
     </table>
+
+        <br>
+        <br>
+
+    
+    <h3>Pagos Realizados</h3>
+    <table >
+    <thead>
+    <tr>
+            <th scope="row"><?= __('Concepto') ?></th>
+            <th scope="row"><?= __('Importe') ?></th>
+            <th scope="row"><?= __('fecha') ?></th>
+    </tr>
+    </thead>
+    <?php foreach($pagosFinales as $pagos){ ?>
+    
+       
+        <tbody>
+        <tr>
+            <td ><?= h($pagos->concepto) ?></td>
+            <td><?= h($pagos->importe) ?>€</td>
+            <td><?= h($pagos->fecha) ?></td>
+        </tr>
+        </tbody>
+    <?php } ?>
+    </table>
 </div>

@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\TableRegistry;
 
 /**
  * Usuario Controller
@@ -181,7 +182,16 @@ class UsuarioController extends AppController
             return $this->redirect($this->referer(['controller' => 'Pages', 'action' => 'display', 'index'], true));
         }
 
-        $this->set(compact('usuario'));
+        $pagos = TableRegistry::getTableLocator()->get('Pago');
+        $isteradorClaseUsuario = $pagos->find()->where(['usuario_id' => $id])->all();
+
+        $pagosFinales = array();
+        $i = 0;
+        foreach($isteradorClaseUsuario as $informacionPago){
+            $pagosFinales[$i++] = $informacionPago;
+        }
+
+        $this->set(['usuario' => $usuario, 'pagosFinales' => $pagosFinales]);
     }
 
     /**
