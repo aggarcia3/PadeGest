@@ -196,7 +196,6 @@ class UsuarioController extends AppController
             foreach($isteradorClases as $iterador){
                 $clasesAtendidad[$j++] = $iterador['nombre'];
             }
-
         }
 
         $pagosFinales = array();

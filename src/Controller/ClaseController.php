@@ -110,6 +110,12 @@ class ClaseController extends AppController
      */
     public function add()
     {
+        //$usuarios = TableRegistry::getTableLocator()->get('Usuario');
+       // $usuario = $usuarios->find()->where(['username' => ''])->all();
+
+
+        debug($data);
+
         $clase = $this->Clase->newEntity();
         if ($this->request->is('post')) {
             $clase = $this->Clase->patchEntity($clase, $this->request->getData());
@@ -120,8 +126,14 @@ class ClaseController extends AppController
             }
             $this->Flash->error(__('The clase could not be saved. Please, try again.'));
         }
-        $usuario = $this->Clase->Usuario->find('list', ['limit' => 200]);
-        $this->set(compact('clase', 'usuario'));
+        $usuarios = TableRegistry::getTableLocator()->get('Usuario');
+        $usuario = $usuarios->find()->select(['username'])->where(['rol' => 'entrenador'])->all();
+        $arrayUsuarios = array();
+        $i = 0;
+        foreach($usuario as $usuario){
+            $arrayUsuarios[$i++] = $usuario['username'];
+        }
+        $this->set(['clase' => $clase, 'usuario' => $arrayUsuarios]);
     }
 
     /**

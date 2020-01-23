@@ -207,7 +207,11 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'className' => DebugTransport::class
+                'host' => 'smtp.mailtrap.io',
+                'port' => 2525,
+                'username' => '8bf4341c41b90b',
+                'password' => '7ebfbfaa262629',
+                'className' => 'Smtp'
         ],
     ],
 
