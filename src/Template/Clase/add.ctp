@@ -19,8 +19,8 @@ $this->assign('title', __('Gestión de {0}', __('clase')));
             echo $this->Form->control('fechaInicioInscripcion', ['required' => true]);
             echo $this->Form->control('fechaFinInscripcion', ['required' => true]);
             echo $this->Form->control('semanasDuracion', ['required' => true]);
-            echo $this->Form->control('horaDeInicio', ['required' => true]);
-            echo $this->Form->control('usuario._ids', ['options' => $usuario, 'required' => true]);
+            echo $this->Form->control('horaInicio', ['required' => true]);
+            echo $this->Form->control('usuario', ['options' => $usuario , 'value' => $usuario , 'required' => true]);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>

@@ -112,13 +112,27 @@ class ClaseController extends AppController
     {
         //$usuarios = TableRegistry::getTableLocator()->get('Usuario');
        // $usuario = $usuarios->find()->where(['username' => ''])->all();
+       $data = $this->request->getData();
+       $usuarios = TableRegistry::getTableLocator()->get('Usuario');
+        $usuario = $usuarios->find()->select(['username'])->where(['rol' => 'entrenador'])->all();
+        $arrayUsuarios = array();
+        $i = 0;
+        foreach($usuario as $usuario){
+            $arrayUsuarios[$i++] = $usuario['username'];
+        }
 
+        $usuarios = TableRegistry::getTableLocator()->get('Usuario');
+        $usuarioDefinitivo = $usuarios->find()->where(['username' => $arrayUsuarios[$data['usuario']]])->all();
+        foreach($usuarioDefinitivo as $usuario){
+            $data['entrenador_id'] = $usuario['id'];
+        }
+        unset($data['usuario']);
 
         debug($data);
 
         $clase = $this->Clase->newEntity();
         if ($this->request->is('post')) {
-            $clase = $this->Clase->patchEntity($clase, $this->request->getData());
+            $clase = $this->Clase->patchEntity($clase, $data);
             if ($this->Clase->save($clase)) {
                 $this->Flash->success(__('The clase has been saved.'));
 
