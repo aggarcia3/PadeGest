@@ -139,8 +139,10 @@ class ReservaController extends AppController
                 assert($tablaReserva instanceof ReservaTable);
                 $tablaReserva->setAuth($this->Auth);
 
-                $pago = (new PagoController());
-                $pago->add2();
+                if($this->Auth->user('rol') != "administrador"){
+                    $pago = (new PagoController());
+                    $pago->add2();
+                }
 
                 $reserva = $this->Reserva->newEntity($datos);
                 if ($this->Reserva->save($reserva)) {
