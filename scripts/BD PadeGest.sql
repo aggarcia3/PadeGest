@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 23 Jan 2020 20:10:52    
+-- Generated on 23 Jan 2020 20:19:04    
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -1023,8 +1023,8 @@ INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (8, '2020-01-21 15:00:00', DEFAULT, 4, 26, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (9, '2020-01-20 16:30:00', DEFAULT, 5, 11, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (10, '2020-01-23 19:30:00', DEFAULT, 14, 26, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (11, '2020-01-16 19:30:00', DEFAULT, 12, NULL, NULL);
-INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (12, '2020-01-23 13:30:00', DEFAULT, 12, NULL, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (11, '2020-02-16 19:30:00', DEFAULT, 12, NULL, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (12, '2020-04-23 13:30:00', DEFAULT, 12, NULL, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (13, '2020-01-19 18:00:00', DEFAULT, 13, NULL, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (14, '2020-01-06 10:30:00', DEFAULT, 3, NULL, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (15, '2020-01-15 18:00:00', DEFAULT, 6, NULL, NULL);
@@ -1072,9 +1072,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (1, 'Partido amistoso de PadeClub', '2020-01-16 19:30:00', 11);
-INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (2, 'Partido entrenamiento Copa Pádel', '2019-10-26 18:00:00', NULL);
-INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (3, 'Primer partido solidario', '2020-01-23 13:30:00', 12);
+INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (1, 'Partido amistoso de PadeClub', '2020-02-16 19:30:00', 11);
+INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (2, 'Partido entrenamiento Copa Pádel', '2020-01-30 18:00:00', NULL);
+INSERT INTO `PADEGEST`.`partido_promocionado` (`id`, `nombre`, `fecha`, `reserva_id`) VALUES (3, 'Primer partido solidario', '2020-04-23 13:30:00', 12);
 
 COMMIT;
 
