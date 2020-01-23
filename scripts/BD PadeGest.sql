@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 19 Jan 2020 22:17:43    
+-- Generated on 23 Jan 2020 10:41:31    
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`clase` (
   `nombre` VARCHAR(45) NOT NULL,
   `plazasMin` SMALLINT UNSIGNED NOT NULL,
   `plazasMax` SMALLINT UNSIGNED NOT NULL,
-  `frecuencia` TIME NOT NULL DEFAULT '00:00:00',
+  `frecuencia` TINYINT UNSIGNED NOT NULL DEFAULT 7,
   `fechaInicioInscripcion` DATE NOT NULL,
   `fechaFinInscripcion` DATE NOT NULL,
   `semanasDuracion` TINYINT UNSIGNED NOT NULL,
@@ -799,6 +799,18 @@ BEGIN
 	IF idCategoriaNivelGrupo <> NEW.`categoria_nivel_id` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Una pareja solo puede estar en grupos de su misma categoría y nivel';
 	END IF;
+END$$
+
+
+USE `PADEGEST`$$
+DROP TRIGGER IF EXISTS `PADEGEST`.`noticia_BEFORE_INSERT` $$
+USE `PADEGEST`$$
+CREATE TRIGGER `PADEGEST`.`noticia_BEFORE_INSERT`
+BEFORE INSERT ON `noticia` FOR EACH ROW
+BEGIN
+	IF (NEW.`fecha` IS NULL) THEN
+		SET NEW.`fecha` = NOW();
+    END IF;
 END$$
 
 
