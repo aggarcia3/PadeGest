@@ -76,7 +76,7 @@ class ClaseTable extends Table
 
         $validator
             ->time('frecuencia')
-            ->allowEmptyTime('frecuencia');
+            ->notEmptyTime('frecuencia');
 
         $validator
             ->date('fechaInicioInscripcion')

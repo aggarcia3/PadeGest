@@ -10,7 +10,7 @@ use Cake\ORM\Entity;
  * @property string $nombre
  * @property int $plazasMin
  * @property int $plazasMax
- * @property \Cake\I18n\FrozenTime|null $frecuencia
+ * @property \Cake\I18n\FrozenTime $frecuencia
  * @property \Cake\I18n\FrozenDate $fechaInicioInscripcion
  * @property \Cake\I18n\FrozenDate $fechaFinInscripcion
  * @property int $semanasDuracion

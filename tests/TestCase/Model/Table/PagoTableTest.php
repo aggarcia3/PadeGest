@@ -1,21 +1,21 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\ClaseUsuarioTable;
+use App\Model\Table\PagoTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\ClaseUsuarioTable Test Case
+ * App\Model\Table\PagoTable Test Case
  */
-class ClaseUsuarioTableTest extends TestCase
+class PagoTableTest extends TestCase
 {
     /**
      * Test subject
      *
-     * @var \App\Model\Table\ClaseUsuarioTable
+     * @var \App\Model\Table\PagoTable
      */
-    public $ClaseUsuario;
+    public $Pago;
 
     /**
      * Fixtures
@@ -23,13 +23,8 @@ class ClaseUsuarioTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.ClaseUsuario',
-        'app.Clase',
-<<  << <<< HEAD
+        'app.Pago',
         'app.Usuario',
-=======
-        'app.Usuario'
->>>>>>> pablo-pazos
     ];
 
     /**
@@ -40,8 +35,8 @@ class ClaseUsuarioTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('ClaseUsuario') ? [] : ['className' => ClaseUsuarioTable::class];
-        $this->ClaseUsuario = TableRegistry::getTableLocator()->get('ClaseUsuario', $config);
+        $config = TableRegistry::getTableLocator()->exists('Pago') ? [] : ['className' => PagoTable::class];
+        $this->Pago = TableRegistry::getTableLocator()->get('Pago', $config);
     }
 
     /**
@@ -51,7 +46,7 @@ class ClaseUsuarioTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->ClaseUsuario);
+        unset($this->Pago);
 
         parent::tearDown();
     }
@@ -62,6 +57,16 @@ class ClaseUsuarioTableTest extends TestCase
      * @return void
      */
     public function testInitialize()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test validationDefault method
+     *
+     * @return void
+     */
+    public function testValidationDefault()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

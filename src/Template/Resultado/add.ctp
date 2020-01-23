@@ -7,9 +7,8 @@
 <div class="resultado form content">
     <?= $this->Form->create()?>
     <fieldset>
-        <h3 class="card-title text-center" style="color: black;">Resultado para el Enfrentamiento</h3>
+        <h3 class="card-title text-center" style="color: black;">Resultado para el Enfrentamiento <?php echo $idEnfrentamiento ?></h3>
         <?php
-            echo $this->Form->control('enfrentamientoId');
             echo $this->Form->control('set1pareja1');
             echo $this->Form->control('set1pareja2');
             echo $this->Form->control('set2pareja1');

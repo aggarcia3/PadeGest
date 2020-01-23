@@ -57,26 +57,57 @@ class ResultadoController extends AppController
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($idEnfrentamiento = null)
     {
-        $var = $this->request->getData();
-        if ($this->request->is('post')) {
-            $data = $var['enfrentamientoId'];
-            unset($var['enfrentamientoId']);
-            $var['enfrentamiento_id'] = $data;
-        }
-
         $resultado = $this->Resultado->newEntity();
         if ($this->request->is('post')) {
+            $var = $this->request->getData();
+            debug($var);
+
+            $res1 = 0;
+            $res2 = 15;
+
+            if ($var['set1pareja1'] > 7 || $var['set1pareja2'] > 7 || $var['set2pareja1'] > 7 || $var['set2pareja2'] > 7 || $var['set3pareja1'] > 7 || $var['set3pareja2'] > 7) {
+                $this->Flash->error(__('No se pueden introducir resultados mayores que 7'));
+
+                return $this->redirect(['controller' => 'Enfrentamiento', 'action' => 'view', $idEnfrentamiento]);
+            }
+
+            if ($var['set1pareja1'] == $var['set1pareja2'] || $var['set2pareja1'] == $var['set2pareja2']) {
+                $this->Flash->error(__('No puede haber empates en los sets'));
+
+                return $this->redirect(['controller' => 'Enfrentamiento', 'action' => 'view', $idEnfrentamiento]);
+            }
+
+            if ($var['set1pareja1'] > $var['set1pareja2']) {
+                    $res1 = 1;
+            } else {
+                    $res1 = 2;
+            }
+
+            if ($var['set2pareja1'] > $var['set2pareja2']) {
+                    $res2 = 1;
+            } else {
+                $res2 = 2;
+            }
+
+            if ($res1 == $res2 && $var['set1pareja1'] != '' && $var['set1pareja2'] != '') {
+                $this->Flash->error(__('No hace falta el tercer set al haber ya un ganador'));
+
+                return $this->redirect(['controller' => 'Enfrentamiento', 'action' => 'view', $idEnfrentamiento]);
+            }
+
             $resultado = $this->Resultado->patchEntity($resultado, $var);
+            $resultado['enfrentamiento_id'] = $idEnfrentamiento;
             if ($this->Resultado->save($resultado)) {
                 $this->Flash->success(__('Has introducido bien el resultado'));
 
-                return $this->redirect(['controller' => 'Campeonato', 'action' => 'index']);
+                return $this->redirect(['controller' => 'Enfrentamiento', 'action' => 'view', $idEnfrentamiento]);
             }
             $this->Flash->error(__('The resultado could not be saved. Please, try again.'));
         }
-        $this->set(compact('resultado'));
+
+        $this->set(['resultado' => $resultado, 'idEnfrentamiento' => $idEnfrentamiento]);
     }
 
     /**
