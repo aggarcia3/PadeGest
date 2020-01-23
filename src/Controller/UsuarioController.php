@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\TableRegistry;
 
 /**
  * Usuario Controller
@@ -181,7 +182,16 @@ class UsuarioController extends AppController
             return $this->redirect($this->referer(['controller' => 'Pages', 'action' => 'display', 'index'], true));
         }
 
-        $this->set(compact('usuario'));
+        $pagos = TableRegistry::getTableLocator()->get('Pago');
+        $isteradorClaseUsuario = $pagos->find()->where(['usuario_id' => $id])->all();
+
+        $pagosFinales = array();
+        $i = 0;
+        foreach($isteradorClaseUsuario as $informacionPago){
+            $pagosFinales[$i++] = $informacionPago;
+        }
+
+        $this->set(['usuario' => $usuario, 'pagosFinales' => $pagosFinales]);
     }
 
     /**
@@ -190,6 +200,8 @@ class UsuarioController extends AppController
      * @param string|null $id Usuario id.
      * @return \Cake\Http\Response|null Redirects on edit, renders view otherwise.
      */
+
+
     public function edit($id = null)
     {
         $getOptions = [];
@@ -289,6 +301,27 @@ class UsuarioController extends AppController
         $usuario = $this->Usuario->get($this->Auth->user('id'));
         if ($this->request->is(['patch', 'post', 'put'])) {
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
+            if ($this->Usuario->save($usuario)) {
+                $this->Flash->success(__('Estado de socio cambiado'));
+
+                return $this->redirect(['controller' => 'Pages',
+                'action' => 'display',
+                'index']);
+            }
+            $this->Flash->error(__('Ha habido un error, intentalo de nuevo'));
+        }
+        $this->set(compact('usuario'));
+    }
+
+
+    public function hacerseSocio2($esSocio)
+    {
+        $data = $this->request->getData();
+        $data['esSocio'] = $esSocio;
+        $usuario = $this->Usuario->get($this->Auth->user('id'));
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $usuario = $this->Usuario->patchEntity($usuario, $data);
             if ($this->Usuario->save($usuario)) {
                 $this->Flash->success(__('Estado de socio cambiado'));
 

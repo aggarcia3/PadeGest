@@ -5,7 +5,7 @@
  */
 ?>
 <div class="usuario form content">
-    <?= $this->Form->create($usuario) ?>
+    <?= $this->Form->create($usuario, ['url' => ['controller' => 'Pago', 'action' => 'add']]) ?>
     <fieldset>
         <h3 class="card-title text-center" style="color: black;">Hacerse Socio</h3>
         <?php
@@ -17,6 +17,6 @@
         ?>
     </fieldset>
     <br>
-    <?= $this->Form->button(__('Submit'), array('class' => 'btn btn-primary')) ?>
+    <?= $this->Form->button(__('Enviar'), array('class' => 'btn btn-primary')) ?>
     <?= $this->Form->end() ?>
 </div>

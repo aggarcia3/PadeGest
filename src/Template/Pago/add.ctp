@@ -7,25 +7,33 @@
 // Page title
 $this->assign('title', __('Gestión de {0}', __('pago')));
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Pago'), ['action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('List Usuario'), ['controller' => 'Usuario', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Usuario'), ['controller' => 'Usuario', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="pago form large-9 medium-8 columns content">
+
+<div class="pago form content">
     <?= $this->Form->create($pago) ?>
     <fieldset>
-        <legend><?= __('Add Pago') ?></legend>
+    <h3 class="card-title text-center" style="color: black;">Hacerse Socio</h3>
         <?php
-            echo $this->Form->control('concepto');
-            echo $this->Form->control('importe');
-            echo $this->Form->control('fecha');
-            echo $this->Form->control('usuario_id', ['options' => $usuario]);
-        ?>
+            echo $this->Form->control('esSocio',['type' => 'hidden'], array('default'=>$esSocio), );
+            echo $this->Form->control('Número de Tarjeta', ['required' => true, 'type' => 'number'], array('maxlength'=>'19'));
+            echo $this->Form->control('CVV / CVC', ['type' => 'number', 'required' => true], array('maxlength'=>'3'));
+            echo $this->Form->input('Fecha de caducidad', array('type' => 'date', 'minYear' => date('Y'), 'maxYear' => date('Y') + 10,
+      'year' => [
+        'style'=>'width:60px'
+      ],
+      'day'=>null,
+
+      'month' => [
+        'style'=>'width:100px'
+      ],'monthNames' => array( '01' => 'Enero', '02' => 'Febrero', 
+                                                                                '03' => 'Marzo', '04' => 'Abril',
+                                                                                '05' => 'Mayo', '06' => 'Junio',
+                                                                                '07' => 'Julio', '08' => 'Agosto',
+                                                                                '09' => 'Septiembre', '10' => 'Octubre',
+                                                                                '11' => 'Noviembre', '12' => 'Diciembre')));?>
+        
+            <h5>La cuota de socio es 40€/mes</h5>
+            <p>Se le cobrará la cuota en los primeros 5 días de cada mes</p>
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->button(__('Confirmar Pago')) ?>
     <?= $this->Form->end() ?>
 </div>

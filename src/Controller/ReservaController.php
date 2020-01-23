@@ -139,6 +139,11 @@ class ReservaController extends AppController
                 assert($tablaReserva instanceof ReservaTable);
                 $tablaReserva->setAuth($this->Auth);
 
+                if($this->Auth->user('rol') != "administrador"){
+                    $pago = (new PagoController());
+                    $pago->add2();
+                }
+
                 $reserva = $this->Reserva->newEntity($datos);
                 if ($this->Reserva->save($reserva)) {
                     $this->Flash->success(__('Reservada la pista número {0} a fecha {1}.', $reserva->pista_id, $reserva->fechaInicio));
@@ -170,15 +175,29 @@ class ReservaController extends AppController
         }
     }
 
-    public function add2($datos)
+    public function add2($datos, $idPartidoPromocionado)
     {
         $datos['usuario_id'] = null;
+        $datos['pista_id'] = 8;
+        debug($datos);
 
         $reserva = $this->Reserva->newEntity($datos);
         if ($this->Reserva->save($reserva)) {
-            return $this->redirect(['action' => 'index']);
         }
-        $this->Flash->error(__('Ha ocurrido un error al realizar la operación solicitada. Por favor, vuélvelo a intentar más tarde.'));
+
+        $reservas = TableRegistry::getTableLocator()->get('Reserva');
+        $resultsIteratorObject2 = $reservas->find()->where(['fechaInicio' => $datos['fechaInicio']])->all();
+
+        foreach($resultsIteratorObject2 as $reserva){
+
+            $idReserva = $reserva['id'];
+
+        }
+
+        $partidoPromocionadoController = (new PartidoPromocionadocontroller());
+
+        $partidoPromocionadoController->edit2($idPartidoPromocionado, $idReserva);
+        
     }
 
     /**

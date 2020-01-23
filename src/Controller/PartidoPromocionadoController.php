@@ -104,7 +104,11 @@ class PartidoPromocionadoController extends AppController
 
         foreach ($resultsIteratorObject as $inscripciones) {
             $var++;
+           
         }
+        $datosReserva['fechaInicio'] = $partidoPromocionado['fechaInicio'];
+
+
         if ($var == 4) {
             $this->Flash->error(__('No puedes acceder a esta URL, se notificará al administrador'));
 
@@ -170,6 +174,22 @@ class PartidoPromocionadoController extends AppController
         }
         $usuario = $this->PartidoPromocionado->Usuario->find('list', ['limit' => 200]);
         $this->set(compact('partidoPromocionado', 'usuario'));
+    }
+
+
+    public function edit2($id, $idReserva)
+    {
+        $info['reserva_id'] = $idReserva;
+        $partidoPromocionado = $this->PartidoPromocionado->get($id, [
+            'contain' => ['Usuario'],
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $partidoPromocionado = $this->PartidoPromocionado->patchEntity($partidoPromocionado, $info );
+            if ($this->PartidoPromocionado->save($partidoPromocionado)) {
+
+            }
+
+        }
     }
 
     /**

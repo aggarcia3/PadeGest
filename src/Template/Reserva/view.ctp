@@ -21,6 +21,8 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
         <tr>
             <th scope="row"><?= __('Pista') ?></th>
             <td>
+            </td>
+            <td>
             <?php if ($esAdministrador): ?>
             <?=
                 $this->Html->link(
@@ -37,20 +39,27 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
         </tr>
         <tr>
             <th scope="row"><?= __('Fecha') ?></th>
-            <td><?= h($reserva->fechaInicio) ?></td>
+            </td>
+            <td>
+            <td><?= h($reserva->fechaInicio) ?>
+            </td>
         </tr>
         <?php if ($esAdministrador): ?>
         <tr>
             <th scope="row"><?= __('Reservado por') ?></th>
+            <td></td>
+            
             <?php if ($reserva->has('usuario')): ?>
-                <td><?=
+                <td>
+                <?=
                     $this->Html->link(
                         $reserva->usuario->nombre . ' ' . $reserva->usuario->apellidos . ' (' . $reserva->usuario->username . ')',
                         ['controller' => 'Usuario', 'action' => 'view', $reserva->usuario->id]
                     )
                 ?></td>
                 <?php elseif ($reserva->has('enfrentamiento')): ?>
-                <td><?=
+                <td>
+                <?=
                     $this->Html->link(
                         __('Enfrentamiento') . ': '. $reserva->enfrentamiento->nombre,
                         ['controller' => 'Enfrentamiento', 'action' => 'view', $reserva->enfrentamiento->id]
@@ -69,11 +78,10 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
                         __('Clase') . ': ' . $reserva->clase->nombre,
                         ['controller' => 'Clase', 'action' => 'view', $reserva->clase->id]
                     )
-                ?></td>
+                ?>
                 <?php else: ?>
                 <td>No disponible</td>
                 <?php endif; ?>
-            <td>
         </tr>
         <?php endif; ?>
     </table>
