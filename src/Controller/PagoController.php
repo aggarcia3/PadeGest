@@ -4,6 +4,8 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
+use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 
 /**
  * Pago Controller
@@ -100,6 +102,22 @@ class PagoController extends AppController
             $data['concepto'] = 'Hacerse Socio';
             $data['importe'] = 40;
             $data['usuario_id'] = $this->Auth->user('id');
+
+                $email = new Email('default');
+                $email->emailFormat('html');
+                $email->from('padegest@abp.esei.es', 'Padegest');
+                $email->subject('Nueva pago Realizado');
+                $email->to('emailprueba@gmail.com');
+                $email->send('Hola, se ha realizado un pago con la siguiente información: <br>
+                <br>
+                
+                Concepto: '.$data['concepto'].',<br>
+                Importe: '.$data['importe'].'€,<br>
+                Fecha: '.$data['fecha'].',<br>
+                <br>
+                
+                Muchas gracias por hacerse Socio<br>
+                Fdo: Padegest.');
 
             $pago = $this->Pago->patchEntity($pago, $data);
             if ($this->Pago->save($pago)) {
