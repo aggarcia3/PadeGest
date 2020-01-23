@@ -75,8 +75,8 @@ class ClaseTable extends Table
             ->notEmptyString('plazasMax');
 
         $validator
-            ->time('frecuencia')
-            ->notEmptyTime('frecuencia');
+            ->requirePresence('frecuencia', 'create')
+            ->notEmptyString('frecuencia');
 
         $validator
             ->date('fechaInicioInscripcion')
