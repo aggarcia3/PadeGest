@@ -99,9 +99,9 @@ class UsuarioPartidoPromocionadoController extends AppController
                     $partidos = TableRegistry::getTableLocator()->get('PartidoPromocionado');
                     $var['fechaInicio'] = $partidos->find()->where(['id' => $data['partido_promocionado_id']])->last()->fecha;
                     $var['fechaInicio'] = $var['fechaInicio']->format('Y-m-d H:i:s');
-                    $var['pista_id'] = 1;
+                    $var['pista_id'] = 8;
                     $reserva = (new ReservaController());
-                    $reserva->add2($var);
+                    $reserva->add2($var, $data['partido_promocionado_id']);
                 }
 
                 return $this->redirect(['controller' => 'partidoPromocionado', 'action' => 'index']);
