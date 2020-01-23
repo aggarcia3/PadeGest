@@ -12,17 +12,17 @@ $this->assign('title', __('Gestión de {0}', __('clase')));
     <fieldset>
         <h3 class="card-title text-center" style="color: black;">Crear Clase Deportiva</h3>
         <?php
-            echo $this->Form->control('nombre', ['required' => true]);
-            echo $this->Form->control('plazasMin', ['required' => true]);
-            echo $this->Form->control('plazasMax', ['required' => true]);
-            echo $this->Form->control('frecuenciaSemanas', ['required' => true]);
-            echo $this->Form->control('fechaInicioInscripcion', ['required' => true]);
-            echo $this->Form->control('fechaFinInscripcion', ['required' => true]);
-            echo $this->Form->control('semanasDuracion', ['required' => true]);
-            echo $this->Form->control('horaDeInicio', ['required' => true]);
-            echo $this->Form->control('usuario._ids', ['options' => $usuario, 'required' => true]);
+            echo $this->Form->control('nombre');
+            echo $this->Form->control('plazasMin');
+            echo $this->Form->control('plazasMax');
+            echo $this->Form->control('frecuencia');
+            echo $this->Form->control('fechaInicioInscripcion');
+            echo $this->Form->control('fechaFinInscripcion');
+            echo $this->Form->control('semanasDuracion');
+            echo $this->Form->control('horaInicio');
+            echo $this->Form->control('id del entrenador', ['options' => $usuario]);
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
+    <?= $this->Form->button(__('Crear clase'),['class' => 'btn btn-primary']) ?>
     <?= $this->Form->end() ?>
 </div>
