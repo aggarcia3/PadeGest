@@ -139,6 +139,9 @@ class ReservaController extends AppController
                 assert($tablaReserva instanceof ReservaTable);
                 $tablaReserva->setAuth($this->Auth);
 
+                $pago = (new PagoController());
+                $pago->add2();
+
                 $reserva = $this->Reserva->newEntity($datos);
                 if ($this->Reserva->save($reserva)) {
                     $this->Flash->success(__('Reservada la pista número {0} a fecha {1}.', $reserva->pista_id, $reserva->fechaInicio));

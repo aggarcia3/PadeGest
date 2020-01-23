@@ -61,6 +61,16 @@ $timestampLimiteModificable = $hoy->add(ReservaTable::getIntervaloSoloLectura())
         ?>
         <?php endif; ?>
     </fieldset>
+    <fieldset>
+    <h3 class="card-title text-center" style="color: black;">Hacerse Socio</h3>
+        <?php
+            echo $this->Form->control('Número de Tarjeta', ['required' => true]);
+            echo $this->Form->control('CVV / CVC', ['type' => 'number', 'required' => true]);
+            echo $this->Form->control('Fecha Vencimiento Tarjeta', ['required' => true]);
+        ?>
+            <h5>La cuota de socio es 40€/mes</h5>
+            <p>Se le cobrará la cuota en los primeros 5 días de cada mes</p>
+    </fieldset>
     <?= $this->Form->button(__($esAdministrador ? 'Crear' : 'Reservar'), ['class' => 'btn btn-primary']) ?>
     <?= $this->Form->end() ?>
 </div>

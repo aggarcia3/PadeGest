@@ -17,6 +17,6 @@
         ?>
     </fieldset>
     <br>
-    <?= $this->Form->button(__('Submit'), array('class' => 'btn btn-primary')) ?>
+    <?= $this->Form->button(__('Enviar'), array('class' => 'btn btn-primary')) ?>
     <?= $this->Form->end() ?>
 </div>

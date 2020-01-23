@@ -132,6 +132,41 @@ class PagoController extends AppController
         $this->set(array('pago' => $pago, 'usuario' => $usuario, 'esSocio' => $data['esSocio']));
     }
 
+    public function add2()
+    {
+        $pago = $this->Pago->newEntity();
+            $fecha_actual = FrozenTime::now();
+            $data['fecha'] = $fecha_actual;
+            $data['concepto'] = 'Pago Reserva';
+            $data['importe'] = 25;
+            $data['usuario_id'] = $this->Auth->user('id');
+
+                $email = new Email('default');
+                $email->emailFormat('html');
+                $email->from('padegest@abp.esei.es', 'Padegest');
+                $email->subject('Nueva pago Realizado');
+                $email->to('emailprueba@gmail.com');
+                $email->send('Hola, se ha realizado un pago con la siguiente información: <br>
+                <br>
+                
+                Concepto: '.$data['concepto'].',<br>
+                Importe: '.$data['importe'].'€,<br>
+                Fecha: '.$data['fecha'].',<br>
+                <br>
+                
+                Muchas gracias por hacerse Socio<br>
+                Fdo: Padegest.');
+
+            $pago = $this->Pago->patchEntity($pago, $data);
+            if ($this->Pago->save($pago)) {
+
+                $this->Flash->success(__('Pago Realizado, se ha enviado un correo con la información'));
+
+                return $this->redirect(['controller' => 'Pages', 'action' => 'display']);
+            }
+            $this->Flash->error(__('The pago could not be saved. Please, try again.'));
+    }
+
     /**
      * Edit method
      *
