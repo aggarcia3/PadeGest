@@ -185,13 +185,27 @@ class UsuarioController extends AppController
         $pagos = TableRegistry::getTableLocator()->get('Pago');
         $isteradorClaseUsuario = $pagos->find()->where(['usuario_id' => $id])->all();
 
+        $inscripcion = TableRegistry::getTableLocator()->get('ClaseUsuario');
+        $isteradorUsuario = $inscripcion->find()->where(['usuario_id' => $id])->all();
+        $clasesAtendidad = array();
+
+        $j = 0;
+        foreach($isteradorUsuario as $inscripcion){
+            $inscripcion2 = TableRegistry::getTableLocator()->get('Clase');
+            $isteradorClases = $inscripcion2->find()->where(['id' => $inscripcion['clase_id']])->all();
+            foreach($isteradorClases as $iterador){
+                $clasesAtendidad[$j++] = $iterador['nombre'];
+            }
+
+        }
+
         $pagosFinales = array();
         $i = 0;
         foreach($isteradorClaseUsuario as $informacionPago){
             $pagosFinales[$i++] = $informacionPago;
         }
 
-        $this->set(['usuario' => $usuario, 'pagosFinales' => $pagosFinales]);
+        $this->set(['usuario' => $usuario, 'pagosFinales' => $pagosFinales, 'clasesAtendidas' => $clasesAtendidad]);
     }
 
     /**

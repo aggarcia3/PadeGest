@@ -47,7 +47,27 @@ $this->assign('title', $Auth->user('id') == $usuario->id ? __('Mi perfil') : __(
             <td><?= h($usuario->esSocio) == 1 ? "Sí" : "No" ?></td>
         </tr>
     </table>
-
+    <br>
+        <br>
+    <h3>Inscripciones</h3>
+    <table >
+    <thead>
+    <tr>
+            <th scope="row"><?= __('Nombre de la clase') ?></th>
+    </tr>
+    </thead>
+    <?php
+    $i = 0;
+     foreach($clasesAtendidas as $clases){ ?>
+    
+       
+        <tbody>
+        <tr>
+            <td ><?= h($clases) ?></td>
+        </tr>
+        </tbody>
+    <?php } ?>
+    </table>
         <br>
         <br>
 

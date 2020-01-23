@@ -74,9 +74,9 @@ $timestampLimiteModificable = $hoy->add(ReservaTable::getIntervaloSoloLectura())
         <?php
             echo $this->Form->control('Número de Tarjeta', ['required' => true]);
             echo $this->Form->control('CVV / CVC', ['type' => 'number', 'required' => true]);
-            echo $this->Form->input('Fecha de caducidad', array('type' => 'date', 'minYear' => date('Y'), 'maxYear' => date('Y') + 10,
+            echo $this->Form->input('Fecha de caducidad de la tarjeta :', array('type' => 'date', 'minYear' => date('Y'), 'maxYear' => date('Y') + 10,
       'year' => [
-        'style'=>'width:60px'
+        'style'=>'width:70px'
       ],
       'day'=>null,
 
@@ -88,8 +88,8 @@ $timestampLimiteModificable = $hoy->add(ReservaTable::getIntervaloSoloLectura())
                                                                                 '07' => 'Julio', '08' => 'Agosto',
                                                                                 '09' => 'Septiembre', '10' => 'Octubre',
                                                                                 '11' => 'Noviembre', '12' => 'Diciembre')));?>
-            <h5>La cuota de socio es 40€/mes</h5>
-            <p>Se le cobrará la cuota en los primeros 5 días de cada mes</p>
+                                                                                <br>
+            <h5>La cuota de reservar una pista es 15€</h5>
     </fieldset>
 
     <?php
