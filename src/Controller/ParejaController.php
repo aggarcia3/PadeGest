@@ -70,13 +70,14 @@ class ParejaController extends AppController
         $genero2 = $user2->genero;
 
         $categoriaNivel = TableRegistry::getTableLocator()->get('CategoriaNivel');
-        $categoriaNivel2 = $categoriaNivel->find()->where(['campeonato_id' => $data['campeonatoId']])->last();
+        $categoriaNivel2 = $categoriaNivel->find()->where(['campeonato_id' => $data['campeonatoId'], 'categoria' => $data['categoria'], 'nivel' => $data['nivel']])->last();
 
         if ($data['categoria'] == $categoriaNivel2->categoria && $data['nivel'] == $categoriaNivel2->nivel) {
             $var3 = $categoriaNivel2->id;
         } else {
             $var3 = null;
         }
+
 
         //debug($genero1);
         //debug($genero2);
