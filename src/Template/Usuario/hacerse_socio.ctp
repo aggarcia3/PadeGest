@@ -5,7 +5,7 @@
  */
 ?>
 <div class="usuario form content">
-    <?= $this->Form->create($usuario) ?>
+    <?= $this->Form->create($usuario, ['url' => ['controller' => 'Pago', 'action' => 'add']]) ?>
     <fieldset>
         <h3 class="card-title text-center" style="color: black;">Hacerse Socio</h3>
         <?php

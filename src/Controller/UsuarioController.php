@@ -190,6 +190,8 @@ class UsuarioController extends AppController
      * @param string|null $id Usuario id.
      * @return \Cake\Http\Response|null Redirects on edit, renders view otherwise.
      */
+
+
     public function edit($id = null)
     {
         $getOptions = [];
@@ -289,6 +291,27 @@ class UsuarioController extends AppController
         $usuario = $this->Usuario->get($this->Auth->user('id'));
         if ($this->request->is(['patch', 'post', 'put'])) {
             $usuario = $this->Usuario->patchEntity($usuario, $this->request->getData());
+            if ($this->Usuario->save($usuario)) {
+                $this->Flash->success(__('Estado de socio cambiado'));
+
+                return $this->redirect(['controller' => 'Pages',
+                'action' => 'display',
+                'index']);
+            }
+            $this->Flash->error(__('Ha habido un error, intentalo de nuevo'));
+        }
+        $this->set(compact('usuario'));
+    }
+
+
+    public function hacerseSocio2($esSocio)
+    {
+        $data = $this->request->getData();
+        $data['esSocio'] = $esSocio;
+        $usuario = $this->Usuario->get($this->Auth->user('id'));
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $usuario = $this->Usuario->patchEntity($usuario, $data);
             if ($this->Usuario->save($usuario)) {
                 $this->Flash->success(__('Estado de socio cambiado'));
 
