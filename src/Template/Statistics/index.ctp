@@ -12,44 +12,7 @@ $this->assign('title', 'Estadísticas');
        Estadísticas de reservas
     </h3>
 
-
-    <h5 class="card-title text-center">
-       Por mes
-    </h5>
     <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('Fecha Inicio semana', __('Fecha Inicio mes')) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('Fecha Fin semana', __('Fecha Fin mes')) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('Numero de reservas', __('Numero de reservas')) ?></th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php 
-        $i = 0;
-        $i2 = 1;
-        
-        foreach ($contadores as $contador): ?>
-            <tr>
-                <td><?= h($fechaInicioDefinitiva->addMonth($i)) ?></td>
-                <td><?= h($fechaInicioDefinitiva->addMonth($i2)) ?></td>
-                <td><?= h($contador) ?></td>
-            </tr>
-
-            <?php 
-        $i++;
-        $i2++;
-        endforeach; ?> 
-            <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            </tr>
-            <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            </tr>
             <tr>
                 <th>Número de reservas totales</th>
                 <th></th>

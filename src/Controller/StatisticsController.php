@@ -55,11 +55,12 @@ class StatisticsController extends AppController
         $i = 0;
         $contadores = [];
         $contadorReservas2 = 0;
-
+        
         $reservas = TableRegistry::getTableLocator()->get('Reserva');
 
         for ($i = 0; $i < $mesesDiferencia; $i++) {
             $reservasPorMes = $reservas->find('all', ['conditions' => ['RESERVA.fechaInicio BETWEEN ' . '\'' . $fechaInicio->i18nFormat('yyyy-MM-dd HH:mm:ss') . '\'' . ' AND ' . '\'' . $fechaInicio->addMonth(1)->i18nFormat('yyyy-MM-dd HH:mm:ss') . '\'']]);
+            
             foreach ($reservasPorMes as $reservasPorMes2) :
                 $contadorReservas2++;
             endforeach;
@@ -68,6 +69,7 @@ class StatisticsController extends AppController
             $contadorReservas2 = 0;
             $fechaInicio = $fechaInicio->addMonth(1);
         }
+
 
         //fin parte que calcula las reservas por mes
 
