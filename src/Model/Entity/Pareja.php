@@ -9,6 +9,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $idCapitan
  * @property int $idCompanero
+ * @property int $puntuacion
  * @property int $categoria_nivel_id
  * @property int|null $grupo_id
  *
@@ -30,6 +31,7 @@ class Pareja extends Entity
     protected $_accessible = [
         'idCapitan' => true,
         'idCompanero' => true,
+        'puntuacion' => true,
         'categoria_nivel_id' => true,
         'grupo_id' => true,
         'categoria_nivel' => true,

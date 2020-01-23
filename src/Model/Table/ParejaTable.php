@@ -74,6 +74,10 @@ class ParejaTable extends Table
             ->requirePresence('idCompanero', 'create')
             ->notEmptyString('idCompanero');
 
+        $validator
+            ->nonNegativeInteger('puntuacion')
+            ->allowEmptyString('puntuacion', null, 'create');
+
         return $validator;
     }
 
