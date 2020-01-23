@@ -43,7 +43,7 @@ $esAdministrador = $Auth->user('rol') === 'administrador';
                     <?=
                         $this->Html->link(
                             '<i class="fas fa-envelope add-action-fa-icon"></i>',
-                            ['action' => 'mensaje', $usuario->id],
+                            ['action' => 'mensaje', $clase->id, $usuario->id],
                             ['escapeTitle' => false]
                         )
                     ?>

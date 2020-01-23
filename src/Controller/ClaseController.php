@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
+use Cake\Mailer\Email;
 
 /**
  * Clase Controller
@@ -122,6 +123,48 @@ class ClaseController extends AppController
         }
         $usuario = $this->Clase->Usuario->find('list', ['limit' => 200]);
         $this->set(compact('clase', 'usuario'));
+    }
+
+    /**
+     * Mensaje method
+     *
+     * @return \Cake\Http\Response|null Redirects on successful message, renders view otherwise.
+     */
+    public function mensaje($idClase = null, $idUsuario = null)
+    {
+        if (
+            $this->request->is('post') &&
+            is_numeric($idClase) && is_numeric($idUsuario) &&
+            $this->request->getData()['texto'] !== null
+        ) {
+            try {
+                $clase = $this->Clase->get($idClase);
+                $esAlumno = TableRegistry::getTableLocator()->get('ClaseUsuario')
+                    ->find()
+                    ->where(['usuario_id' => $idUsuario, 'clase_id' => $idClase])
+                    ->count() > 0;
+
+                if (($this->Auth->user('rol') === 'administrador' || $clase->entrenador_id === $this->Auth->user('id')) && $esAlumno) {
+                    $mensaje = $this->request->getData()['texto'];
+
+                    $correo = new Email('default');
+                    $correo
+                        ->setEmailFormat('html')
+                        ->from('padegest@abp.esei.es', 'Padegest')
+                        ->subject('Mensaje de tu entrenador')
+                        ->to('emailprueba@gmail.com')
+                        ->send('El entrenador de la clase "' . $clase->nombre . '" en la que estás inscrito ha enviado un mensaje:<br><br>' . $mensaje);
+
+                    $this->Flash->success(__('El mensaje ha sido enviado.'));
+                } else {
+                    $this->Flash->error(__('No tienes permisos para enviar ese mensaje.'));
+                }
+            } catch (RecordNotFoundException $exc) {
+                $this->Flash->error(__('Ha ocurrido un error al enviar el mensaje.'));
+            }
+
+            return $this->redirect(['action' => 'view', $idClase]);
+        }
     }
 
     /**
