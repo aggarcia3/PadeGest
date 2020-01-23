@@ -7,17 +7,8 @@
 // Page title
 $this->assign('title', __('Gestión de {0}', __('clase')));
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Clase'), ['action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('List Reserva'), ['controller' => 'Reserva', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Reserva'), ['controller' => 'Reserva', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Usuario'), ['controller' => 'Usuario', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Usuario'), ['controller' => 'Usuario', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="clase form large-9 medium-8 columns content">
+
+<div class="clase form content">
     <?= $this->Form->create($clase) ?>
     <fieldset>
         <legend><?= __('Add Clase') ?></legend>
@@ -30,9 +21,9 @@ $this->assign('title', __('Gestión de {0}', __('clase')));
             echo $this->Form->control('fechaFinInscripcion');
             echo $this->Form->control('semanasDuracion');
             echo $this->Form->control('horaInicio');
-            echo $this->Form->control('usuario._ids', ['options' => $usuario]);
+            echo $this->Form->control('id del entrenador', ['options' => $usuario]);
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->button(__('Crear clase'),['class' => 'btn btn-primary']) ?>
     <?= $this->Form->end() ?>
 </div>

@@ -134,7 +134,7 @@ foreach($CategoriaNivelFiltrado as $iterador2){
         </table>
         <?php endif; ?>
 
-        <h3 class="card-title text-center" style="color: black;"><?= __('Enfrentamientos de PlayOffs Grupo ').h($grupo->id) ?></h3>
+        
         <a class="btn btn-primary" href="<?= Router::url(['controller' => 'Grupo', 'action' => 'playoffs', h($grupo->id)]) ?>"><?= __('Mirar Playoffs') ?></a>
         <br>
         <br>
