@@ -15,6 +15,13 @@ $this->assign('title', __('Gestión de {0}', __('clases')));
 $esAdministrador = $Auth->user('rol') === 'administrador' || $Auth->user('rol') === 'entrenador';
 $ahora = FrozenTime::now();
 
+/**
+ * Comprueba si un usuario con un determinado ID figura en la lista de usuarios inscritos en una clase.
+ *
+ * @param array $listaInscritos La lista de usuarios inscritos a comprobar.
+ * @param int $idUsuario El identificador del usuario a comprobar.
+ * @return bool Verdadero si el usuario está entre los inscritos, falso en otro caso.
+ */
 function enListaInscritos($listaInscritos, $idUsuario) {
     $toret = false;
 
