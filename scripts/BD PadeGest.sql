@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 23 Jan 2020 12:07:19    
+-- Generated on 23 Jan 2020 16:08:55    
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -62,13 +62,20 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`clase` (
   `nombre` VARCHAR(45) NOT NULL,
   `plazasMin` SMALLINT UNSIGNED NOT NULL,
   `plazasMax` SMALLINT UNSIGNED NOT NULL,
-  `frecuencia` TINYINT UNSIGNED NOT NULL DEFAULT 7,
+  `frecuenciaSemanas` TINYINT UNSIGNED NOT NULL DEFAULT 1,
   `fechaInicioInscripcion` DATE NOT NULL,
   `fechaFinInscripcion` DATE NOT NULL,
   `semanasDuracion` TINYINT UNSIGNED NOT NULL,
   `horaInicio` TIME NOT NULL,
+  `entrenador_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC))
+  UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC),
+  INDEX `FK_CLASE_USUARIO_idx` (`entrenador_id` ASC),
+  CONSTRAINT `FK_CLASE_USUARIO`
+    FOREIGN KEY (`entrenador_id`)
+    REFERENCES `PADEGEST`.`usuario` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -481,7 +488,19 @@ BEFORE INSERT ON `clase` FOR EACH ROW
 BEGIN
 	IF NEW.`plazasMin` > NEW.`plazasMax` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'El número mínimo de plazas debe de ser menor o igual que el número máximo de plazas';
-    END IF;
+	END IF;
+
+	IF NEW.`fechaFinInscripcion` < NEW.`fechaInicioInscripcion` THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de fin de inscripción debe de ser posterior a la de inicio';
+	END IF;
+
+	IF NEW.`frecuenciaSemanas` < 1 THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La frecuencia en semanas debe de ser 1 o mayor';
+	END IF;
+
+	IF NEW.`semanasDuracion` < 1 THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Las clases deben de durar al menos una semana';
+	END IF;
 END$$
 
 
@@ -493,7 +512,19 @@ BEFORE UPDATE ON `clase` FOR EACH ROW
 BEGIN
 	IF NEW.`plazasMin` > NEW.`plazasMax` THEN
 		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'El número mínimo de plazas debe de ser menor o igual que el número máximo de plazas';
-    END IF;
+	END IF;
+
+	IF NEW.`fechaFinInscripcion` < NEW.`fechaInicioInscripcion` THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La fecha de fin de inscripción debe de ser posterior a la de inicio';
+	END IF;
+
+	IF NEW.`frecuenciaSemanas` < 1 THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'La frecuencia en semanas debe de ser 1 o mayor';
+	END IF;
+
+	IF NEW.`semanasDuracion` < 1 THEN
+		SIGNAL SQLSTATE VALUE 'HY000' SET MESSAGE_TEXT = 'Las clases deben de durar al menos una semana';
+	END IF;
 END$$
 
 
@@ -925,6 +956,11 @@ INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apell
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (28, 'redcat927', '32fdc39a8da2bdb7a98dadcefc6c1e38', 'Felipe', 'Torres', 'masculino', 1, 'deportista');
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (29, 'sadgoose648', 'e2c20148ce95dd1163f6f3bd646e4baa', 'María Angeles', 'Giménez', 'femenino', 1, 'deportista');
 INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (30, 'goldenpanda782', '969512f72ca38494a7d93d4e8a1ba4bb', 'Francisca', 'Carmona', 'femenino', 1, 'deportista');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (31, 'paleeffervescent', '140661d8d036bc77c209c655cdca7fbb', 'Luc¡a', 'Soto', 'femenino', 0, 'entrenador');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (32, 'pinkpast', '3e8a45fa1cad22f783cab49ba739f3d4', 'Rosa Mar¡a', 'Rojas', 'femenino', 0, 'entrenador');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (33, 'galaxy_wherewithal', '37aca70f404d1f9c5d81d2b26c007c3f', 'µlvaro', 'Molina', 'masculino', 0, 'entrenador');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (34, 'mellifluous_flower', '4599e5a3adbbf71110bf2e2f79bfad38', 'Yolanda', 'Vidal', 'femenino', 0, 'entrenador');
+INSERT INTO `PADEGEST`.`usuario` (`id`, `username`, `password`, `nombre`, `apellidos`, `genero`, `esSocio`, `rol`) VALUES (35, 'tofugaze', 'f923cab4e27af6167241f8902b25c162', 'Juan Carlos', 'Carmona', 'masculino', 0, 'entrenador');
 
 COMMIT;
 
@@ -958,16 +994,16 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (1, 'Golpe bajo', 10, 15, DEFAULT, '2019-12-30', '2020-01-31', 3, '13:30');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (2, 'Golpe alto', 8, 20, DEFAULT, '2020-01-18', '2020-02-15', 4, '16:30');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (3, 'Revés', 10, 17, DEFAULT, '2019-11-28', '2020-04-15', 3, '13:30');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (4, 'Técnica', 7, 17, DEFAULT, '2020-01-31', '2020-03-25', 6, '12:00');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (5, 'Táctica', 9, 20, DEFAULT, '2019-11-19', '2020-02-17', 6, '09:00');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (6, 'Saque', 9, 20, DEFAULT, '2020-01-09', '2020-02-29', 6, '09:00');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (7, 'Resistencia', 7, 18, DEFAULT, '2020-01-28', '2020-03-10', 6, '09:00');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (8, 'Dejadas', 6, 20, DEFAULT, '2020-01-09', '2020-02-05', 5, '18:00');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (9, 'Fuerza', 5, 19, DEFAULT, '2019-11-24', '2020-01-05', 3, '13:30');
-INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuencia`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`) VALUES (10, 'Psicología', 7, 15, DEFAULT, '2019-11-27', '2020-03-02', 6, '13:30');
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (1, 'Golpe bajo', 10, 15, DEFAULT, '2019-12-30', '2020-01-31', 3, '13:30', NULL);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (2, 'Golpe alto', 8, 20, DEFAULT, '2020-01-18', '2020-02-15', 4, '16:30', 31);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (3, 'Revés', 10, 17, DEFAULT, '2019-11-28', '2020-04-15', 3, '13:30', 32);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (4, 'Técnica', 7, 17, DEFAULT, '2020-01-31', '2020-03-25', 6, '12:00', 33);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (5, 'Táctica', 9, 20, DEFAULT, '2019-11-19', '2020-02-17', 6, '09:00', 33);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (6, 'Saque', 9, 20, DEFAULT, '2020-01-09', '2020-02-29', 6, '09:00', 34);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (7, 'Resistencia', 7, 18, DEFAULT, '2020-01-28', '2020-03-10', 6, '09:00', 34);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (8, 'Dejadas', 6, 20, DEFAULT, '2020-01-09', '2020-02-05', 5, '18:00', 35);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (9, 'Fuerza', 5, 19, DEFAULT, '2019-11-24', '2020-01-05', 3, '13:30', 35);
+INSERT INTO `PADEGEST`.`clase` (`id`, `nombre`, `plazasMin`, `plazasMax`, `frecuenciaSemanas`, `fechaInicioInscripcion`, `fechaFinInscripcion`, `semanasDuracion`, `horaInicio`, `entrenador_id`) VALUES (10, 'Psicología', 7, 15, DEFAULT, '2019-11-27', '2020-03-02', 6, '13:30', 35);
 
 COMMIT;
 
@@ -993,6 +1029,22 @@ INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (14, '2019-11-06 10:30:00', DEFAULT, 3, NULL, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (15, '2019-11-15 18:00:00', DEFAULT, 6, NULL, NULL);
 INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (16, '2019-11-22 10:30:00', DEFAULT, 7, NULL, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (17, '2019-11-28 12:00:00', DEFAULT, 1, 6, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (18, '2019-11-28 12:00:00', DEFAULT, 2, 14, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (19, '2019-11-28 12:00:00', DEFAULT, 3, 26, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (20, '2019-11-28 12:00:00', DEFAULT, 4, 3, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (21, '2019-11-28 12:00:00', DEFAULT, 5, 19, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (22, '2019-11-28 12:00:00', DEFAULT, 6, 28, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (23, '2019-11-28 12:00:00', DEFAULT, 7, 3, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (24, '2019-11-28 12:00:00', DEFAULT, 8, 9, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (25, '2019-11-28 12:00:00', DEFAULT, 9, 6, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (26, '2019-11-28 12:00:00', DEFAULT, 10, 25, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (27, '2019-11-28 12:00:00', DEFAULT, 11, 20, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (28, '2019-11-28 12:00:00', DEFAULT, 12, 21, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (29, '2019-11-28 12:00:00', DEFAULT, 13, 8, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (30, '2019-11-28 12:00:00', DEFAULT, 14, 23, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (31, '2019-11-28 12:00:00', DEFAULT, 15, 24, NULL);
+INSERT INTO `PADEGEST`.`reserva` (`id`, `fechaInicio`, `fechaFin`, `pista_id`, `usuario_id`, `clase_id`) VALUES (32, '2020-4-16 13:30:00', DEFAULT, 3, NULL, 1);
 
 COMMIT;
 

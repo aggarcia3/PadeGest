@@ -4,6 +4,7 @@ namespace App\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -58,6 +59,18 @@ class ClaseUsuarioTable extends Table
     {
         $rules->add($rules->existsIn(['clase_id'], 'Clase'));
         $rules->add($rules->existsIn(['usuario_id'], 'Usuario'));
+        $rules->addCreate(function ($inscripcion, $_) {
+            if ($inscripcion->clase_id === null) {
+                return false;
+            } else {
+                /** @var \App\Model\Entity\Clase */
+                $clase = TableRegistry::getTableLocator()->get('Clase')->get($inscripcion->clase_id);
+
+                return ClaseTable::admiteInscripciones($clase);
+            }
+        }, 'comprobadoInscripciones', [
+            'message' => __('El plazo de inscripciones ha finalizado, o ya se ha llenado el cupo.'),
+        ]);
 
         return $rules;
     }

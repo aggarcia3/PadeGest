@@ -654,3 +654,14 @@ table.franjapicker > tbody > tr > td > input[name='franja'] {
 div.franjapicker-mensaje-inicial, div.franjapicker-mensaje-carga {
     height: 22rem;
 }
+
+/* Clases */
+
+div.clase > table > tbody > tr.clase-disponible {
+    background-color: #adeab1;
+}
+
+div.clase > table > tbody > tr.clase-ocupada > td {
+    background-color: #343a40;
+    color: white;
+}

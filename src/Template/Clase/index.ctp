@@ -1,64 +1,104 @@
 <?php
 /**
  * @var \App\View\AppView $this
+ * @var \Cake\Controller\Component\AuthComponent $Auth
  * @var \App\Model\Entity\Clase[]|\Cake\Collection\CollectionInterface $clase
  */
 
+use App\Model\Table\ClaseTable;
+use Cake\I18n\FrozenTime;
+use Cake\Routing\Router;
+
 // Page title
-$this->assign('title', __('Gestión de {0}', __('clase')));
+$this->assign('title', __('Gestión de {0}', __('clases')));
+
+$esAdministrador = $Auth->user('rol') === 'administrador' || $Auth->user('rol') === 'entrenador';
+$ahora = FrozenTime::now();
+
+function enListaInscritos($listaInscritos, $idUsuario) {
+    $toret = false;
+
+    $i = 0;
+    $n = count($listaInscritos);
+
+    while (!$toret && $i < $n) {
+        $toret = $listaInscritos[$i++]->id == $idUsuario;
+    }
+
+    return $toret;
+}
+
 ?>
-<div class="clase index large-9 medium-8 columns content">
-    <h3><?= __('Clase') ?></h3>
+<div class="clase index content">
+    <h3 class="card-title text-center">
+        <?= __($esAdministrador ? 'Clases en el sistema' : 'Clases disponibles') ?>
+        <?php if ($Auth->user('rol') === 'administrador'): ?>
+        <a href="<?= Router::url(['controller' => 'Clase', 'action' => 'add']) ?>" class="btn btn-primary btn-sm float-right">
+            <i class="fas fa-plus-square"></i>
+        </a>
+        <?php endif; ?>
+    </h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('nombre') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('plazasMin') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('plazasMax') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('frecuencia') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fechaInicioInscripcion') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('fechaFinInscripcion') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('semanasDuracion') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('horaInicio') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('nombre', __('Contenidos')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('plazasMin', __('Aforo mínimo')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('plazasMax', __('Aforo máximo')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('frecuencia', __('Periodicidad')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fechaInicioInscripcion', __('Inicio de inscripciones')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('fechaFinInscripcion', __('Fin de inscripciones')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('semanasDuracion', __('Duración')) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('horaInicio', __('Hora de inicio')) ?></th>
                 <th scope="col" class="actions"></th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($clase as $clase): ?>
+            <?php foreach ($clase as $claseAct): ?>
+            <?php $inscripcionPermitida = ClaseTable::admiteInscripciones($claseAct); ?>
+            <?php if (($inscripcionPermitida && !enListaInscritos($claseAct->usuario, $Auth->user('id'))) || $esAdministrador): ?>
+            <?php if ($esAdministrador && $inscripcionPermitida): ?>
+            <tr class="clase-disponible">
+            <?php elseif ($esAdministrador && !$inscripcionPermitida): ?>
+            <tr class="clase-ocupada">
+            <?php else: ?>
             <tr>
-                <td><?= $this->Number->format($clase->id) ?></td>
-                <td><?= h($clase->nombre) ?></td>
-                <td><?= $this->Number->format($clase->plazasMin) ?></td>
-                <td><?= $this->Number->format($clase->plazasMax) ?></td>
-                <td><?= h($clase->frecuencia) ?></td>
-                <td><?= h($clase->fechaInicioInscripcion) ?></td>
-                <td><?= h($clase->fechaFinInscripcion) ?></td>
-                <td><?= $this->Number->format($clase->semanasDuracion) ?></td>
-                <td><?= h($clase->horaInicio) ?></td>
+            <?php endif; ?>
+                <td><?= h($claseAct->nombre) ?></td>
+                <td><?= $this->Number->format($claseAct->plazasMin) ?></td>
+                <td><?= $this->Number->format($claseAct->plazasMax) ?></td>
+                <td><?= __('Una cada ') ?><?= $claseAct->frecuenciaSemanas > 1 ? $claseAct->frecuenciaSemanas : ' ' ?><?= __('{0,plural,=0{semanas}=1{semana} other{semanas}}', [$claseAct->frecuenciaSemanas]) ?></td>
+                <td><?= h($claseAct->fechaInicioInscripcion) ?></td>
+                <td><?= h($claseAct->fechaFinInscripcion) ?></td>
+                <td><?= $this->Number->format($claseAct->semanasDuracion) ?> <?= __('{0,plural,=0{semanas}=1{semana} other{semanas}}', [$claseAct->semanasDuracion]) ?></td>
+                <td><?= $this->Time->format($claseAct->horaInicio, 'HH:mm') ?></td>
                 <td class="actions">
+                    <?php if ($esAdministrador): ?>
                     <?= $this->Html->link(
                             '<i class="fas fa-eye view-action-fa-icon"></i>',
-                            ['action' => 'view', $clase->id],
-                            ['escapeTitle' => false]
-                        )
-                    ?>
-                    <?= $this->Html->link(
-                            '<i class="fas fa-pen-square edit-action-fa-icon"></i>',
-                            ['action' => 'edit', $clase->id],
+                            ['action' => 'view', $claseAct->id],
                             ['escapeTitle' => false]
                         )
                     ?>
                     <?= $this->Form->postLink(
                             '<i class="fas fa-minus-square delete-action-fa-icon"></i>',
-                            ['action' => 'delete', $clase->id],
+                            ['action' => 'delete', $claseAct->id],
                             ['escapeTitle' => false, 'confirm' =>
-                                __('¿Estás seguro de que quieres eliminar {0}? Esto borrará toda su información asociada.', [__('la clase número {0}', $clase->id)])
+                                __('¿Estás seguro de que quieres eliminar la clase {0}? Esto borrará toda su información asociada.', [$claseAct->nombre])
                             ]
                         )
                     ?>
+                    <?php elseif ($inscripcionPermitida): ?>
+                    <?=
+                        $this->Html->link(
+                            '<i class="fas fa-user-check add-action-fa-icon"></i>',
+                            ['action' => 'inscribirse', $claseAct->id],
+                            ['escapeTitle' => false]
+                        )
+                    ?>
+                    <?php endif; ?>
                 </td>
             </tr>
+            <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
     </table>
@@ -70,6 +110,6 @@ $this->assign('title', __('Gestión de {0}', __('clase')));
             <?= $this->Paginator->next('<i class="fas fa-angle-right"></i>', ['escape' => false]) ?>
             <?= $this->Paginator->last('<i class="fas fa-angle-double-right"></i>', ['escape' => false]) ?>
         </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Viendo {{current}} de {{count}} ') . __('{0,plural,=0{$clase}=1{$clase} other{$clase}}', [count($clase)])]) ?></p>
+        <p><?= $this->Paginator->counter(['format' => __('Viendo {{current}} de {{count}} ') . __('{0,plural,=0{clases}=1{clase} other{clases}}', [count($clase)])]) ?></p>
     </div>
 </div>

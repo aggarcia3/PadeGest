@@ -10,13 +10,13 @@ use Cake\ORM\Entity;
  * @property string $nombre
  * @property int $plazasMin
  * @property int $plazasMax
- * @property int $frecuencia
+ * @property int $frecuenciaSemanas
  * @property \Cake\I18n\FrozenDate $fechaInicioInscripcion
  * @property \Cake\I18n\FrozenDate $fechaFinInscripcion
  * @property int $semanasDuracion
  * @property \Cake\I18n\FrozenTime $horaInicio
  *
- * @property \App\Model\Entity\Reserva $reserva
+ * @property \App\Model\Entity\Reserva[] $reserva
  * @property \App\Model\Entity\Usuario[] $usuario
  */
 class Clase extends Entity
@@ -34,12 +34,13 @@ class Clase extends Entity
         'nombre' => true,
         'plazasMin' => true,
         'plazasMax' => true,
-        'frecuencia' => true,
+        'frecuenciaSemanas' => true,
         'fechaInicioInscripcion' => true,
         'fechaFinInscripcion' => true,
         'semanasDuracion' => true,
         'horaInicio' => true,
         'reserva' => true,
         'usuario' => true,
+        'entrenador' => true,
     ];
 }

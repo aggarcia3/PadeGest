@@ -1,16 +1,19 @@
 <?php
 namespace App\Model\Table;
 
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
  * Clase Model
  *
- * @property \App\Model\Table\ReservaTable&\Cake\ORM\Association\HasOne $Reserva
+ * @property \App\Model\Table\ReservaTable&\Cake\ORM\Association\HasMany $Reserva
  * @property \App\Model\Table\UsuarioTable&\Cake\ORM\Association\BelongsToMany $Usuario
+ * @property \App\Model\Table\UsuarioTable&\Cake\ORM\Association\BelongsTo $Entrenador
  *
  * @method \App\Model\Entity\Clase get($primaryKey, $options = [])
  * @method \App\Model\Entity\Clase newEntity($data = null, array $options = [])
@@ -37,13 +40,17 @@ class ClaseTable extends Table
         $this->setDisplayField('nombre');
         $this->setPrimaryKey('id');
 
-        $this->hasOne('Reserva', [
+        $this->hasMany('Reserva', [
             'foreignKey' => 'clase_id',
         ]);
         $this->belongsToMany('Usuario', [
             'foreignKey' => 'clase_id',
             'targetForeignKey' => 'usuario_id',
             'joinTable' => 'clase_usuario',
+        ]);
+        $this->belongsTo('Entrenador', [
+            'foreignKey' => 'entrenador_id',
+            'targetTable' => 'Usuario',
         ]);
     }
 
@@ -110,7 +117,42 @@ class ClaseTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->isUnique(['nombre']));
+        $rules->add($rules->existsIn(['entrenador_id'], 'Usuario'));
+        $rules->add(function ($clase, $_) {
+            if ($clase->entrenador_id !== null) {
+                return TableRegistry::getTableLocator()->get('Usuario')
+                    ->get($clase->entrenador_id)->rol === 'entrenador';
+            } else {
+                return true;
+            }
+        }, 'entrenadorEsTal', [
+            'errorField' => 'entrenador_id',
+            'message' => __('El entrenador asociado a una clase debe de ser tal.'),
+        ]);
 
         return $rules;
+    }
+
+    /**
+     * Comprueba si una clase deportiva admite inscripciones actualmente.
+     *
+     * @param \App\Model\Entity\Clase $clase La clase a comprobar si admite inscripciones.
+     * @return bool Verdadero si admite inscripciones, falso en otro caso.
+     */
+    public static function admiteInscripciones($clase)
+    {
+        $ahora = FrozenTime::now();
+        $toret = $ahora > $clase->fechaInicioInscripcion && $ahora < $clase->fechaFinInscripcion;
+
+        if ($toret) {
+            $usuariosInscritos = TableRegistry::getTableLocator()->get('Clase')
+                ->find()
+                ->where(['id' => $clase->id])
+                ->count();
+
+            $toret = $usuariosInscritos < $clase->plazasMax;
+        }
+
+        return $toret;
     }
 }
