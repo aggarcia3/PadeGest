@@ -45,7 +45,8 @@ $this->assign('title', __('Gestión de {0}', 'usuarios'));
                     'type' => 'select',
                     'options' => [
                         'deportista' => __('Deportista'),
-                        'administrador' => __('Administrador')
+                        'administrador' => __('Administrador'),
+                        'entrenador' => __('Entrenador')
                     ]
                 ])
             ?>

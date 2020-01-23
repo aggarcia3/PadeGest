@@ -88,7 +88,7 @@ class UsuarioTable extends Table
         $validator
             ->requirePresence('rol', 'create', __('Todo usuario debe de tener un rol asignado.'))
             ->notEmptyString('rol', __('Todo usuario debe de tener un rol asignado.'))
-            ->inList('rol', ['deportista', 'administrador'], __('El rol especificado no es válido.'));
+            ->inList('rol', ['deportista', 'administrador', 'entrenador'], __('El rol especificado no es válido.'));
 
         return $validator;
     }
