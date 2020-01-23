@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
 -- PadeGest application database
 -- For use by PadeGest
--- Generated on 23 Jan 2020 10:41:31    
+-- Generated on 23 Jan 2020 12:07:19    
 -- -----------------------------------------------------
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -260,6 +260,7 @@ CREATE TABLE IF NOT EXISTS `PADEGEST`.`pareja` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `idCapitan` INT UNSIGNED NOT NULL,
   `idCompanero` INT UNSIGNED NOT NULL,
+  `puntuacion` TINYINT UNSIGNED NOT NULL DEFAULT 0,
   `categoria_nivel_id` INT UNSIGNED NOT NULL,
   `grupo_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
@@ -1118,70 +1119,70 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `PADEGEST`;
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (1, 30, 18, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (2, 27, 2, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (3, 5, 6, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (4, 11, 19, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (5, 3, 20, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (6, 19, 16, 23, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (7, 8, 25, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (8, 26, 8, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (9, 10, 11, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (10, 29, 22, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (11, 19, 20, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (12, 21, 6, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (13, 16, 23, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (14, 11, 4, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (15, 28, 26, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (16, 19, 25, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (17, 24, 5, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (18, 12, 5, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (19, 28, 12, 21, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (20, 13, 3, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (21, 15, 19, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (22, 5, 30, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (23, 17, 6, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (24, 19, 27, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (25, 15, 17, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (26, 9, 29, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (27, 15, 18, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (28, 17, 30, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (29, 20, 18, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (30, 15, 21, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (31, 3, 2, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (32, 15, 24, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (33, 13, 11, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (34, 13, 10, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (35, 16, 7, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (36, 10, 7, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (37, 26, 2, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (38, 16, 18, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (39, 10, 21, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (40, 2, 7, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (41, 25, 17, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (42, 11, 24, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (43, 19, 29, 3, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (44, 23, 8, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (45, 20, 11, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (46, 12, 8, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (47, 30, 30, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (48, 29, 30, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (49, 24, 4, 24, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (50, 8, 11, 11, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (51, 22, 5, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (52, 6, 17, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (53, 19, 25, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (54, 12, 28, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (55, 15, 2, 9, 3);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (56, 22, 16, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (57, 28, 2, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (58, 13, 19, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (59, 22, 28, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (60, 9, 25, 17, 2);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (61, 26, 16, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (62, 4, 26, 10, NULL);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (63, 26, 7, 7, 1);
-INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `categoria_nivel_id`, `grupo_id`) VALUES (64, 4, 2, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (1, 30, 18, 48, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (2, 27, 2, 33, 7, 1);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (3, 5, 6, 16, 7, 1);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (4, 11, 19, 16, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (5, 3, 20, 4, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (6, 19, 16, 11, 23, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (7, 8, 25, 10, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (8, 26, 8, 38, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (9, 10, 11, 37, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (10, 29, 22, 9, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (11, 19, 20, 42, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (12, 21, 6, 37, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (13, 16, 23, 5, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (14, 11, 4, 23, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (15, 28, 26, 40, 7, 1);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (16, 19, 25, 44, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (17, 24, 5, 45, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (18, 12, 5, 15, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (19, 28, 12, 28, 21, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (20, 13, 3, 8, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (21, 15, 19, 25, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (22, 5, 30, 31, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (23, 17, 6, 10, 7, 1);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (24, 19, 27, 36, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (25, 15, 17, 14, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (26, 9, 29, 26, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (27, 15, 18, 23, 7, 1);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (28, 17, 30, 4, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (29, 20, 18, 22, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (30, 15, 21, 21, 7, 1);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (31, 3, 2, 25, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (32, 15, 24, 35, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (33, 13, 11, 24, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (34, 13, 10, 48, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (35, 16, 7, 15, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (36, 10, 7, 32, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (37, 26, 2, 26, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (38, 16, 18, 42, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (39, 10, 21, 29, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (40, 2, 7, 11, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (41, 25, 17, 13, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (42, 11, 24, 6, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (43, 19, 29, 21, 3, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (44, 23, 8, 0, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (45, 20, 11, 27, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (46, 12, 8, 39, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (47, 30, 30, 19, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (48, 29, 30, 42, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (49, 24, 4, 28, 24, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (50, 8, 11, 8, 11, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (51, 22, 5, 6, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (52, 6, 17, 18, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (53, 19, 25, 10, 7, 1);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (54, 12, 28, 44, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (55, 15, 2, 33, 9, 3);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (56, 22, 16, 13, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (57, 28, 2, 19, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (58, 13, 19, 1, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (59, 22, 28, 39, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (60, 9, 25, 44, 17, 2);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (61, 26, 16, 17, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (62, 4, 26, 18, 10, NULL);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (63, 26, 7, 24, 7, 1);
+INSERT INTO `PADEGEST`.`pareja` (`id`, `idCapitan`, `idCompanero`, `puntuacion`, `categoria_nivel_id`, `grupo_id`) VALUES (64, 4, 2, 34, 17, 2);
 
 COMMIT;
 
